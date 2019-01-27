@@ -1,4 +1,9 @@
 <!--<div class="overmain">-->
+	<style>
+	.headeruser{
+		color: #fff;
+	}
+	</style>
     <div class="homemenu">
 		<div id="menuleft" class="col-md-8">
 			<div class="homelogo">
@@ -17,12 +22,18 @@
 			</a>
 		</div>
        
-		<div id="menuright" class="headersearch col-md-4">
+		<div id="menuright" class="headersearch col-md-2">
 			<div id="searchtext">
 				<input type="text" class="searchfield" placeholder="Search a col in Europe..." id="searchbox">
 				<div id="searchstatus"></div>
 			</div>
         </div>
+		<div class="headeruser col-md-2">	
+			@auth	
+				logged in as {{Auth::user()->name}}
+				<a href="/logout">logout</a>
+			@endauth
+		</div>
 
     </div>
 <!--</div>-->

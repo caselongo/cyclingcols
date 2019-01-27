@@ -52,9 +52,18 @@ Route::get('col/{colIDString}', function($colIDString)
 
 	$profiles = \App\Profile::where('ColID',$col->ColID)->get();
 	
+	$user = Auth::user();
+	$usercol = null;
+	if($user != null)
+	{
+		$usercol = $user->cols()->where('Cols.ColID','=',$col->ColID)->first();
+	}
+	
 	return View::make('pages.col')
 		->with('col',$col)
 		->with('profiles',$profiles)
+		->with('user',$user)
+		->with('usercol',$usercol)
 		->with('pagetype','coltemplate');
 });
 
@@ -69,11 +78,13 @@ Route::get('col/{colIDString}/{profileID}', function($colIDString,$profileID)
 	}
 	
 	$orderBy ='CASE WHEN ProfileID = ' . $profileID . ' THEN 0 ELSE 1 END';
+	
 	$profiles = \App\Profile::where('ColID',$col->ColID)->orderBy(DB::raw($orderBy),'ASC')->get();
 	
 	return View::make('pages.col')
 		->with('col',$col)
 		->with('profiles',$profiles)
+		->with('user',$user)
 		->with('pagetype','coltemplate');
 });
 

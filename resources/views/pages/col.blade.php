@@ -94,48 +94,56 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		getBanners({{$col->ColID}});
 		
 		$(".col_done").on("mouseenter",function(){
-			$(this).addClass("col_done_yesno").removeClass("col_done_no");
+			$(this).addClass("col_done_yes_hover").removeClass("col_done_no");
 		});
 		
 		$(".col_done").on("mouseleave",function(){
-			$(this).addClass("col_done_no").removeClass("col_done_yesno");
+			$(this).addClass("col_done_no").removeClass("col_done_yes_hover");
 		});
 		
-		$(".col_done").on("click",function(){
+		$(".col_done").on("click",function(){	
+			var el = $(this);
+			el.addClass("col_done_yes").removeClass("col_done_no col_done_yes_hover");	
+			
 			$.ajax({
 				type: "POST",
 				url : "/ajax/col/{{$col->ColID}}",
 				data: {"done": true},
 				dataType : 'json',
-				success : function(data) {
-					
+				success : function(data) {							
 				}
 			});
 		});
 		
 		$(".col_rating").on("mouseenter",function(){
-			$(this).addClass("col_rating_yesno").removeClass("col_rating_no");
-			$(this).prevAll().addClass("col_rating_yesno").removeClass("col_rating_no");
+			$(this).addClass("col_rating_yes_hover").removeClass("col_rating_no_hover");//.removeClass("col_rating_no");
+			$(this).prevAll().addClass("col_rating_yes_hover").removeClass("col_rating_no_hover");//.removeClass("col_rating_no");
+			$(this).nextAll().addClass("col_rating_no_hover").removeClass("col_rating_yes_hover");//.removeClass("col_rating_no");
 		});
 		
 		$(".col_rating").on("mouseleave",function(){
-			$(this).addClass("col_rating_no").removeClass("col_rating_yesno");
-			$(this).prevAll().addClass("col_rating_no").removeClass("col_rating_yesno");
+			$(this).removeClass("col_rating_yes_hover col_rating_no_hover");
+			//$(this).prevAll().addClass("col_rating_no").removeClass("col_rating_yesno");
+			$(this).siblings().removeClass("col_rating_yes_hover col_rating_no_hover");
 		});
 		
 		$(".col_rating").on("click",function(){
 			var rating = $(this).attr("data-rating");
 			
 			if (rating < 1) return;
-			if (rating > 10) return;
+			if (rating > 5) return;
+			
+			var el = $(this);
+			el.addClass("col_rating_yes").removeClass("col_rating_no col_rating_no_hover col_rating_yes_hover");
+			el.prevAll().addClass("col_rating_yes").removeClass("col_rating_no col_rating_no_hover col_rating_yes_hover");
+			el.nextAll().addClass("col_rating_no").removeClass("col_rating_yes col_rating_no_hover col_rating_yes_hover");	
 			
 			$.ajax({
 				type: "POST",
 				url : "/ajax/col/{{$col->ColID}}",
 				data: {"rating": rating},
 				dataType : 'json',
-				success : function(data) {
-					
+				success : function(data) {			
 				}
 			});
 		});
@@ -151,7 +159,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 .col_done_no {
 	color: #666;
 }
-.col_done_yesno {
+.col_done_yes_hover {
 	color: #ff8000;
 }
 .col_done_yes {
@@ -165,11 +173,14 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 .col_rating_no {
 	color: #666;
 }
-.col_rating_yesno {
-	color: #ff8000;
-}
 .col_rating_yes {
 	color: #f00;
+}
+.col_rating_no_hover {
+	color: #666!important;
+}
+.col_rating_yes_hover {
+	color: #ff8000!important;
 }
 </style>
 <?php
@@ -248,6 +259,20 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			}		
 		}	
 	}
+	
+	//done
+	$col_done_class = "col_done_no";
+	if (!is_null($user) && !is_null($usercol)){
+		if ($usercol->pivot->Done == 1){
+			$col_done_class = "col_done_yes";
+		}
+	}
+	
+	//rating
+	$rating = 0;
+	if (!is_null($user) && !is_null($usercol)){
+		$rating = $usercol->pivot->Rating;
+	}
 ?>
 <div id="fb-root"></div>
 <div class="colpage">
@@ -300,25 +325,26 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			<h4><img src="/images/flags/{{$col->Country2}}.gif"> {{$country2}}</h4>
 			@endif
 		</div>
+		@if (!is_null($user))
 		<div class="col-md-3 col-sm-3 col-xs-12 coluser">
 			<div>
-				Done
-				<div class="col_done col_done_no glyphicon glyphicon-check"></div>
+				Done <div class="col_done {{$col_done_class}} glyphicon glyphicon-check"></div>
 			</div>
 			<div>
-				Rate
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="1"></div>
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="2"></div>
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="3"></div>
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="4"></div>
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="5"></div>
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="6"></div>
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="7"></div>
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="8"></div>
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="9"></div>
-				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="10"></div>
+				Beauty
+				@for ($i = 1; $i <= 5; $i++)
+					<div class="col_rating 
+					@if ($i <= $rating)     
+						col_rating_yes
+					@else 
+						col_rating_no
+					@endif
+					glyphicon glyphicon-star" data-rating="{{$i}}">
+					</div>
+				@endfor
 			</div>	
 		</div>
+		@endif
 		<div class="col-xs-12 coltitlebottom">
 			<div class="col-xs-12 col-sm-6 social">
 				<div class="fb-like" 
