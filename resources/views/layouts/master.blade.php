@@ -27,6 +27,8 @@
     <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css">
         <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel='stylesheet' />-->
 
+    <script src="/js/jquery.backstretch.min.js" type="text/javascript"></script>
+
     <script src="/js/jquery-latest.min.js" type="text/javascript"></script>
     <script src="/js/jquery-ui.min.js" type="text/javascript"></script>
     <script src="/js/main.js" type="text/javascript"></script>
@@ -47,11 +49,17 @@
 
 @else
 
-    @include('includes.header')
+    <div id="div-scroll">
+        @include('includes.header')
+        @endif
+
+        @yield('content')
+        @include('includes.footer')
+
+        @if(isset($noHeader) && $noHeader === true)
+
+        @else
+    </div>
 @endif
-<div id="div-scroll">
-    @yield('content')
-    @include('includes.footer')
-</div>
 </body>
 </html>
