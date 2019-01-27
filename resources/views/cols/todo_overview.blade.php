@@ -1,15 +1,15 @@
 <div class="table_table_wrapper col-xs-12 col-sm-12 col-md-6">
-    <table id="done_table">
+    <table>
         <tr>
             <td class="table_subheader" colspan="5">
-                <a href="#" class="stats_info"><i class="glyphicon glyphicon-check"></i>
-                    Cols climbed (most recent) </span>
+                <a href="#" class="stats_info"><i style='color:red' class="glyphicon glyphicon-heart"></i>
+                   My ToDo list </span>
                 </a>
             </td>
         </tr>
 
         @foreach($cols as $col)
-            <tr class="table_row" id="done_{{$col->ColID}}">
+            <tr class="table_row" id="todo_{{$col->ColID}}">
                 <td class="table_col" onclick="goToColl('{{$col->ColIDString}}')">
                     {{$col->Col}}
                 </td>
@@ -29,7 +29,7 @@
                         </span>
                 </td>
                 <td>
-                    <span style="float:right; color:red" class="glyphicon glyphicon-remove-circle" onclick="removeColl({{$col->ColID}}, '{{$col->Col}}')">
+                    <span style="float:right; color:red" class="glyphicon glyphicon-check" onclick="addColl({{$col->ColID}}, '{{$col->Col}}')">
                     </span>
                 </td>
             </tr>
@@ -39,17 +39,17 @@
 
 <script type="text/javascript">
 
-    function removeColl(ColID, name){
+    function addColl(ColID, name){
         $.confirm({
             title: 'Confirm!',
-            content: 'Are you sure you want to remove  <strong>'+name+'</strong> from you achievements?',
+            content: 'Congretzzzz with your performance on the  <strong>'+name+'</strong>. Do you want to add this to your achievement list?',
             buttons: {
                 confirm: function () {
-                    $.post('/ajax/col/' + ColID, {'done': false})
+                    $.post('/ajax/col/' + ColID, {'done': true})
                         .done(function (data) {
 
-                            $('#done_' + ColID).hide();
-
+                            $('#todo_' + ColID).clone().appendTo('#done_table');
+                            $('#todo_' + ColID).hide();
                         });
                 },
                 cancel: function () {

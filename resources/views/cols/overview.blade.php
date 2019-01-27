@@ -30,9 +30,14 @@
 
         <div class="content">
             <div class="table_table clearfix">
-          @include('cols.rating_overview',['cols'=>$ratings])
-
+            @include('cols.rating_overview',['cols'=>$ratings])
             @include('cols.done_overview', ['cols'=>$done])
+            </div>
+
+            <div class="table_table clearfix">
+
+                @include('cols.todo_overview', ['cols'=>$ratings])
+            </div>
             </div>
         </div>
     </div>
