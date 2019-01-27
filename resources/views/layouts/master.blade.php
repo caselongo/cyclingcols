@@ -27,12 +27,12 @@
     <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css">
         <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel='stylesheet' />-->
 
-    <script src="/js/jquery.backstretch.min.js" type="text/javascript"></script>
 
     <script src="/js/jquery-latest.min.js" type="text/javascript"></script>
     <script src="/js/jquery-ui.min.js" type="text/javascript"></script>
     <script src="/js/main.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="/js/jquery.backstretch.min.js" type="text/javascript"></script>
 
 
     <script type="text/javascript">
@@ -45,21 +45,16 @@
     </script>
 </head>
 <body class="{{$pagetype ?? ''}}">
-@if(isset($noHeader) && $noHeader === true)
-
-@else
-
-    <div id="div-scroll">
+@if(!(isset($noHeader) && $noHeader === true))
         @include('includes.header')
+        <div id="div-scroll">
         @endif
 
         @yield('content')
         @include('includes.footer')
 
-        @if(isset($noHeader) && $noHeader === true)
-
-        @else
+        @if(!(isset($noHeader) && $noHeader === true))
     </div>
-@endif
+        @endif
 </body>
 </html>
