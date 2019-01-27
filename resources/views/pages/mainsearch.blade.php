@@ -1,4 +1,4 @@
-@extends('layouts.home')
+@extends('layouts.master',['noHeader'=>true])
 
 @section('content')
 
@@ -30,7 +30,7 @@
 				<i class="fa fa-twitter fa-3x" title="Follow CyclingCols on Twitter!"></i>
 			</a>
 		</div>
-		<div class="headeruser col-md-2">	
+		<div class="headeruser col-md-2">
 			@auth
 				<a href="/logout" class="loginout"><div class="menuitem menuitem-user"><i class="glyphicon glyphicon-log-out" title="Logout"></i><span class="headertext">&nbsp;{{Auth::user()->name}}</span></div></a>
 			@endauth
