@@ -3,8 +3,18 @@
 @section('content')
 
 <!--<div class="overmain">-->
+	<style>
+	.menuitem-user{
+		width: 100%;
+		max-width: initial;
+	}
+	.headeruser{
+		padding: 0;
+		padding-left: 10px;
+	}
+	</style>
     <div class="homemenu">
-		<div id="menuleft" class="col-md-12">
+		<div id="menuleft" class="col-md-10">
 			<div class="homelogo">
 				<a href="/"><img id="logo_img" src="/images/logo.png" /></a>
 			</div>
@@ -14,11 +24,19 @@
 			<a href="/help"><div class="menuitem"><i class="glyphicon glyphicon-question-sign" title="Help"></i><span class="headertext">Help</span></div></a>
 			<a href="/about"><div class="menuitem"><i class="glyphicon glyphicon-info-sign" title="About"></i><span class="headertext">About</span></div></a>
 			<a href="/map"><div class="menuitem"><i class="glyphicon glyphicon-globe" title="Map"></i><span class="headertext">Map</span></div></a>
-			<!--<a id="twitter" href="https://twitter.com/cyclingcols" target="_blank">
+			<a id="twitter" href="https://twitter.com/cyclingcols" target="_blank">
 				<i class="fa fa-twitter fa-lg" title="Follow CyclingCols on Twitter!"></i>
 				<i class="fa fa-twitter fa-2x" title="Follow CyclingCols on Twitter!"></i>
 				<i class="fa fa-twitter fa-3x" title="Follow CyclingCols on Twitter!"></i>
-			</a>-->
+			</a>
+		</div>
+		<div class="headeruser col-md-2">	
+			@auth
+				<a href="/logout" class="loginout"><div class="menuitem menuitem-user"><i class="glyphicon glyphicon-log-out" title="Logout"></i><span class="headertext">&nbsp;{{Auth::user()->name}}</span></div></a>
+			@endauth
+			@guest
+				<a href="/login" class="loginout"><div class="menuitem menuitem-user"><i class="glyphicon glyphicon-log-in" title="Login"></i><span class="headertext">&nbsp;Login</span></div></a>
+			@endguest
 		</div>
 	</div>
 <!--</div>-->
