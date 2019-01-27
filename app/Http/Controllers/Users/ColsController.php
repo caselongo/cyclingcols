@@ -44,7 +44,7 @@ class ColsController extends Controller
         foreach (['done'=>'Done', 'rating'=>'Rating', 'favorite'=>'Favorate','todo'=>'TODO'] as $postParam =>$databaseField) {
             if ($request->input($postParam) != null) {
 
-                if($databaseField == 'rating') {
+                if($postParam == 'rating') {
                     $array[$databaseField] = $request->input($postParam);
                 } else{
                     $array[$databaseField] = true;
@@ -53,7 +53,7 @@ class ColsController extends Controller
         }
         
         if ($user->cols()->where('cols.ColId', $colID)->first() != null) {
-            $user->cols()->updateExistingPivot($col->id, $array, false);
+            $user->cols()->updateExistingPivot($col->ColID, $array, false);
         } else {
             $user->cols()->attach($col->ColID, $array);
         }
