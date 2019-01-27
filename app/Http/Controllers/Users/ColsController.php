@@ -17,6 +17,7 @@ class ColsController extends Controller
 
         $query = $user->cols();
         $countryID = 0;
+        $total = null;
         if ($request->get('country') != null && $request->get('country') != 0 ) {
 
             $countryID = $request->get('country');
@@ -24,13 +25,33 @@ class ColsController extends Controller
 
                 return $subQuery->where('Country1ID', $countryID)->orWhere('Country2ID', $countryID);
             });
+
+            $total = Col::where(function ($subQuery) use ($countryID) {
+
+                return $subQuery->where('Country1ID', $countryID)->orWhere('Country2ID', $countryID);
+            })->count();
+        }
+
+        if($total == null)
+        {
+            $total = Col::count();
         }
 
 
-        $ratings = $query->orderBy('pivot_Rating', 'Desc')->get();
-        $done = $query->wherePivot('Done', 1)->orderBy('pivot_CreatedAT', 'desc')->get();
+        $todo = clone $query;
+        $todo = $todo->wherePivot('ToDo',1)->orderBy('pivot_CreatedAT','desc')->get();
 
-        return view('cols.overview', compact('ratings', 'user', 'done','countryID'));
+        $ratings = clone $query;
+        $ratings = $ratings->wherePivot('Rating','<>',null)->orderBy('pivot_Rating', 'Desc')->get();
+
+        $done = clone $query;
+        $done = $done->wherePivot('Done', 1)->orderBy('pivot_CreatedAT', 'desc')->get();
+
+        $doneThisYear = clone $query;
+        $doneThisYear = $doneThisYear->wherePivot('CreatedAT','>=',Carbon::now()->startOfYear())->get();
+
+
+        return view('cols.overview', compact('ratings', 'user', 'done','todo','countryID','doneThisYear','total'));
     }
 
     /**

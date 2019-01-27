@@ -13,7 +13,7 @@
         </div>
         <div class="content">
             <!--<div class="table_header">Stat:</div>-->
-            <div class="table_header clearfix">
+            <div class="table_header clearfix" style="text-align:center; padding-bottom:30px;">
 
                     <a href="/user/cols"><img id="flag0" class="flag_header" src="/images/flags/Europe.gif" title="Europe" /></a>
                     <a href="/user/cols?country=2"><img id="flag2" class="flag_header" src="/images/flags/Andorra.gif" title="Andorra" /></a>
@@ -29,14 +29,44 @@
         </div>
 
         <div class="content">
-            <div class="table_table clearfix">
+
+            <style type="text/css">
+                .kpi_div{
+                    text-align:center;
+
+                }
+
+                .kpi{
+                    font-size:30px;
+
+
+                }
+
+                .kpi_text{
+                    font-size:20px;
+
+                }
+
+            </style>
+            <div style="padding-bottom:50px;">
+            @include('cols.kpi',['kpi'=>$done->count(),'text'=>'Overall','imgUrl'=>'/images/stat_all.png'])
+
+            @include('cols.kpi',['kpi'=>round($done->count()/$total*100,1).'%','text'=>'Percentage of total ('.$total.')'])
+            @include('cols.kpi',['kpi'=>$done->sum('Height').'m','text'=>'Overall', 'imgUrl'=>"/images/altgain.png"])
+
+                {{--@include('cols.kpi',['kpi'=>$doneThisYear->sum('Height').'m','text'=>'This year','imgUrl'=>"/images/altgain.png"])--}}
+                {{--@include('cols.kpi',['kpi'=>$doneThisYear->count(),'text'=>'This year','imgUrl'=>'/images/stat_all.png'])--}}
+
+            </div>
+
+            <div class="table_table clearfix" style="margin-top:50px;">
             @include('cols.rating_overview',['cols'=>$ratings])
             @include('cols.done_overview', ['cols'=>$done])
             </div>
 
             <div class="table_table clearfix">
 
-                @include('cols.todo_overview', ['cols'=>$ratings])
+                @include('cols.todo_overview', ['cols'=>$todo])
             </div>
             </div>
         </div>

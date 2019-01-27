@@ -27,13 +27,11 @@
     <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css">
         <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel='stylesheet' />-->
 
-
     <script src="/js/jquery-latest.min.js" type="text/javascript"></script>
     <script src="/js/jquery-ui.min.js" type="text/javascript"></script>
     <script src="/js/main.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script src="/js/jquery.backstretch.min.js" type="text/javascript"></script>
-
 
     <script type="text/javascript">
         var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -54,7 +52,7 @@
         @include('includes.footer')
 
         @if(!(isset($noHeader) && $noHeader === true))
-    </div>
+        </div>
         @endif
 </body>
 </html>
