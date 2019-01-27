@@ -40,8 +40,6 @@
 <script type="text/javascript">
 
     function removeColl(ColID, name){
-
-
         $.confirm({
             title: 'Confirm!',
             content: 'Are you sure you want to remove  <strong>'+name+'</strong> from you achievements?',
@@ -58,7 +56,5 @@
                 }
             }
         });
-
-
     }
 </script>
