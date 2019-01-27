@@ -3,7 +3,7 @@
         <tr>
             <td class="table_subheader" colspan="5">
                 <a href="#" class="stats_info"><i class="glyphicon glyphicon-star" style="color:gold"></i>
-                    Rating </span>
+                    Beauty Rating </span>
                 </a>
             </td>
         </tr>

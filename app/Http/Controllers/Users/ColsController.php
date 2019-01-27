@@ -15,7 +15,7 @@ class ColsController extends Controller
     {
         $user = Auth::user();
         $ratings = $user->cols()->orderBy('pivot_Rating','Desc')->get();
-        $done =  $user->cols()->wherePivot('Done',1)->orderBy('pivot_CreatedAT')->get();
+        $done =  $user->cols()->wherePivot('Done',1)->orderBy('pivot_CreatedAT','desc')->get();
 
         return view('cols.overview', compact('ratings', 'user','done'));
     }
@@ -27,9 +27,6 @@ class ColsController extends Controller
      */
     public function store(Request $request, $colID)
     {
-        //Two options
-        //Done
-        //mark favorite
 
         $user = Auth::user();
         $col = Col::where('ColID', $colID)->first();
