@@ -3,7 +3,7 @@
         <tr>
             <td class="table_subheader" colspan="5">
                 <a href="#" class="stats_info"><i style='color:red' class="glyphicon glyphicon-heart"></i>
-                   My ToDo list </span>
+                    My ToDo list </span>
                 </a>
             </td>
         </tr>
@@ -29,7 +29,8 @@
                         </span>
                 </td>
                 <td>
-                    <span style="float:right; color:red" class="glyphicon glyphicon-check" onclick="addColl({{$col->ColID}}, '{{$col->Col}}')">
+                    <span id="check_{{$col->ColID}}" style="float:right; color:red" class="glyphicon glyphicon-check"
+                          onclick="addColl({{$col->ColID}}, '{{$col->Col}}')">
                     </span>
                 </td>
             </tr>
@@ -39,17 +40,21 @@
 
 <script type="text/javascript">
 
-    function addColl(ColID, name){
+    function addColl(ColID, name) {
         $.confirm({
             title: 'Confirm!',
-            content: 'Congretzzzz with your performance on the  <strong>'+name+'</strong>. Do you want to add this to your achievement list?',
+            content: 'Congretzzzz with your performance on the  <strong>' + name + '</strong>. Do you want to add this to your achievement list?',
             buttons: {
                 confirm: function () {
                     $.post('/ajax/col/' + ColID, {'done': true})
                         .done(function (data) {
 
-                            $('#todo_' + ColID).clone().appendTo('#done_table');
-                            $('#todo_' + ColID).hide();
+                            $('#check_' + ColID).remove();
+                            let x = $('#todo_' + ColID);
+                            let y = x.clone().attr("id", "done_" + ColID);
+                            y.appendTo('#done_table');
+
+                            x.remove();
                         });
                 },
                 cancel: function () {
