@@ -92,9 +92,86 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		getPrevNextCol({{$col->Number}});
 		getTopStats({{$col->ColID}});
 		getBanners({{$col->ColID}});
+		
+		$(".col_done").on("mouseenter",function(){
+			$(this).addClass("col_done_yesno").removeClass("col_done_no");
+		});
+		
+		$(".col_done").on("mouseleave",function(){
+			$(this).addClass("col_done_no").removeClass("col_done_yesno");
+		});
+		
+		$(".col_done").on("click",function(){
+			$.ajax({
+				type: "POST",
+				url : "/ajax/col/{{$col->ColID}}",
+				data: {"done": true},
+				dataType : 'json',
+				success : function(data) {
+					
+				}
+			});
+		});
+		
+		$(".col_rating").on("mouseenter",function(){
+			$(this).addClass("col_rating_yesno").removeClass("col_rating_no");
+			$(this).prevAll().addClass("col_rating_yesno").removeClass("col_rating_no");
+		});
+		
+		$(".col_rating").on("mouseleave",function(){
+			$(this).addClass("col_rating_no").removeClass("col_rating_yesno");
+			$(this).prevAll().addClass("col_rating_no").removeClass("col_rating_yesno");
+		});
+		
+		$(".col_rating").on("click",function(){
+			var rating = $(this).attr("data-rating");
+			
+			if (rating < 1) return;
+			if (rating > 10) return;
+			
+			$.ajax({
+				type: "POST",
+				url : "/ajax/col/{{$col->ColID}}",
+				data: {"rating": rating},
+				dataType : 'json',
+				success : function(data) {
+					
+				}
+			});
+		});
 	});
 
 </script>
+<style>
+.col_done {
+	display: inline-block;
+	font-size: 20px;
+	cursor: pointer;
+}
+.col_done_no {
+	color: #666;
+}
+.col_done_yesno {
+	color: #ff8000;
+}
+.col_done_yes {
+	color: #f00;
+}
+.col_rating {
+	display: inline-block;
+	font-size: 20px;
+	cursor: pointer;
+}
+.col_rating_no {
+	color: #666;
+}
+.col_rating_yesno {
+	color: #ff8000;
+}
+.col_rating_yes {
+	color: #f00;
+}
+</style>
 <?php
 	$double_name = false;
 	$colname = $col->Col;
@@ -207,7 +284,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			</div>
 			@endif
 		</div>
-		<div class="col-md-9 col-sm-9 col-xs-12 coltitle">
+		<div class="col-md-6 col-sm-6 col-xs-12 coltitle">
 			<h2 class="colname">{!!html_entity_decode($colname)!!}</h2>
 			@if ($double_name)	
 			<span class="colheight moveup">
@@ -222,6 +299,25 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			@if ($country2)	
 			<h4><img src="/images/flags/{{$col->Country2}}.gif"> {{$country2}}</h4>
 			@endif
+		</div>
+		<div class="col-md-3 col-sm-3 col-xs-12 coluser">
+			<div>
+				Done
+				<div class="col_done col_done_no glyphicon glyphicon-check"></div>
+			</div>
+			<div>
+				Rate
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="1"></div>
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="2"></div>
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="3"></div>
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="4"></div>
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="5"></div>
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="6"></div>
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="7"></div>
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="8"></div>
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="9"></div>
+				<div class="col_rating col_rating_no glyphicon glyphicon-star" data-rating="10"></div>
+			</div>	
 		</div>
 		<div class="col-xs-12 coltitlebottom">
 			<div class="col-xs-12 col-sm-6 social">
