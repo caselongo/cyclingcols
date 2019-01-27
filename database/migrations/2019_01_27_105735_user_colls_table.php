@@ -18,10 +18,13 @@ class UserCollsTable extends Migration
             $table->increments('ID');
             $table->smallInteger('ColID');
             $table->integer('UserID')->unsigned();
-            $table->boolean('Done')->nullable();
+            $table->boolean('Done')->default(false);
             $table->integer('Rating')->nullable();
-            $table->boolean('Favorite')->nullable();
+//            $table->boolean('Favorite')->nullable();
             $table->boolean('ToDo')->nullable();
+            $table->timestamp('CreatedAT')->nullable();
+            $table->timestamp('UpdatedAt')->nullable();
+
         });
     }
 

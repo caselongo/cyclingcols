@@ -4,22 +4,20 @@ namespace App\Http\Controllers\Users;
 
 use App\Col;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ColsController extends Controller
 {
 
-
     public function index()
     {
-
         $user = Auth::user();
+        $ratings = $user->cols()->orderBy('pivot_Rating','Desc')->get();
+        $done =  $user->cols()->wherePivot('Done',1)->orderBy('pivot_CreatedAT')->get();
 
-        $cols = $user->cols()->get();
-
-        return view('cols.overview', compact('cols', 'user'));
-
+        return view('cols.overview', compact('ratings', 'user','done'));
     }
 
     /**
@@ -51,15 +49,19 @@ class ColsController extends Controller
                 }
             }
         }
-        
+
         if ($user->cols()->where('cols.ColId', $colID)->first() != null) {
+
+            $array['UpdatedAT'] = Carbon::now();
             $user->cols()->updateExistingPivot($col->ColID, $array, false);
         } else {
+
+            $array['UpdatedAT'] = Carbon::now();
+            $array['CreatedAT'] = Carbon::now();
             $user->cols()->attach($col->ColID, $array);
         }
 
         return response(['success' => true], 200);
-
     }
 }
 

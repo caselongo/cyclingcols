@@ -1,65 +1,36 @@
 @extends('layouts.app')
 
+@section('title')
+
+@stop
+
+@include('includes.functions')
+
 @section('content')
+    <div id="stats" class="canvas col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="header">
+            <h1>My Achievements</h1>
+        </div>
+        <div style="heigth:10px;">
+            &ensp;
+        </div>
 
-    <style type="text/css">
-        .table {
-            border-collapse: collapse !important;
-        }
+        <div class="content">
+            <div class="table_table clearfix">
+          @include('cols.rating_overview',['cols'=>$ratings])
 
-        .table td,
-        .table th {
-            background-color: #fff !important;
-        }
-
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid #ddd !important;
-            margin:10px;
-        }
-    </style>
-    <div class="container" style="margin-top:40px;">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Welcome to cyclingcols</div>
-
-                    <div class="card-body">
-
-                        <table class="table table-bordered">
-                            <tr>
-                                <th>Name</th>
-                                <th>Height</th>
-                                <th>Country</th>
-                                <th>Done</th>
-                                <th>Favorite</th>
-                                <th>Todo</th>
-                                <th>Ranking</th>
-                            </tr>
-
-                        @foreach($cols as $col)
-                            <tr>
-                                <td>
-                                    {{$col->Col}}
-                                </td>
-                                <td>
-                                    {{$col->Height}}
-                                </td>
-                                <td>
-                                    {{$col->Country1}}
-                                </td>
-                                <td>{{$col->pivot->Done ?? '-'}}</td>
-                                <td>{{$col->pivot->Favorite ?? '-'}}</td>
-                                <td>{{$col->pivot->ToDo ?? '-'}}</td>
-                                <td>{{$col->pivot->Rating ?? '-'}}</td>
-                            </tr>
-
-                        @endforeach
-                        </table>
-
-                    </div>
-                </div>
+            @include('cols.done_overview', ['cols'=>$done])
             </div>
         </div>
     </div>
-@endsection
+
+    <script type="text/javascript">
+        function goToColl(colID)
+        {
+
+            return window.location.href = '/col/'+colID;
+        }
+
+
+    </script>
+@stop
