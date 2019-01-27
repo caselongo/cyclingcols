@@ -1,7 +1,12 @@
 <!--<div class="overmain">-->
 	<style>
+	.menuitem-user{
+		width: 100%;
+		max-width: initial;
+	}
 	.headeruser{
-		color: #fff;
+		padding: 0;
+		padding-left: 10px;
 	}
 	</style>
     <div class="homemenu">
@@ -29,10 +34,12 @@
 			</div>
         </div>
 		<div class="headeruser col-md-2">	
-			@auth	
-				logged in as {{Auth::user()->name}}
-				<a href="/logout">logout</a>
+			@auth
+				<a href="/logout" class="loginout"><div class="menuitem menuitem-user"><i class="glyphicon glyphicon-log-out" title="Logout"></i><span class="headertext">&nbsp;{{Auth::user()->name}}</span></div></a>
 			@endauth
+			@guest
+				<a href="/login" class="loginout"><div class="menuitem menuitem-user"><i class="glyphicon glyphicon-log-in" title="Login"></i><span class="headertext">&nbsp;Login</span></div></a>
+			@endguest
 		</div>
 
     </div>

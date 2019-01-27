@@ -64,6 +64,14 @@ $(document).ready(function() {
     $('.mappage #menuleft a:nth-child(7) .menuitem').addClass("selectedtab");
 
 	initAutoComplete();
+	
+	/*$("#login").on("click",function(){
+		 window.location.replace("/login");
+	});
+	
+	$("#logout").on("click",function(){
+		window.location.replace("/logout");
+	});*/
 });
 
 var initAutoComplete = function(){
