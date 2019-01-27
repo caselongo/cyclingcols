@@ -13,15 +13,15 @@ class UserCollsTable extends Migration
      */
     public function up()
     {
-        Schema::create('userCol', function (Blueprint $table) {
+        Schema::create('usercol', function (Blueprint $table) {
 
-            $table->increments('id');
+            $table->increments('ID');
             $table->smallInteger('ColID');
-            $table->integer('user_id')->unsigned();
-            $table->boolean('done')->nullable();
-            $table->integer('rating')->nullable();
-            $table->boolean('favorite')->nullable();
-            $table->boolean('todo')->nullable();
+            $table->integer('UserID')->unsigned();
+            $table->boolean('Done')->nullable();
+            $table->integer('Rating')->nullable();
+            $table->boolean('Favorite')->nullable();
+            $table->boolean('ToDo')->nullable();
         });
     }
 
@@ -32,6 +32,6 @@ class UserCollsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('userCol');
+        Schema::dropIfExists('usercol');
     }
 }

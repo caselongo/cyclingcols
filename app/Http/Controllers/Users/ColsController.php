@@ -40,14 +40,18 @@ class ColsController extends Controller
             return response(['success' => false], 404);
         }
 
-
         $array = [];
-        foreach (['done', 'rating', 'favorite'] as $query) {
-            if ($request->input($query) != null) {
-                $array[$query] = $request->input($query);
+        foreach (['done'=>'Done', 'rating'=>'Rating', 'favorite'=>'Favorate','todo'=>'TODO'] as $postParam =>$databaseField) {
+            if ($request->input($postParam) != null) {
+
+                if($databaseField == 'rating') {
+                    $array[$databaseField] = $request->input($postParam);
+                } else{
+                    $array[$databaseField] = true;
+                }
             }
         }
-
+        
         if ($user->cols()->where('cols.ColId', $colID)->first() != null) {
             $user->cols()->updateExistingPivot($col->id, $array, false);
         } else {

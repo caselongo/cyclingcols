@@ -39,8 +39,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function cols(){
 
-        return $this->belongsToMany(Col::class,'userCol','user_id','ColID',null,'ColID')
-            ->withPivot(['done','favorite','rating','todo']);
+        return $this->belongsToMany(Col::class,'usercol','UserID','ColID',null,'ColID')
+            ->withPivot(['Done','Favorite','Rating','Todo']);
     }
 
 
