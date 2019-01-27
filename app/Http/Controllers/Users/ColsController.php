@@ -19,7 +19,7 @@ class ColsController extends Controller
 
         return view('cols.overview', compact('ratings', 'user','done'));
     }
-
+    
     /**
      * Show the application dashboard.
      *
@@ -41,8 +41,8 @@ class ColsController extends Controller
 
                 if($postParam == 'rating') {
                     $array[$databaseField] = $request->input($postParam);
-                } else{
-                    $array[$databaseField] = true;
+                } elseif($postParam = 'done'){
+                    $array[$databaseField] = $request->input($postParam) === 'true';
                 }
             }
         }

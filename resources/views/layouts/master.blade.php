@@ -21,13 +21,13 @@
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 		
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
-		<!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css">
+	<!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css">
 		<link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.1/mapbox-gl.css" rel='stylesheet' />-->
   
 		<script src="/js/jquery-latest.min.js" type="text/javascript"></script>
 		<script src="/js/jquery-ui.min.js" type="text/javascript"></script>
 		<script src="/js/main.js" type="text/javascript"></script>
-		
+
 		<script type="text/javascript">
 		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));

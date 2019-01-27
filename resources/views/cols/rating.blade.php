@@ -4,7 +4,7 @@
 
             <i class="glyphicon glyphicon-star"
         @if($rating > $i)
-             style="color:gold;"
+             style="color:red;"
         @endif
             ></i>
 

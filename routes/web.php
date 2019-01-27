@@ -56,7 +56,7 @@ Route::get('col/{colIDString}', function($colIDString)
 	$usercol = null;
 	if($user != null)
 	{
-		$usercol = $user->cols()->where('Cols.ColID','=',$col->ColID)->first();
+		$usercol = $user->cols()->where('cols.ColID','=',$col->ColID)->first();
 	}
 	
 	return View::make('pages.col')
