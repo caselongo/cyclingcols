@@ -48,10 +48,10 @@ class ColsController extends Controller
             }
         }
 
-        if ($user->cols()->where('colId', $colID)->first() != null) {
+        if ($user->cols()->where('cols.ColId', $colID)->first() != null) {
             $user->cols()->updateExistingPivot($col->id, $array, false);
         } else {
-            $user->cols()->attach($col->id, $array);
+            $user->cols()->attach($col->ColID, $array);
         }
 
         return response(['success' => true], 200);
