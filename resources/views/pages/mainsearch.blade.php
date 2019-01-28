@@ -1,19 +1,37 @@
-@extends('layouts.master',['noHeader'=>true])
+@extends('layouts.master')
+
+@section('title')
+CyclingCols - Main
+@stop
 
 @section('content')
 
 <!--<div class="overmain">-->
 	<style>
-	.menuitem-user{
+	/*.menuitem-user{
 		width: 100%;
 		max-width: initial;
 	}
 	.headeruser{
 		padding: 0;
 		padding-left: 10px;
+	}*/
+	
+	#search {
+	  width: 100%;
+	  top: 30%;
+	  position: absolute;
+	  opacity: 0.8;
+	  z-index: 100000;
+	}
+	
+	#search-box{
+		margin: auto;
+		width: 50%;
+		top: 30%;
 	}
 	</style>
-    <div class="homemenu">
+    <!--<div class="homemenu">
 		<div id="menuleft" class="col-md-10">
 			<div class="homelogo">
 				<a href="/"><img id="logo_img" src="/images/logo.png" /></a>
@@ -38,17 +56,18 @@
 				<a href="/login" class="loginout"><div class="menuitem menuitem-user"><i class="glyphicon glyphicon-log-in" title="Login"></i><span class="headertext">&nbsp;Login</span></div></a>
 			@endguest
 		</div>
-	</div>
+	</div>-->
 <!--</div>-->
-<div id="search" class="ui-front">
-	<div id="searchtext">
-		<input type="text" class="searchfield" placeholder="Search a col in Europe..." id="searchbox">
-		<div id="searchstatus"></div>
+<!--<div id="search" class="ui-front">-->
+	<div id="search">
+		<input class="form-control" id="search-box" type="search" placeholder="Search a col in Europe...">
+		<!--<input type="text" class="searchfield" placeholder="Search a col in Europe..." id="search-box">
+		<div id="searchstatus"></div>-->
 	</div>
-	<div id="searchonmap">
+	<!--<div id="searchonmap">
 		<a href="/map"><div class="globe" type="submit" title="Search on map"><img src="/images/globeblack.png" alt="" /></div></a>
-	</div>
-</div>
+	</div>-->
+<!--</div>-->
 <div class="overcontent">
     <div class="col-md-12 scenery" style="padding:0px">
         <div id="phototext" class="phototext"><a href=""></a></div>
@@ -146,11 +165,11 @@
 			}
 
 			function calculateslideshowheight() {
-				$h = $(window).height() - $('.footer').height() - $('.homemenu').height() + 2;
+				$h = $(window).height() - $('.footer').outerHeight() - $('.navbar').outerHeight() + 2;
 				$('#slide').height($h);
 			}
 			
-			function positionSearchBox(){
+			/*function positionSearchBox(){
 				var width = $(window).width();
 				var height = $(window).height();
 				
@@ -174,18 +193,18 @@
 					.css("top", top + "px")
 					.css("left", (left + boxWidth + 5) + "px");				
 				$(searchonmap).show();	
-			}
+			}*/
 			
 			$(document).ready(function() {
 				calculateslideshowheight();
-				positionSearchBox();						
+				//positionSearchBox();						
 				startSlideShow();
 				getBanners();
 			});
 			
 			$(window).resize(function() {
 				calculateslideshowheight();
-				positionSearchBox();
+				//positionSearchBox();
 			});
 			
 			$(document).on("focusin","#searchbox",function(){

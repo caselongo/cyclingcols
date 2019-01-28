@@ -15,8 +15,9 @@
     <link rel="shortcut icon" href="/images/cyclingcols2014_klein.ico">
 
     <link rel="stylesheet" href="/fonts/fonts.css" type="text/css">
-    <link rel="stylesheet" href="/css/normalize.css" type="text/css">
-    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+    <!--<link rel="stylesheet" href="/css/normalize.css" type="text/css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">-->
+    <link rel="stylesheet" href="/css/bootstrap.css" type="text/css">
     <link rel="stylesheet" href="/css/main.css" type="text/css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
@@ -32,6 +33,7 @@
     <script src="/js/main.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script src="/js/jquery.backstretch.min.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -43,15 +45,16 @@
     </script>
 </head>
 <body class="{{$pagetype ?? ''}}">
-@if(!(isset($noHeader) && $noHeader === true))
         @include('includes.header')
+	
+		@if (!Request::is('/'))
         <div id="div-scroll">
         @endif
 
         @yield('content')
         @include('includes.footer')
 
-        @if(!(isset($noHeader) && $noHeader === true))
+        @if (Request::is('/'))
         </div>
         @endif
 </body>

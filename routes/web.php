@@ -81,10 +81,18 @@ Route::get('col/{colIDString}/{profileID}', function($colIDString,$profileID)
 	
 	$profiles = \App\Profile::where('ColID',$col->ColID)->orderBy(DB::raw($orderBy),'ASC')->get();
 	
+	$user = Auth::user();
+	$usercol = null;
+	if($user != null)
+	{
+		$usercol = $user->cols()->where('cols.ColID','=',$col->ColID)->first();
+	}
+	
 	return View::make('pages.col')
 		->with('col',$col)
 		->with('profiles',$profiles)
 		->with('user',$user)
+		->with('usercol',$usercol)
 		->with('pagetype','coltemplate');
 });
 

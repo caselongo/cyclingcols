@@ -72,6 +72,38 @@ $(document).ready(function() {
 	$("#logout").on("click",function(){
 		window.location.replace("/logout");
 	});*/
+	
+	$(".headeruser").on("mouseenter", function(){
+		var loggedIn = $(this).find("#user").length > 0;
+		
+		if (loggedIn){
+			var height = $(this).find(".menuitem").height();
+			var width = $(this).find(".menuitem").width();
+			
+			var dropdown = document.createElement("div");
+			$(dropdown)
+				.css("top", height + "px")
+				.css("width", width + "px")
+				.addClass("_dropdown");
+			
+			$(this).append(dropdown);
+				
+			var logout = document.createElement("div");
+			$(logout).html("<a href=\"/logout\"><i class=\"glyphicon glyphicon-log-out\"></i>&nbsp;Logout</a>");
+			var profile = document.createElement("div");
+			$(profile).html("<a href=\"/user/cols\"><i class=\"glyphicon glyphicon-list\"></i>&nbsp;My CyclingCols</a>");
+			
+			$(dropdown).append(logout,profile);
+		}
+	});
+	
+	$(".headeruser").on("mouseleave", function(){
+		var loggedIn = $(this).find("#user").length > 0;
+		
+		if (loggedIn){
+			$(this).parent().find("._dropdown").remove();
+		}
+	});
 });
 
 var initAutoComplete = function(){
@@ -121,9 +153,10 @@ var initAutoComplete = function(){
 	
 	$.getJSON("/ajax/getcolsforsearch.php", function( data ) {
 		
-		$( "#searchbox" ).autocomplete({
+		$( "#search-box" ).autocomplete({
 			minLength: 2,
 			delay: 300,
+			position: { my : "right top", at: "right bottom" },
 			source: function( request, response ) {
 				var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
 				var res = $.grep( data, function( value ) {
@@ -139,7 +172,7 @@ var initAutoComplete = function(){
 				response(res.slice(0,10));
 			},
 			select: function( event, ui ) {		
-				$("#searchstatus").hide();
+				//$("#searchstatus").hide();
 				//$( "#searchbox" ).val("");
 				//$( "#searchbox" ).val( ui.item.label );
 				if (history.pushState) {
@@ -150,34 +183,51 @@ var initAutoComplete = function(){
 				return false;
 			},
 			response: function(event, ui) {
-				$("#searchstatus").hide();
+				var remark = null;
 				
 				if (ui.content.length === 0) {
-					$("#searchstatus").text("No cols found.");
+					remark = "No cols found";
 				} else {
-					$("#searchstatus").text(searchCount + " cols found" + (searchCount > 10 ? ", showing first 10" : "") + ".");
+					remark = searchCount + " cols found" + (searchCount > 10 ? ", showing first 10" : "");
 				}
-				$("#searchstatus").show();
+
+				var remarks = { "isRemark": true, "remark": remark };
+				
+				ui.content.forEach(function(c){
+					c.isRemark = false;
+				});
+				
+				ui.content.unshift(remarks);
 			},
 			open: function() {
-				$(".ui-autocomplete").css("top","+=22");
+				$(".ui-autocomplete")
+					.addClass("list-group");
 			},
 			close: function(){
-				if ($("#searchbox").val().length <= 2) {
-					$("#searchstatus").hide();
-				}
+				//if ($("#search-box").val().length <= 2) {
+				//	$("#searchstatus").hide();
+				//}
 				//$("#searchbox").val("");
 			}
 		})
 		.autocomplete( "instance" )._renderItem = function( ul, item ) {
-			var html = "<a><img class=\"searchitemflag\" src=\"/images/flags/" + item.Country1 + ".gif\"/>";
-			if (item.Country2){
-				html += "<img class=\"searchitemflag\" src=\"/images/flags/" + item.Country2 + ".gif\"/>";
+			if (item.isRemark){
+				var html = item.remark;
+				return $( "<li>" )
+					.append(html)
+					.addClass("list-group-item list-group-item-action disabled")
+					.appendTo( ul );				
+			} else {
+				var html = "<a><img class=\"searchitemflag\" src=\"/images/flags/" + item.Country1 + ".gif\"/>";
+				if (item.Country2){
+					html += "<img class=\"searchitemflag\" src=\"/images/flags/" + item.Country2 + ".gif\"/>";
+				}
+				html += item.label + "<span class=\"searchitemheight\">" + item.Height + "m</span></a>";
+				return $( "<li>" )
+					.append(html)
+					.addClass("list-group-item list-group-item-action")
+					.appendTo( ul );
 			}
-			html += item.label + "<span class=\"searchitemheight\">" + item.Height + "m</span></a>";
-			return $( "<li>" )
-				.append(html)
-				.appendTo( ul );
 		};
 	});
 }
@@ -300,9 +350,9 @@ $(document).ready(function () {
 		printContent($(this).parent().parent(), title); 
 	} );
 	 
-	$(document).on("focusout","#searchbox",function(){
-		$("#searchstatus").hide();
-	});
+	//$(document).on("focusout","#searchbox",function(){
+	//	$("#searchstatus").hide();
+	//});
 })
 
 var printContent = function (el, title){

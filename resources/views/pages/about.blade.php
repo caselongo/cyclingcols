@@ -36,7 +36,7 @@ CyclingCols - About
 		<div class="about_banners">
 <?php
 
-	$banners = Banner::where('ColID',0)->orderBy(DB::raw("RAND()"),'ASC')->get();
+	$banners = \App\Banner::where('ColID',0)->orderBy(DB::raw("RAND()"),'ASC')->get();
 
 	foreach($banners as $banner) {
 ?>	
