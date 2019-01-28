@@ -21,7 +21,7 @@ CyclingCols - Stats
 <?php
 	
 ?>
-<div id="stats-canvas" class="canvas col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<main role="main" class="bd-content p-3">
     <div class="header">
         <h1>CyclingCols Stats</h1>
 	</div>
@@ -145,5 +145,5 @@ foreach($stats as $stat) {
 			</div>
 		</div>
     </div>
-</div>
+</main>
 @stop

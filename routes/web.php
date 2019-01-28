@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -21,11 +22,54 @@ Route::get('/', function()
 /* New page*/
 Route::get('new', function()
 {
-	$newitems = \App\NewItem::orderBy('DateSort','DESC')->get();
+	$newitems = \App\NewItem::orderBy('DateSort','DESC')->orderBy('ColIDString','ASC')->get();
+	
+	$datesort = 0;
+	$colidstring = "";
+	
+	$cols = array();
+	$col;
+	
+	foreach($newitems as $newitem){
+		if ($newitem->DateSort != $datesort || $newitem->ColIDString != $colidstring){
+			
+			$col = new stdClass;
+			$col->DateSort = $newitem->DateSort;
+			$col->DiffForHumans = Carbon::createFromFormat('Ymd',$newitem->DateSort)->diffForHumans();
+			$col->ColIDString = $newitem->ColIDString;
+			$col->Col = $newitem->Col;
+			$col->Country1 = $newitem->Country1;
+			$col->Country2 = $newitem->Country2;
+			$col->Height = $newitem->Height;
+			$col->IsNew = false;
+			$col->Profiles = array();
+			
+			array_push($cols,$col);
+			
+			$datesort = $newitem->DateSort;
+			$colidstring = $newitem->ColIDString;
+		}
+		
+		if ($newitem->IsNewCol){
+			$col->IsNew = true;
+		}
+		
+		$profile = new stdClass;
+		$profile->ProfileID = $newitem->ProfileID;
+		$profile->Side = $newitem->Side;
+		$profile->Category = $newitem->Category;
+		$profile->IsNew = $newitem->IsNew;
+		
+		$start = \App\Profile::where("ProfileID",$newitem->ProfileID)->get();
+		if ($start){
+			$profile->Start = $start[0]->Start;
+		}
+		
+		array_push($col->Profiles,$profile);
+	}
 	
 	return View::make('pages.new')
-		->with('newitems',$newitems)
-		->with('pagetype','newtemplate');
+		->with('newitems',$cols);
 });
 
 /* About page*/
@@ -184,4 +228,4 @@ Route::post('password/email', ['as' => 'password.email', 'uses' => 'Auth\ForgotP
 Route::get('password/reset/{token}', ['as' => 'password.reset.token', 'uses' => 'Auth\ResetPasswordController@showResetForm']);
 Route::post('password/reset', ['as' => 'password.reset.post', 'uses' => 'Auth\ResetPasswordController@reset']);
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/welcome', 'WelcomeController@index')->name('welcome');

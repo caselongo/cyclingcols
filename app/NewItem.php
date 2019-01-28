@@ -21,6 +21,6 @@ class NewItem extends Model
 		'SideID','Side',
 		'FileName','Category',
 		'HTML',
-		'IsRevised'
+		'IsNew','IsNewCol'
 	);
 }

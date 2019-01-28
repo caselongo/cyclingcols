@@ -156,7 +156,8 @@ var initAutoComplete = function(){
 		$( "#search-box" ).autocomplete({
 			minLength: 2,
 			delay: 300,
-			position: { my : "right top", at: "right bottom" },
+			appendTo: "#search-box-wrapper",
+			//position: { my : "right top", at: "right bottom" },
 			source: function( request, response ) {
 				var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
 				var res = $.grep( data, function( value ) {
@@ -200,14 +201,23 @@ var initAutoComplete = function(){
 				ui.content.unshift(remarks);
 			},
 			open: function() {
-				$(".ui-autocomplete")
-					.addClass("list-group");
+				var ui = $("#search-box");
+						
+				if (ui.parent().find("#search-box-wrapper").length > 0){
+					var width = ui.outerWidth();
+					var height = ui.outerHeight();
+					var top = ui.position().top;
+							
+					ui.parent().find("#search-box-wrapper")
+						.width(width)
+						.css("top", top);
+				}
+				
+				ui.addClass("ui-autocomplete-input-open");
+				$(".ui-autocomplete").addClass("list-group");
 			},
-			close: function(){
-				//if ($("#search-box").val().length <= 2) {
-				//	$("#searchstatus").hide();
-				//}
-				//$("#searchbox").val("");
+			close: function() {
+				$("#search-box").removeClass("ui-autocomplete-input-open");
 			}
 		})
 		.autocomplete( "instance" )._renderItem = function( ul, item ) {

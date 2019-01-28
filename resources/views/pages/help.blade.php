@@ -5,7 +5,8 @@ CyclingCols - Help
 @stop
 
 @section('content')
-<div id="help-canvas" clas="canvas col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+<main role="main" class="bd-content p-3">
     <div class="header">
 
         <h1>CyclingCols Help</h1>
@@ -133,5 +134,5 @@ CyclingCols - Help
 			<div id="div_info_summary" class="info"></div>
 		</div> 
     </div>
-</div>
+</main>
 @stop

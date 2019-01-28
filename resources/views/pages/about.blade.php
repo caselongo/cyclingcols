@@ -5,11 +5,11 @@ CyclingCols - About
 @stop
 
 @section('content')
-<div id="about-canvas" class="canvas col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="header">
-        <h1>
-            About CyclingCols
-        </h1>
+<main role="main" class="bd-content p-3">
+	<div class="header">
+		<h1>
+			About CyclingCols
+		</h1>
 	</div>
 	<div class="content">
 		<div class="about col-xs-12 col-sm-6">
@@ -30,7 +30,7 @@ CyclingCols - About
 				By the way, all my mountain rides you can see <a href="/rides">here</a>.
 			</p>
 		</div>
-        <div class="about col-xs-12 col-sm-6">
+		<div class="about col-xs-12 col-sm-6">
 			<img id="imgMichiel" src="{{ URL::asset('images/Michiel.jpg') }}"/>	
 		</div>
 		<div class="about_banners">
@@ -50,7 +50,7 @@ CyclingCols - About
 
 ?>
 		</div>
-    </div>
-</div>
+	</div>
+</main>
 
 @stop

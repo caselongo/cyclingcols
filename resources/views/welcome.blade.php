@@ -1,11 +1,11 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="container" style="margin-top:20px;">
+<main role="main" class="bd-content p-3">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Welcome to cyclingcols</div>
+                <div class="card-header">Welcome to CyclingCols!</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -25,5 +25,5 @@
             </div>
         </div>
     </div>
-</div>
+</main>
 @endsection

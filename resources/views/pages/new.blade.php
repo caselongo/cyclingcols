@@ -5,75 +5,76 @@ CyclingCols - New
 @stop
 
 @section('content')
-<div id="new-canvas" class="canvas col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<main role="main" class="bd-content p-3">
     <div class="header">
-        <h1>New at CyclingCols</h1>
+        <h4>New cols and profiles</h4>
 	</div>
 	
-	
-	<div class="content">
-		<div class="table_header">New profiles:</div>
-		<div class="table_table">
-<?php
-$datesort = 0;
-$datecount = 0;
 
-foreach($newitems as $newitem) {
-	if ($newitem->DateSort != $datesort) {
-		if ($datecount > 1 || $datesort == 0) {
-			$datecount = 0;
-			if ($datesort != 0) {
-			?>	
-					</tbody>
-				</table>
-				</div>
-			<?php	
-			}
-			?>			
-				<div class="table_table_wrapper col-xs-12 col-sm-12 col-md-6">
-				<table>
-					<tbody>		
-		<?php
+<?php	
+	$datesort = 0;
+	$colidstring = "";
+	$count = 0;
+
+	foreach($newitems as $newitem) {
+		if ($newitem->DateSort != $datesort || $newitem->ColIDString != $colidstring) {
+			$datesort = $newitem->DateSort;
+			$colidstring = $newitem->ColIDString;
 		}
-		?>
-					<tr><td class="table_subheader" colspan="6">{{$newitem->Date}}</td></tr>		
-		<?php	
-		$datesort = $newitem->DateSort;
-		$datecount++;
+?>	
+@if ($count % 4 == 0)
+	<div class="card-deck py-3">
+@endif
+	  <div class="card">
+		<div class="card-img-top card-img-background" style='background-position: 50% 47%; background-image: url("images/covers/small/{{$newitem->ColIDString}}.jpg")'>
+@if ($newitem->IsNew)
+			<div class="card-img-new">New</div>
+@endif
+			<div class="card-go-to"><small><a href="col/{{$newitem->ColIDString}}" title="go to col page"><i class="fas fa-search"></i></a></small></div>
+		</div>
+		<div class="card-body">
+			<h6 class="card-title">
+				<img src="/images/flags/{{$newitem->Country1}}.gif" title="{{$newitem->Country1}}" class="flag">
+@if ($newitem->Country2)
+				<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" class="flag flag2">
+@endif
+				{{$newitem->Col}}
+				<span class="searchitemheight">{{$newitem->Height}}m</span>
+			</h6>
+@foreach ($newitem->Profiles as $profile)
+			<div class="card-profile d-flex flex-row justify-content-between align-items-baseline">
+				<div>
+					<span class="category category-{{$profile->Category}}">{{$profile->Category}}</span>{{$profile->Side}}
+					<small>{{$profile->Start}}</small>
+@if (!$newitem->IsNew && $profile->IsNew)
+					<span class="badge badge-new">New</span>
+@endif
+				</div>
+				<i class="fas fas-grey  fa-search-plus"></i>
+			</div>
+@endforeach
+		</div>
+		<div class="card-footer">
+		  <small class="text-muted">
+@if ($newitem->IsNew) 
+			Added
+@else
+			Updated
+@endif
+			{{$newitem->DiffForHumans}}</small>
+		</div>
+	  </div>
+<?php
+		
+		
+		$count++;
+
+		if ($count % 4 == 0){
+?>
+	</div>
+<?php
+		}
 	}
 ?>
-					<tr id="{{$newitem->ColIDString}}/{{$newitem->ProfileID}}-{{$newitem->FileName}}" class="table_row">
-						<td class="table_col">{{$newitem->Col}}</td>
-						<td class="table_country">
-							<img src="/images/flags/{{$newitem->Country1}}.gif" title="{{$newitem->Country1}}" />
-@if ($newitem->Country2)
-							<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" />
-@endif
-						</td>
-						<td class="table_value">{{$newitem->Height}}m</td>
-						
-@if ($newitem->SideID > 0)
-						<td class="table_side">
-							<img src="/images/{{$newitem->Side}}.png" title='{{$newitem->Side}}'/>
-							<span>{{$newitem->Side}}</span>
-						</td>
-@else
-						<td>&nbsp;</td>	
-@endif
-						<td class="table_category category c{{$newitem->Category}}" title="Category {{$newitem->Category}}">{{$newitem->Category}}</td>
-@if ($newitem->IsRevised)
-						<td class="table_revised">revised</td>
-@else
-						<td>&nbsp;</td>	
-@endif					
-					</tr>
-<?php
-}
-?>
-				</tbody>
-			</table>
-			</div>
-		</div>
-    </div>
-</div>
+</main>
 @stop
