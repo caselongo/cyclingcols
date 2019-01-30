@@ -58,6 +58,7 @@ Route::get('new', function()
 		$profile->ProfileID = $newitem->ProfileID;
 		$profile->Side = $newitem->Side;
 		$profile->Category = $newitem->Category;
+		$profile->FileName = $newitem->FileName;
 		$profile->IsNew = $newitem->IsNew;
 		
 		$start = \App\Profile::where("ProfileID",$newitem->ProfileID)->get();

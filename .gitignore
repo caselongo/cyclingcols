@@ -25,3 +25,5 @@ cyclingcols.sql
 public/js/__markermanager.js
 public/css/__main - Copy.css
 public/css/__normalize.css
+resources/views/pages/stats.blade - Copy.php
+public/css/___bootstrap.min.css

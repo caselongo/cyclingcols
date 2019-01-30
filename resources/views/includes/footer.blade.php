@@ -5,8 +5,8 @@
 				©&nbsp;2001&nbsp;-&nbsp;{{date("Y")}},&nbsp;<a href="http://www.cyclingcols.com" target="_blank">cyclingcols.com</a>,&nbsp;all&nbsp;rights&nbsp;reserved
 		</div>
 		<div class="px-3 py-2">
-			<span class="badge badge-primary">{{App\Col::count()}}</span>&nbsp;cols&nbsp;
-			<span class="badge badge-primary">{{App\Profile::count()}}</span>&nbsp;profiles
+			<span class="badge badge-primary font-weight-normal">{{App\Col::count()}}</span>&nbsp;cols&nbsp;
+			<span class="badge badge-primary font-weight-normal">{{App\Profile::count()}}</span>&nbsp;profiles
 		</div>
 	</div>
 </footer>

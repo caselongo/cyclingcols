@@ -1,63 +1,88 @@
+<?php
+	$path = Request::path();
+	$pos = stripos($path, '/');
+	if ($pos > 0){
+		$path = substr($path,0,$pos);
+	}
+	$home = ($path == "/");
+	$new = ($path == "new");
+	$stats = ($path == "stats");
+	$help = ($path == "help");
+	$about = ($path == "about");
+	$map = ($path == "map");
+	$login = ($path == "login");
+?>
+
 <header>
 	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
 		<a class="navbar-brand" href="/"><img id="logo_img" src="/images/logo.png" /></a>
 	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	  </button>
-
 	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
 		  <li class="nav-item 
-			@if (Request::is('/'))
+			@if ($home)
 				active
 			@endif	  
 			">
 			<a class="nav-link" href="/">Home 
-			@if (Request::is('/'))
+			@if ($home)
 				<span class="sr-only">(current)</span>
 			@endif
 			</a>
 		  </li>
 		  <li class="nav-item
-			@if (Request::is('new') || Request::is('new/*'))
+			@if ($new)
 				active
 			@endif	  
 			">	 
 			<a class="nav-link" href="/new">New 
-			@if (Request::is('new') || Request::is('new/*'))
+			@if ($new)
 				<span class="sr-only">(current)</span>
 			@endif
 			</a>
 		  </li>
 		  <li class="nav-item
-			@if (Request::is('stats') || Request::is('stats/*'))
+			@if ($stats)
 				active
 			@endif	  
 			">
 			<a class="nav-link" href="/stats">Stats 
-			@if (Request::is('stats') || Request::is('stats/*'))
+			@if ($stats)
 				<span class="sr-only">(current)</span>
 			@endif
 			</a>
 		  </li>
 		  <li class="nav-item
-			@if (Request::is('help') || Request::is('help/*'))
+			@if ($help)
 				active
 			@endif	  
 			">
 			<a class="nav-link" href="/help">Help 
-			@if (Request::is('help') || Request::is('help/*'))
+			@if ($help)
 				<span class="sr-only">(current)</span>
 			@endif
 			</a>
 		  </li>
 		  <li class="nav-item
-			@if (Request::is('about') || Request::is('about/*'))
+			@if ($about)
 				active
 			@endif	  
 			">
 			<a class="nav-link" href="/about">About 
-			@if (Request::is('about') || Request::is('about/*'))
+			@if ($about)
+				<span class="sr-only">(current)</span>
+			@endif
+			</a>
+		  </li>
+		  <li class="nav-item
+			@if ($map)
+				active
+			@endif	  
+			">
+			<a class="nav-link" href="/map">Map 
+			@if ($map)
 				<span class="sr-only">(current)</span>
 			@endif
 			</a>
@@ -68,20 +93,20 @@
 			  {{Auth::user()->name}}
 			</a>
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-			  <a class="dropdown-item" href="/logout">Logout</a>
+			  <a class="dropdown-item font-weight-light" href="/logout">Logout</a>
 			  <div class="dropdown-divider"></div>
-			  <a class="dropdown-item" href="/user/cols">My CyclingCols</a>
+			  <a class="dropdown-item font-weight-light" href="/user/cols">My CyclingCols</a>
 			</div>
 		  </li>
 		@endauth
 		@guest
 		  <li class="nav-item
-			@if (Request::is('login') || Request::is('login/*'))
+			@if ($login)
 				active
 			@endif	  
 			">
 			<a class="nav-link" href="/login">Login 
-			@if (Request::is('login') || Request::is('login/*'))
+			@if ($login)
 				<span class="sr-only">(current)</span>
 			@endif
 			</a>
@@ -89,9 +114,9 @@
 		@endguest
 
 		</ul> 
-		@if (!Request::is('/'))	
+		@if (!$home)	
 		<div class="navbar-nav">
-			<input class="form-control mr-sm-2" id="search-box" type="search" placeholder="Search" aria-label="Search">
+			<input class="form-control mr-sm-2 font-weight-light" id="search-box" type="search" placeholder="Search" aria-label="Search">
 			<div id="search-box-wrapper" class="ui-front"></div>
 		</div>
 		@endif

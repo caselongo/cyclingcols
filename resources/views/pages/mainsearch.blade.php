@@ -7,7 +7,7 @@ CyclingCols - Main
 @section('content')
 
 <div id="search" class="ui-front">
-	<input class="form-control" id="search-box" type="search" placeholder="Search a col in Europe...">
+	<input class="form-control font-weight-light" id="search-box" type="search" placeholder="Search a col in Europe...">
 </div>
 
 <main role="main" class="bd-content p-0 overflow-hidden">

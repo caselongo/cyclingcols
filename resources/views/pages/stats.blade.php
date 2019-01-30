@@ -7,6 +7,8 @@ CyclingCols - Stats
 @include('includes.functions')
 
 @section('content')
+
+
 <script type="text/javascript">	
 	$(document).ready(function() {
 		$(".stat_icon_header").removeClass("stat_icon_selected");
@@ -19,131 +21,181 @@ CyclingCols - Stats
 </script>
 
 <?php
+	$stat = Request::segment(2);
+	$country = Request::segment(3);
 	
+	$statname = "";
+	if ($stat == 0) $statname = "All Stats";
+	else if ($stat == 1) $statname = "Distance";
+	else if ($stat == 2) $statname = "Altitude Gain";
+	else if ($stat == 3) $statname = "Average Slope";
+	else if ($stat == 4) $statname = "Maximum Slope";
+	else if ($stat == 5) $statname = "Profile Index";
+	
+	$countryname = "";
+	if ($country == 0) $countryname = "All Countries";
+	else if ($country == 2) $countryname = "Andorra";
+	else if ($country == 3) $countryname = "Austria";
+	else if ($country == 4) $countryname = "France";
+	else if ($country == 5833) $countryname = "Great-Britain";
+	else if ($country == 5) $countryname = "Italy";
+	else if ($country == 6383) $countryname = "Norway";
+	else if ($country == 6) $countryname = "Slovenia";
+	else if ($country == 7) $countryname = "Spain";
+	else if ($country == 8) $countryname = "Switzerland";
 ?>
-<main role="main" class="bd-content p-3">
-    <div class="header">
-        <h1>CyclingCols Stats</h1>
-	</div>
-	
-	<div class="content">
-		<!--<div class="table_header">Stat:</div>-->
-		<div class="table_header clearfix">
-			<div>
-			Select Stat
-			<a href="/stats/0/{{$geoid}}"><img id="stat0" class="stat_icon_header" src="/images/stat_all.png" title="Summary of all stats" /></a>
-			<a href="/stats/1/{{$geoid}}"><img id="stat1" class="stat_icon_header" src="/images/{{statNameShort(1)}}.png" title="{{statName(1)}}" /></a>
-			<a href="/stats/2/{{$geoid}}"><img id="stat2" class="stat_icon_header" src="/images/{{statNameShort(2)}}.png" title="{{statName(2)}}" /></a>
-			<a href="/stats/3/{{$geoid}}"><img id="stat3" class="stat_icon_header" src="/images/{{statNameShort(3)}}.png" title="{{statName(3)}}" /></a>
-			<a href="/stats/4/{{$geoid}}"><img id="stat4" class="stat_icon_header" src="/images/{{statNameShort(4)}}.png" title="{{statName(4)}}" /></a>
-			<a href="/stats/5/{{$geoid}}"><img id="stat5" class="stat_icon_header" src="/images/{{statNameShort(5)}}.png" title="{{statName(5)}}" /></a>
-			</div>
-			<div>
-			Select Country
-			<a href="/stats/{{$statid}}/0"><img id="flag0" class="flag_header" src="/images/flags/Europe.gif" title="Europe" /></a>
-			<a href="/stats/{{$statid}}/2"><img id="flag2" class="flag_header" src="/images/flags/Andorra.gif" title="Andorra" /></a>
-			<a href="/stats/{{$statid}}/3"><img id="flag3" class="flag_header" src="/images/flags/Austria.gif" title="Austria" /></a>
-			<a href="/stats/{{$statid}}/4"><img id="flag4" class="flag_header" src="/images/flags/France.gif" title="France" /></a>
-			<a href="/stats/{{$statid}}/5833"><img id="flag5833" class="flag_header" src="/images/flags/Great-Britain.gif" title="Great-Britain" /></a>
-			<a href="/stats/{{$statid}}/5"><img id="flag5" class="flag_header" src="/images/flags/Italy.gif" title="Italy" /></a>
-			<a href="/stats/{{$statid}}/6383"><img id="flag6383" class="flag_header" src="/images/flags/Norway.gif" title="Norway" /></a>
-			<a href="/stats/{{$statid}}/6"><img id="flag6" class="flag_header" src="/images/flags/Slovenia.gif" title="Slovenia" /></a>
-			<a href="/stats/{{$statid}}/7"><img id="flag7" class="flag_header" src="/images/flags/Spain.gif" title="Spain" /></a>
-			<a href="/stats/{{$statid}}/8"><img id="flag8" class="flag_header" src="/images/flags/Switzerland.gif" title="Switzerland" /></a>
-			</div>
-		</div>
-		<div class="table_table clearfix">
-<?php		
-$statid_ = 0;
-$statcount = 0;
-$rowcount = $stats->count();
 
-foreach($stats as $stat) {
-	if ($statid > 0) {
-		if ($statcount == 0) {
-			?>			
-				<div class="table_table_wrapper col-xs-12 col-sm-12 col-md-6">
-					<table>
-						<tbody>		
-						<tr><td class="table_subheader" colspan="5">
-							<a href="/stats/{{$stat->StatID}}/{{$geoid}}">
-							<img class="stat_icon" src="/images/{{statNameShort($stat->StatID)}}.png" />
-							Largest {{statName($stat->StatID)}}
-							</a>
-						</td></tr>	
-			<?php	
-		}
+<main role="main" class="bd-content">
+    <div class="header px-4 py-3">
+        <h4 class="font-weight-light">Stats</h4>
+	</div>		
+	<div class="container-fluid mx-2">
+		<nav class="navbar navbar-expand-sm navbar-light" style="display: none">	
+			<ul class="navbar-nav">
+			  <li class="nav-item">
+				<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Statistic</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($stat == 0) active @endif
+				">
+				<a class="nav-link" href="/stats/0/{{$country}}">All</a>
+			  </li>
+			  <li class="nav-item
+				@if ($stat == 1) active @endif
+				">
+				<a class="nav-link" href="/stats/1/{{$country}}">Distance</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($stat == 2) active @endif
+				">
+				<a class="nav-link" href="/stats/2/{{$country}}">Altitude Gain</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($stat == 3) active @endif
+				">
+				<a class="nav-link" href="/stats/3/{{$country}}">Average Slope</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($stat == 4) active @endif
+				">
+				<a class="nav-link" href="/stats/4/{{$country}}">Maximum Slope</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($stat == 5) active @endif
+				">
+				<a class="nav-link" href="/stats/5/{{$country}}">Profile Index</a>
+			  </li>
+			</ul>
+		</nav>
+		<nav class="navbar navbar-expand-sm navbar-light" style="display: none">	
+			<ul class="navbar-nav">
+			  <li class="nav-item">
+				<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Country</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 0) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/0">
+				<!--<img src="/images/flags/Europe.gif" title="All" class="flag">-->All</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 2) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/2">
+				<!--<img src="/images/flags/Andorra.gif" title="All" class="flag">-->Andorra</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 3) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/3">
+				<!--<img src="/images/flags/Austria.gif" title="All" class="flag">-->Austria</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 4) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/4">
+				<!--<img src="/images/flags/France.gif" title="All" class="flag">-->France</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 5833) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/5833">
+				<!--<img src="/images/flags/Great-Britain.gif" title="All" class="flag">-->Great-Britain</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 5) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/5">
+				<!--<img src="/images/flags/Italy.gif" title="All" class="flag">-->Italy</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 6383) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/6383">
+				<!--<img src="/images/flags/Norway.gif" title="All" class="flag">-->Norway</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 6) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/6">
+				<!--<img src="/images/flags/Slovenia.gif" title="All" class="flag">-->Slovenia</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 7) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/7">
+				<!--<img src="/images/flags/Spain.gif" title="All" class="flag">-->Spain</a>
+			  </li>
+			  <li class="nav-item 
+				@if ($country == 8) active @endif
+				">
+				<a class="nav-link" href="/stats/{{$stat}}/8">
+				<!--<img src="/images/flags/Switzerland.gif" title="All" class="flag">-->Switzerland</a>
+			  </li>
+			</ul>
+		</nav>
 		
-		if ($statcount >= $rowcount / 2) {
-			$statcount = 0;
-			?>	
-					</tbody>
-				</table>
+		
+		<nav class="navbar navbar-expand-sm navbar-light">
+			<ul class="nav">
+			  <li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$statname}}</a>
+				<div class="dropdown-menu">
+				  <a class="dropdown-item" href="/stats/0/{{$country}}">All Stats</a>
+				  <a class="dropdown-item" href="/stats/1/{{$country}}">Distance</a>
+				  <a class="dropdown-item" href="/stats/2/{{$country}}">Altitude Gain</a>
+				  <a class="dropdown-item" href="/stats/3/{{$country}}">Average Slope</a>
+				  <a class="dropdown-item" href="/stats/4/{{$country}}">Maximum Slope</a>
+				  <a class="dropdown-item" href="/stats/5/{{$country}}">Profile Index</a>
 				</div>
-				<div class="table_table_wrapper col-xs-12 col-sm-12 col-md-6">
-				<table>
-					<tbody>		
-					<tr><td class="table_subheader hidden-xs hidden-sm" colspan="5">&nbsp;</td></tr>	
-		<?php
-		}
-			
-		$statcount++;
-	}
-	else if ($stat->StatID != $statid_) {
-		if ($statcount > 2 || $statid_ == 0) {
-			$statcount = 0;
-			if ($statid_ != 0) {
-			?>	
-					</tbody>
-				</table>
+			  </li>			  
+			  <li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$countryname}}</a>
+				<div class="dropdown-menu">
+				  <a class="dropdown-item" href="/stats/{{$stat}}/0">
+				<img src="/images/flags/Europe.gif" title="All" class="flag">All</a>
+				  <a class="dropdown-item" href="/stats/{{$stat}}/2">
+					<img src="/images/flags/Andorra.gif" title="All" class="flag">Andorra</a>
+				  <a class="dropdown-item" href="/stats/{{$stat}}/3">
+				<img src="/images/flags/Austria.gif" title="All" class="flag">Austria</a>
+				  <a class="dropdown-item" href="/stats/{{$stat}}/4">
+				<img src="/images/flags/France.gif" title="All" class="flag">France</a>
+				  <a class="dropdown-item" href="/stats/{{$stat}}/5833">
+				<img src="/images/flags/Great-Britain.gif" title="All" class="flag">Great-Britain</a>
+				  <a class="dropdown-item" href="/stats/{{$stat}}/5">
+				<img src="/images/flags/Italy.gif" title="All" class="flag">Italy</a>
+				<a class="dropdown-item" href="/stats/{{$stat}}/6383">
+				<img src="/images/flags/Norway.gif" title="All" class="flag">Norway</a>
+				<a class="dropdown-item" href="/stats/{{$stat}}/6">
+				<img src="/images/flags/Slovenia.gif" title="All" class="flag">Slovenia</a>
+				<a class="dropdown-item" href="/stats/{{$stat}}/7">
+				<img src="/images/flags/Spain.gif" title="All" class="flag">Spain</a>
+				<a class="dropdown-item" href="/stats/{{$stat}}/8">
+				<img src="/images/flags/Switzerland.gif" title="All" class="flag"></a>
 				</div>
-			<?php	
-			}
-			?>			
-				<div class="table_table_wrapper col-xs-12 col-sm-12 col-md-6">
-				<table>
-					<tbody>		
-		<?php
-		}
-		?>
-					<tr><td class="table_subheader" colspan="5">
-						<a href="/stats/{{$stat->StatID}}/{{$geoid}}">
-						<img class="stat_icon" src="/images/{{statNameShort($stat->StatID)}}.png" />
-						Largest {{statName($stat->StatID)}}
-						</a>
-					</td></tr>		
-		<?php	
-		$statid_ = $stat->StatID;
-		$statcount++;
-	}
-?>
-					<tr id="{{$stat->ColIDString}}/{{$stat->ProfileID}}-{{$stat->FileName}}" class="table_row">
-						<td class="table_rank">{{$stat->Rank}}</td>
-						<td class="table_col">{{$stat->Col}}</td>
-						<td class="table_country">
-							<img src="/images/flags/{{$stat->Country1}}.gif" title="{{$stat->Country1}}" />
-@if ($stat->Country2)
-							<img src="/images/flags/{{$stat->Country2}}.gif" title="{{$stat->Country2}}" />
-@endif
-						</td>
-						<td class="table_value">{{formatStat($stat->StatID,$stat->Value)}}</td>
-						
-@if ($stat->SideID > 0)
-						<td class="table_side">
-							<img src="/images/{{$stat->Side}}.png" title="{{$stat->Side}}"/>
-							<span>{{$stat->Side}}</span>
-						</td>
-@else
-						<td>&nbsp;</td>	
-@endif				
-					</tr>
-<?php		
-		}		
-?>
-				</tbody>
-			</table>
-			</div>
-		</div>
-    </div>
+			  </li>
+			</ul>
+		</nav>
+	</div>	
 </main>
 @stop
