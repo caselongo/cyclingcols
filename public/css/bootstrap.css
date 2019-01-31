@@ -3057,7 +3057,7 @@ input[type="button"].btn-block {
   float: left;
   min-width: 10rem;
   padding: 0;/*0.5rem 0;*/
-  margin: 0.125rem 0 0;
+  margin: 0; /*0.125rem 0 0;*/
   font-size: 1rem;
   color: #212529;
   text-align: left;
@@ -3065,7 +3065,7 @@ input[type="button"].btn-block {
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 0.25rem;
+  /*border-radius: 0.25rem;*/
 }
 
 .dropdown-menu-right {
@@ -3243,6 +3243,7 @@ input[type="button"].btn-block {
   white-space: nowrap;
   background-color: transparent;
   border: 0;
+  font-size: 0.9rem; /*added*/
 }
 
 .dropdown-item:first-child {
@@ -4581,7 +4582,7 @@ input[type="button"].btn-block {
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
-  border-radius: 0.25rem;
+  border-radius: 0; /*0.25rem;*/
 }
 
 .card > hr {
@@ -4680,14 +4681,14 @@ input[type="button"].btn-block {
 
 .card-img-top {
   width: 100%;
-  border-top-left-radius: calc(0.25rem - 1px);
-  border-top-right-radius: calc(0.25rem - 1px);
+  /*border-top-left-radius: calc(0.25rem - 1px);
+  border-top-right-radius: calc(0.25rem - 1px);*/
 }
 
 .card-img-bottom {
   width: 100%;
-  border-bottom-right-radius: calc(0.25rem - 1px);
-  border-bottom-left-radius: calc(0.25rem - 1px);
+  /*border-bottom-right-radius: calc(0.25rem - 1px);
+  border-bottom-left-radius: calc(0.25rem - 1px);*/
 }
 
 .card-deck {

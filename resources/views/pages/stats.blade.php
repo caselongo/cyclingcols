@@ -119,42 +119,30 @@ CyclingCols - Stats
 		</nav>
 		
 		
-		<nav class="navbar navbar-expand-sm navbar-light">
-			<ul class="nav">
+		<nav class="navbar navbar-expand-sm navbar-light navbar-border-bottom p-0" id="nav-stats">
+			<ul class="navbar-nav">
 			  <li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$stattype->name}}</a>
 				<div class="dropdown-menu">
-				  <a class="dropdown-item" href="/stats/all/{{$country->url}}">All Stats</a>
-				  <a class="dropdown-item" href="/stats/distance/{{$country->url}}">Distance</a>
-				  <a class="dropdown-item" href="/stats/altitudegain/{{$country->url}}">Altitude Gain</a>
-				  <a class="dropdown-item" href="/stats/averageslope/{{$country->url}}">Average Slope</a>
-				  <a class="dropdown-item" href="/stats/maximumslope/{{$country->url}}">Maximum Slope</a>
-				  <a class="dropdown-item" href="/stats/profileindex/{{$country->url}}">Profile Index</a>
+@foreach ($stattypes as $stattype_)
+					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype_->url}}/{{$country->url}}">{{$stattype_->name}}</a>
+	@if ($stattype_->id == 0)
+						<div class="dropdown-divider"></div>
+	@endif
+@endforeach
 				</div>
 			  </li>			  
 			  <li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$country->name}}</a>
 				<div class="dropdown-menu">
-				  <a class="dropdown-item" href="/stats/{{$stattype->url}}/all">
-				<img src="/images/flags/Europe.gif" title="All" class="flag">All</a>
-				  <a class="dropdown-item" href="/stats/{{$stattype->url}}/and">
-					<img src="/images/flags/Andorra.gif" title="All" class="flag">Andorra</a>
-				  <a class="dropdown-item" href="/stats/{{$stattype->url}}/aut">
-				<img src="/images/flags/Austria.gif" title="All" class="flag">Austria</a>
-				  <a class="dropdown-item" href="/stats/{{$stattype->url}}/fra">
-				<img src="/images/flags/France.gif" title="All" class="flag">France</a>
-				  <a class="dropdown-item" href="/stats/{{$stattype->url}}/gbr">
-				<img src="/images/flags/Great-Britain.gif" title="All" class="flag">Great-Britain</a>
-				  <a class="dropdown-item" href="/stats/{{$stattype->url}}/ita">
-				<img src="/images/flags/Italy.gif" title="All" class="flag">Italy</a>
-				<a class="dropdown-item" href="/stats/{{$stattype->url}}/nor">
-				<img src="/images/flags/Norway.gif" title="All" class="flag">Norway</a>
-				<a class="dropdown-item" href="/stats/{{$stattype->url}}/slo">
-				<img src="/images/flags/Slovenia.gif" title="All" class="flag">Slovenia</a>
-				<a class="dropdown-item" href="/stats/{{$stattype->url}}/spa">
-				<img src="/images/flags/Spain.gif" title="All" class="flag">Spain</a>
-				<a class="dropdown-item" href="/stats/{{$stattype->url}}/swi">
-				<img src="/images/flags/Switzerland.gif" title="All" class="flag">Switzerland</a>
+@foreach ($countries as $country_)
+					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype->url}}/{{$country_->url}}">
+						<img src="/images/flags/{{$country_->flag}}.gif" title="All" class="flag">{{$country_->name}}
+					</a>
+	@if ($country_->id == 0)
+						<div class="dropdown-divider"></div>
+	@endif
+@endforeach
 				</div>
 			  </li>
 			</ul>

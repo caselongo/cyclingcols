@@ -194,7 +194,7 @@ Route::get('stats', function()
 	return Redirect::to('stats/all/0');
 });
 
-Route::get('stats/{stattypeurl}/{countryid}', function($stattypeurl,$countryurl)
+Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl)
 {   
 	/* stattype */
 	function createStatType($id,$name,$url){	
@@ -223,26 +223,27 @@ Route::get('stats/{stattypeurl}/{countryid}', function($stattypeurl,$countryurl)
 	}
 	
 	/* country */
-	function createCountry($id,$name,$url){	
+	function createCountry($id,$name,$url,$flag){	
 		$country = new stdClass;
 		$country->id = $id;
 		$country->name = $name; 
 		$country->url = $url; 
+		$country->flag = $flag; 
 		
 		return $country;
 	}
 	
 	$countries = array();
-	array_push($countries,createCountry(0,"All Countries","all"));
-	array_push($countries,createCountry(2,"Andorra","and"));
-	array_push($countries,createCountry(3,"Austria","aut"));
-	array_push($countries,createCountry(4,"France","fra"));
-	array_push($countries,createCountry(5833,"Great-Britain","gbr"));
-	array_push($countries,createCountry(5,"Italy","ita"));
-	array_push($countries,createCountry(6383,"Norway","nor"));
-	array_push($countries,createCountry(6,"Slovenia","slo"));
-	array_push($countries,createCountry(7,"Spain","spa"));
-	array_push($countries,createCountry(8,"Switzerland","swi"));
+	array_push($countries,createCountry(0,"All Countries","all","Europe"));
+	array_push($countries,createCountry(2,"Andorra","and","Andorra"));
+	array_push($countries,createCountry(3,"Austria","aut","Austria"));
+	array_push($countries,createCountry(4,"France","fra","France"));
+	array_push($countries,createCountry(5833,"Great-Britain","gbr","Great-Britain"));
+	array_push($countries,createCountry(5,"Italy","ita","Italy"));
+	array_push($countries,createCountry(6383,"Norway","nor","Norway"));
+	array_push($countries,createCountry(6,"Slovenia","slo","Slovenia"));
+	array_push($countries,createCountry(7,"Spain","spa","Spain"));
+	array_push($countries,createCountry(8,"Switzerland","swi","Switzerland"));
 	
 	$country_current = null;
 	foreach($countries as $country){
@@ -262,9 +263,9 @@ Route::get('stats/{stattypeurl}/{countryid}', function($stattypeurl,$countryurl)
 
 
 	if ($stattype_current->id > 0) {
-		$stats = \App\Stat::whereRaw('StatID = ' . $stattype_current->id . ' AND GeoID = ' . $country_current->id)->get();
+		$stats = \App\Stat::whereRaw('StatID = ' . $stattype_current->id . ' AND GeoID = ' . $country_current->id)->orderBy('Rank','ASC')->get();
 	} else {
-		$stats = \App\Stat::whereRaw('GeoID = ' . $country_current->id . ' AND Rank <= 5')->get();
+		$stats = \App\Stat::whereRaw('GeoID = ' . $country_current->id . ' AND Rank <= 5')->orderBy('StatID','ASC')->orderBy('Rank','ASC')->get();
 	}
 	
 	if (is_null($stats))
@@ -276,7 +277,8 @@ Route::get('stats/{stattypeurl}/{countryid}', function($stattypeurl,$countryurl)
 		->with('stattypes',$stattypes)
 		->with('stattype',$stattype_current)
 		->with('country',$country_current)
-		->with('stats',$stats);
+		->with('stats',$stats)
+		->with('countries',$countries);
 });
 
 // Login Routes...

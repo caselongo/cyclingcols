@@ -17,6 +17,14 @@ footer{
 	flex-grow: 1;
 }
 
+.navbar-border-bottom{
+	border-bottom: 1px solid #ccc;
+}
+
+#nav-stats .nav-item{
+	min-width: 200px;
+}
+
 .menuitem-user{
 	width: 100%;
 	max-width: initial;
