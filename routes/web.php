@@ -191,27 +191,92 @@ Route::get('rides', function()
 
 Route::get('stats', function()
 {   
-	return Redirect::to('stats/0/0');
+	return Redirect::to('stats/all/0');
 });
 
-Route::get('stats/{statid}/{geoid}', function($statid,$geoid)
+Route::get('stats/{stattypeurl}/{countryid}', function($stattypeurl,$countryurl)
 {   
-	if ($statid > 0) {
-		$stats = \App\Stat::whereRaw('StatID = ' . $statid . ' AND GeoID = ' . $geoid)->get();
+	/* stattype */
+	function createStatType($id,$name,$url){	
+		$stattype = new stdClass;
+		$stattype->id = $id;
+		$stattype->name = $name; 
+		$stattype->url = $url; 
+		
+		return $stattype;
+	}
+	
+	$stattypes = array();
+	array_push($stattypes,createStatType(0,"All Stats","all"));
+	array_push($stattypes,createStatType(1,"Distance","distance"));
+	array_push($stattypes,createStatType(2,"Altitude Gain","altitudegain"));
+	array_push($stattypes,createStatType(3,"Average Slope","averageslope"));
+	array_push($stattypes,createStatType(4,"Maximum Slope","maximumslope"));
+	array_push($stattypes,createStatType(5,"Profile Index","profileindex"));
+	
+	$stattype_current = null;
+	foreach($stattypes as $stattype){
+		if ($stattype->url == $stattypeurl){
+			$stattype_current = $stattype;
+			break;
+		}
+	}
+	
+	/* country */
+	function createCountry($id,$name,$url){	
+		$country = new stdClass;
+		$country->id = $id;
+		$country->name = $name; 
+		$country->url = $url; 
+		
+		return $country;
+	}
+	
+	$countries = array();
+	array_push($countries,createCountry(0,"All Countries","all"));
+	array_push($countries,createCountry(2,"Andorra","and"));
+	array_push($countries,createCountry(3,"Austria","aut"));
+	array_push($countries,createCountry(4,"France","fra"));
+	array_push($countries,createCountry(5833,"Great-Britain","gbr"));
+	array_push($countries,createCountry(5,"Italy","ita"));
+	array_push($countries,createCountry(6383,"Norway","nor"));
+	array_push($countries,createCountry(6,"Slovenia","slo"));
+	array_push($countries,createCountry(7,"Spain","spa"));
+	array_push($countries,createCountry(8,"Switzerland","swi"));
+	
+	$country_current = null;
+	foreach($countries as $country){
+		if ($country->url == $countryurl){
+			$country_current = $country;
+			break;
+		}
+	}
+	
+	if (is_null($stattype_current) && is_null($country_current)){
+		return Redirect::to('stats/all/all');
+	} else if (is_null($stattype_current)){
+		return Redirect::to('stats/all/' . $countryurl);
+	} else if (is_null($country_current)){
+		return Redirect::to('stats/' . $stattypeurl . "/all");		
+	}
+
+
+	if ($stattype_current->id > 0) {
+		$stats = \App\Stat::whereRaw('StatID = ' . $stattype_current->id . ' AND GeoID = ' . $country_current->id)->get();
 	} else {
-		$stats = \App\Stat::whereRaw('GeoID = ' . $geoid . ' AND Rank <= 5')->get();
+		$stats = \App\Stat::whereRaw('GeoID = ' . $country_current->id . ' AND Rank <= 5')->get();
 	}
 	
 	if (is_null($stats))
 	{
-		return Redirect::to('stats/0/0');
+		return Redirect::to('stats/all/all');
 	}
 	
     return View::make('pages.stats')
-		->with('stats',$stats)
-		->with('statid',$statid)
-		->with('geoid',$geoid)
-		->with('pagetype','statstemplate');
+		->with('stattypes',$stattypes)
+		->with('stattype',$stattype_current)
+		->with('country',$country_current)
+		->with('stats',$stats);
 });
 
 // Login Routes...

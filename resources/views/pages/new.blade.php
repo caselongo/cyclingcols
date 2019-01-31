@@ -9,8 +9,8 @@ CyclingCols - New
     <div class="header px-4 py-3">
         <h4 class="font-weight-light">New and updated cols and profiles</h4>
 	</div>	
-	<div class="container-fluid mx-2">
-		<div class="card-deck">
+	<div class="container-fluid">
+		<div class="card-deck mx-2">
 
 <?php	
 	$datesort = 0;
