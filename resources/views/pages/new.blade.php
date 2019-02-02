@@ -7,102 +7,76 @@ CyclingCols - New
 @section('content')
 <main role="main" class="bd-content">
     <div class="header px-4 py-3">
-        <h4 class="font-weight-light">New and updated cols and profiles</h4>
+        <h4 class="font-weight-light m-0">New and updated cols and profiles</h4>
 	</div>	
-	<div class="container-fluid">
-		<div class="card-deck">
+	<div class="container-fluid px-4 pb-3">
+		<div class="p-0">
+		
+<?php
+	use Carbon\Carbon;
 
-<?php	
-	$datesort = 0;
-	$colidstring = "";
+	$datesort = -1;
+	$is_new = -1;
 	$count = 0;
-
-	foreach($newitems as $newitem) {
-		if ($newitem->DateSort != $datesort || $newitem->ColIDString != $colidstring) {
+	
+	foreach ($newitems as $newitem){
+		
+		if ($newitem->DateSort != $datesort){
 			$datesort = $newitem->DateSort;
-			$colidstring = $newitem->ColIDString;
+			$is_new = -1;
+			
+			$diff_for_humans = Carbon::createFromFormat('Ymd',$newitem->DateSort)->diffForHumans();
+			$date = Carbon::createFromFormat('Ymd',$newitem->DateSort)->format('j M Y');
+			
+?>
+			<div class="d-flex w-100 align-items-center px-2 py-1 border-bottom border-top p-0">
+				<h6 class="m-0 font-weight-light" >{{$date}}</h6>&nbsp;
+				<small>({{$diff_for_humans}})</small>
+			</div>
+<?php		
+		}
+		
+		if ($newitem->IsNew != $is_new){
+			$is_new = $newitem->IsNew;
+?>
+@if ($count > 0)
+		</lu>
+@endif
+
+@if ($newitem->IsNew)
+			<div class="rounded-top bg-primary cc-new-label mt-2">new</div>
+@else	
+			<div class="rounded-top bg-secondary cc-new-label mt-2">updated</div>
+@endif
+			<lu class="list-group">
+<?php
+				
+
 		}
 ?>	
-			<div class="card mb-4">
-				<div class="card-img-top card-img-background" onclick='goToCol("{{$newitem->ColIDString}}")' style='background-position: 50% 47%; background-image: url("images/covers/small/{{$newitem->ColIDString}}.jpg")'>
-@if ($newitem->IsNew)
-					<div class="card-img-new">New</div>
-@endif
-					<div class="card-go-to"><small><i class="fas fa-search"></i></small></div>
-				</div><!--card-img-top-->
-				<div class="card-body">
-					<h6 class="card-title font-weight-light">
-						<img src="/images/flags/{{$newitem->Country1}}.gif" title="{{$newitem->Country1}}" class="flag">
+				<li class="list-group-item list-group-item-action no-pointer rounded-0">
+					<div class="d-flex align-items-center">
+						<div class="p-1">
+							<img src="/images/flags/{{$newitem->Country1}}.gif" title="{{$newitem->Country1}}" class="flag">
 @if ($newitem->Country2)
-						<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" class="flag flag2">
+							<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" class="flag flag2">
 @endif
-				{{$newitem->Col}}
-						<span class="searchitemheight">{{$newitem->Height}}m</span>
-					</h6>
-@foreach ($newitem->Profiles as $profile)
-					<div class="card-profile d-flex flex-row justify-content-between align-items-baseline">
-						<div>
-							<span class="category category-{{$profile->Category}}">{{$profile->Category}}</span>
-							<span>{{$profile->Side}}</span>
-							<small>{{$profile->Start}}</small>
-@if (!$newitem->IsNew && $profile->IsNew)
-							<span class="badge badge-new">New</span>
-@endif
-						</div>	
-						<!--<a tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-filename="{{$profile->FileName}}" data-col="{{$newitem->Col}}" data-side="{{$profile->Side}}"><i class="fas fas-grey  fa-search-plus"></i></a>-->	
-						<a tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-filename="{{$profile->FileName}}" data-col="{{$newitem->Col}}" data-side="{{$profile->Side}}"><i class="fas fas-grey  fa-search-plus"></i></a>		
-					</div>
-@endforeach
-				</div><!--card-body-->
-				<div class="card-footer">
-					<small class="text-muted">
-@if ($newitem->IsNew) 
-			Added
-@else
-			Updated
-@endif
-			{{$newitem->DiffForHumans}}</small>
-				</div><!--card-footer-->
-			</div><!--card-->
-<?php	
-		$count++;
-
-		if ($count > 0){
-?>
-			<span class="dummy"></span><!--needed responsive card-deck-->
+							<a href="/col/{{$newitem->ColIDString}}"> {{$newitem->Col}}</a>
+							<small>{{$newitem->Side}}</small>
+							<span class="category category-{{$newitem->Category}}">{{$newitem->Category}}</span>
+						</div>
+						<div class="p-1 ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-filename="{{$newitem->FileName}}" data-col="{{$newitem->Col}}" data-side="{{$newitem->Side}}"><i class="fas fas-grey  fa-search-plus"></i></div>
+					</div>		
+				</li>
 <?php
-		}
+
+		$count++;
 	}
-?>
-			<!--add some invisible cards to be sure last cards are of equal size-->
-			<div class="card card-invisible"></div><span class="dummy"></span>
-			<div class="card card-invisible"></div><span class="dummy"></span>
-			<div class="card card-invisible"></div><span class="dummy"></span>
-			<div class="card card-invisible"></div><span class="dummy"></span>
-		</div><!--row-->
+?>	
+			</lu>
+		</div>
 	</div><!--container-->
 </main>
-<div class="modal fade" id="modalProfile" tabindex="-1" role="dialog" aria-labelledby="modalProfileLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-		<div class="modal-header-sub">
-			<span class="category category-4">4</span>
-			<h6 class="modal-title font-weight-light" id="modalProfileLabel"></h6>
-			<span class="modal-title-secondary"></span>
-		</div>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <img class="modal-body-profile" src=""></img>
-      </div>
-      <!--<div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send message</button>
-      </div>-->
-    </div>
-  </div>
-</div>
 @stop
+
+@include('includes.profilemodal')

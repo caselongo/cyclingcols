@@ -27,3 +27,5 @@ public/css/__main - Copy.css
 public/css/__normalize.css
 resources/views/pages/stats.blade - Copy.php
 public/css/___bootstrap.min.css
+resources/views/pages/col.blade - Copy.php
+resources/views/pages/new.blade - Copy.php

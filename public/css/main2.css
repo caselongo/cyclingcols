@@ -17,9 +17,6 @@ footer{
 	flex-grow: 1;
 }
 
-.navbar-border-bottom{
-	border-bottom: 1px solid #ccc;
-}
 
 #nav-stats .nav-item{
 	min-width: 200px;
@@ -67,12 +64,12 @@ footer{
 /* search*/
 
 #search {
-  width: 50%;
-  top: 20%;
-  margin-left: 25%;
-  position: absolute;
-  opacity: 0.8;
-  z-index: 100000;
+    max-width: 600px;
+    width: 80%;
+    top: 20%;
+    position: absolute;
+    opacity: 0.8;
+    z-index: 100000;
 }
 
 #search-result{
@@ -160,6 +157,18 @@ footer{
 }
 .flag2{
 	margin-left: -0.1em;
+}
+
+/* flags */
+.panel{
+	border-radius: 0.2em;
+}
+
+/* altitude */
+.badge-altitude{
+	border: 0.05em solid #aaa;
+    background: #ddd;
+    color: #333;
 }
 
 /* card */
@@ -288,10 +297,6 @@ footer{
 	border-radius: 5px;
 }
 
-.about-banners{
-	border-top: 1px solid #343a40;
-}
-
 /* card-deck responsive fix, from https://www.codeply.com/go/peDJfhRYJT/bootstrap-4-responsive-card-deck-(css) */ 
 /* responsively enforce wrapping */
 .card-deck span.dummy {
@@ -343,4 +348,45 @@ footer{
 .card-invisible{
 	background: transparent;
     border: none;
+}
+
+.no-pointer{
+	cursor: default;
+}
+
+.cc-new-label{
+	width: 50px;
+    text-align: center;
+    font-size: 0.7em;
+	color: #fff;
+}
+
+/* col page */
+@media (max-width: 589px) {
+  .colimage,
+  .colimage2 {
+    height: 150px;
+  }
+}
+@media (min-width: 590px) and (max-width: 766px) {
+  .colimage,
+  .colimage2 {
+    height: 250px;
+  }
+}
+@media (min-width: 767px) {
+  .colimage,
+  .colimage2 {
+    height: 350px;
+  }
+}
+
+.colimage,
+.colimage2 {
+	background-size: cover;
+}
+
+/**/
+.line-height-1{
+	line-height: 1;
 }

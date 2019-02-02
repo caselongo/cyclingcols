@@ -6,16 +6,16 @@ CyclingCols - Main
 
 @section('content')
 
-<div id="search" class="ui-front">
-	<input class="form-control font-weight-light" id="search-box" type="search" placeholder="Search a col in Europe...">
-</div>
 
 <main role="main" class="bd-content p-0 overflow-hidden">
-    <div class="col-md-12 scenery" style="padding:0px">
-        <div id="phototext" class="phototext"><a href=""></a></div>
+    <div class="d-flex w-100">
         <div id="news_ads">
         </div>
-		<div id="slide">		
+		<div id="slide" class="d-flex w-100 justify-content-around">		
+			<div id="search" class="ui-front">
+				<input class="form-control font-weight-light" id="search-box" type="search" placeholder="Search a col in Europe...">
+			</div>
+			<div id="phototext" class="phototext"><a href=""></a></div>
         </div>
 
         <script type="text/javascript" charset="utf-8">

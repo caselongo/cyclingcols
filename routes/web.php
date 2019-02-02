@@ -22,9 +22,9 @@ Route::get('/', function()
 /* New page*/
 Route::get('new', function()
 {
-	$newitems = \App\NewItem::orderBy('DateSort','DESC')->orderBy('ColIDString','ASC')->get();
+	$newitems = \App\NewItem::orderBy('DateSort','DESC')->orderBy('IsNew','DESC')->orderBy('ColIDString','ASC')->get();
 	
-	$datesort = 0;
+	/*$datesort = 0;
 	$colidstring = "";
 	
 	$cols = array();
@@ -67,10 +67,10 @@ Route::get('new', function()
 		}
 		
 		array_push($col->Profiles,$profile);
-	}
+	}*/
 	
 	return View::make('pages.new')
-		->with('newitems',$cols);
+		->with('newitems',$newitems);
 });
 
 /* About page*/
@@ -197,22 +197,24 @@ Route::get('stats', function()
 Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl)
 {   
 	/* stattype */
-	function createStatType($id,$name,$url){	
+	function createStatType($id,$name,$url,$suffix,$number_of_decimals){	
 		$stattype = new stdClass;
 		$stattype->id = $id;
 		$stattype->name = $name; 
 		$stattype->url = $url; 
+		$stattype->suffix = $suffix; 
+		$stattype->number_of_decimals = $number_of_decimals; 
 		
 		return $stattype;
 	}
 	
 	$stattypes = array();
-	array_push($stattypes,createStatType(0,"All Stats","all"));
-	array_push($stattypes,createStatType(1,"Distance","distance"));
-	array_push($stattypes,createStatType(2,"Altitude Gain","altitudegain"));
-	array_push($stattypes,createStatType(3,"Average Slope","averageslope"));
-	array_push($stattypes,createStatType(4,"Maximum Slope","maximumslope"));
-	array_push($stattypes,createStatType(5,"Profile Index","profileindex"));
+	array_push($stattypes,createStatType(0,"All Stats","all",null,null));
+	array_push($stattypes,createStatType(1,"Distance","distance","km",1));
+	array_push($stattypes,createStatType(2,"Altitude Gain","altitudegain","m",0));
+	array_push($stattypes,createStatType(3,"Average Slope","averageslope","%",1));
+	array_push($stattypes,createStatType(4,"Maximum Slope","maximumslope","%",1));
+	array_push($stattypes,createStatType(5,"Profile Index","profileindex","",0));
 	
 	$stattype_current = null;
 	foreach($stattypes as $stattype){
@@ -260,12 +262,21 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	} else if (is_null($country_current)){
 		return Redirect::to('stats/' . $stattypeurl . "/all");		
 	}
-
+	
+	//$stats = \App\Profile::where('CountryID1',$country_current->id)->orWhere($country_current->id,0)->orWhere('CountryID2',$country_current->id)->orderBy('Distance','DESC')->take(5)->get();
+	/*$stats = DB::table('profiles')
+				->join('cols', 'profiles.ColID', '=', 'cols.ColID')
+				->where('cols.Country1ID', $country_current->id)
+				->orWhere('cols.Country2ID', $country_current->id)
+				->orWhereRaw($country_current->id . ' = 0')
+				->orderBy('profiles.Distance','DESC')
+				->take(10)
+				->get();*/
 
 	if ($stattype_current->id > 0) {
-		$stats = \App\Stat::whereRaw('StatID = ' . $stattype_current->id . ' AND GeoID = ' . $country_current->id)->orderBy('Rank','ASC')->get();
+		$stats = \App\Stat::where('StatID', $stattype_current->id)->where('GeoID', $country_current->id)->orderBy('Rank','ASC')->get();
 	} else {
-		$stats = \App\Stat::whereRaw('GeoID = ' . $country_current->id . ' AND Rank <= 5')->orderBy('StatID','ASC')->orderBy('Rank','ASC')->get();
+		$stats = \App\Stat::where('GeoID', $country_current->id)->where('Rank','<=', 5)->orderBy('StatID','ASC')->orderBy('Rank','ASC')->get();
 	}
 	
 	if (is_null($stats))

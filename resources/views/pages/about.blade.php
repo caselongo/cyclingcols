@@ -36,7 +36,7 @@ CyclingCols - About
 				<img src="/images/Michiel.jpg"/>	
 			</div>
 		</div>
-		<div class="row about-banners my-3">
+		<div class="row border-top my-3">
 <?php
 
 	$banners = \App\Banner::where('ColID',0)->orderBy(DB::raw("RAND()"),'ASC')->get();

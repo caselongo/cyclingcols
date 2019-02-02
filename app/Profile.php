@@ -20,8 +20,13 @@ class Profile extends Model
 		'Category',
 		'Unpaved'
 	);
-	public function Col(){
-		return $this->belongsTo('Col');
-	}
+	
+	/**
+     * Get the phone record associated with the user.
+     */
+    public function col()
+    {
+        return $this->hasOne('App\Col');
+    }
 }
 ?>

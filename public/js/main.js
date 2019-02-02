@@ -111,7 +111,7 @@ $(document).ready(function() {
 	
 	$(function () {
 	  $('[data-toggle="popover"]').popover()
-	})
+	});
 });
 
 var initAutoComplete = function(){
@@ -233,17 +233,18 @@ var initAutoComplete = function(){
 				var html = item.remark;
 				return $( "<li>" )
 					.append(html)
-					.addClass("list-group-item list-group-item-action disabled")
+					.addClass("list-group-item list-group-item-action font-weight-light disabled")
 					.appendTo( ul );				
 			} else {
-				var html = "<a><img class=\"searchitemflag\" src=\"/images/flags/" + item.Country1 + ".gif\"/>";
+				var html = "<a><img class=\"flag\" src=\"/images/flags/" + item.Country1 + ".gif\"/>";
 				if (item.Country2){
-					html += "<img class=\"searchitemflag\" src=\"/images/flags/" + item.Country2 + ".gif\"/>";
+					html += "<img class=\"flag\" src=\"/images/flags/" + item.Country2 + ".gif\"/>";
 				}
-				html += item.label + "<span class=\"searchitemheight\">" + item.Height + "m</span></a>";
+				html += "<span class=\"px-1\">" + item.label + "</span>";
+				html += "<span class=\"badge badge-altitude font-weight-light\">" + item.Height + "m</span></a>";
 				return $( "<li>" )
 					.append(html)
-					.addClass("list-group-item list-group-item-action")
+					.addClass("list-group-item list-group-item-action font-weight-light")
 					.appendTo( ul );
 			}
 		};
