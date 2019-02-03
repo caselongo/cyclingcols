@@ -233,7 +233,7 @@ var initAutoComplete = function(){
 				var html = item.remark;
 				return $( "<li>" )
 					.append(html)
-					.addClass("list-group-item list-group-item-action font-weight-light disabled")
+					.addClass("list-group-item list-group-item-action disabled")
 					.appendTo( ul );				
 			} else {
 				var html = "<a><img class=\"flag\" src=\"/images/flags/" + item.Country1 + ".gif\"/>";
@@ -244,7 +244,7 @@ var initAutoComplete = function(){
 				html += "<span class=\"badge badge-altitude font-weight-light\">" + item.Height + "m</span></a>";
 				return $( "<li>" )
 					.append(html)
-					.addClass("list-group-item list-group-item-action font-weight-light")
+					.addClass("list-group-item list-group-item-action")
 					.appendTo( ul );
 			}
 		};

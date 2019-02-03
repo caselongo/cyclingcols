@@ -345,13 +345,13 @@ footer{
 }
 
 /* added mvl */
-.card-invisible{
+/*.card-invisible{
 	background: transparent;
     border: none;
-}
+}*/
 
 .no-pointer{
-	cursor: default;
+	cursor: default!important;
 }
 
 .cc-new-label{
@@ -359,6 +359,10 @@ footer{
     text-align: center;
     font-size: 0.7em;
 	color: #fff;
+}
+
+.cc-col-user{
+	font-size: 0.75rem;
 }
 
 /* col page */
@@ -389,4 +393,26 @@ footer{
 /**/
 .line-height-1{
 	line-height: 1;
+}
+/* col rating & done */
+.col-done-no {
+	color: #666;
+}
+.col-done-yes-hover {
+	color: #ff8000;
+}
+.col-done-yes {
+	color: #f00;
+}
+.col-rating-no, .col-rating-avg-no  {
+	color: #666;
+}
+.col-rating-yes {
+	color: #f00;
+}
+.col-rating-no-hover {
+	color: #666!important;
+}
+.col-rating-yes-hover, .col-rating-avg-yes {
+	color: #ff8000!important;
 }

@@ -21,7 +21,7 @@
 	  </button>
 	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
-		  <li class="nav-item 
+		  <li class="nav-item font-weight-light
 			@if ($home)
 				active
 			@endif	  
@@ -32,7 +32,7 @@
 			@endif
 			</a>
 		  </li>
-		  <li class="nav-item
+		  <li class="nav-item font-weight-light
 			@if ($new)
 				active
 			@endif	  
@@ -43,7 +43,7 @@
 			@endif
 			</a>
 		  </li>
-		  <li class="nav-item
+		  <li class="nav-item font-weight-light
 			@if ($stats)
 				active
 			@endif	  
@@ -54,7 +54,7 @@
 			@endif
 			</a>
 		  </li>
-		  <li class="nav-item
+		  <li class="nav-item font-weight-light
 			@if ($help)
 				active
 			@endif	  
@@ -65,7 +65,7 @@
 			@endif
 			</a>
 		  </li>
-		  <li class="nav-item
+		  <li class="nav-item font-weight-light
 			@if ($about)
 				active
 			@endif	  
@@ -76,7 +76,7 @@
 			@endif
 			</a>
 		  </li>
-		  <li class="nav-item
+		  <li class="nav-item font-weight-light
 			@if ($map)
 				active
 			@endif	  
@@ -88,7 +88,7 @@
 			</a>
 		  </li>  
 		@auth
-		  <li class="nav-item dropdown">
+		  <li class="nav-item font-weight-light dropdown">
 			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			  {{Auth::user()->name}}
 			</a>
@@ -100,7 +100,7 @@
 		  </li>
 		@endauth
 		@guest
-		  <li class="nav-item
+		  <li class="nav-item font-weight-light
 			@if ($login)
 				active
 			@endif	  

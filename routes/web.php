@@ -107,9 +107,7 @@ Route::get('col/{colIDString}', function($colIDString)
 	return View::make('pages.col')
 		->with('col',$col)
 		->with('profiles',$profiles)
-		->with('user',$user)
-		->with('usercol',$usercol)
-		->with('pagetype','coltemplate');
+		->with('usercol',$usercol);
 });
 
 /*Col page - select upmost profile*/
@@ -307,4 +305,6 @@ Route::post('password/email', ['as' => 'password.email', 'uses' => 'Auth\ForgotP
 Route::get('password/reset/{token}', ['as' => 'password.reset.token', 'uses' => 'Auth\ResetPasswordController@showResetForm']);
 Route::post('password/reset', ['as' => 'password.reset.post', 'uses' => 'Auth\ResetPasswordController@reset']);
 
-Route::get('/welcome', 'WelcomeController@index')->name('welcome');
+Route::get('welcome', 'WelcomeController@index')->name('welcome');
+
+Route::get('rating/{colIDString}','Col\UsersController@rating')->name('col.users.rating');
