@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Col;
 
 use App\Col;
+use App\Passage;
 use App\Http\Controllers\Controller;
 /*use Carbon\Carbon;*/
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class UsersController extends Controller
+class ColController extends Controller
 {
 
     public function rating(Request $request, $colIDString)
@@ -38,5 +39,38 @@ class UsersController extends Controller
                      ->get();
 
 		return response()->json($ratings);
+    }
+	
+    public function nearby(Request $request, $colIDString)
+    {
+		$col = Col::where('ColIDString', $colIDString)->first();
+
+        if ($col == null) {
+            return response(['success' => false], 404);
+        }
+		
+		$colsnearby = DB::table('colsnearby')
+                     ->select(DB::raw('ColIDString, Col, Latitude, Longitude, Distance, Direction'))
+                     ->where('MainColID', $col->ColID)
+					 ->orderBy('Distance', 'ASC')
+                     ->get();
+
+		return response()->json($colsnearby);
+    }
+	
+    public function first(Request $request, $colIDString)
+    {
+		$col = Col::where('ColIDString', $colIDString)->first();
+
+        if ($col == null) {
+            return response(['success' => false], 404);
+        }
+		
+		$first = Passage::where('ColID', $col->ColID)
+					 ->orderBy('Edition', 'DESC')
+					 ->orderBy('EventID', 'DESC')
+                     ->get();
+
+		return response()->json($first);
     }
 }

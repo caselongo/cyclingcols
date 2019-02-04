@@ -188,7 +188,8 @@ getBanners = function(colid) {
 		}
 	})
 }
-			
+		
+/*		
 getPassages = function(colid) {
 	$.ajax({
 		url : "/ajax/getpassages.php?colid=" + colid,
@@ -241,7 +242,8 @@ getPassages = function(colid) {
 		}
 	})
 }
-	
+	*/
+	/*
 getColsNearby = function(colid) {
 	$.ajax({
 		//url : "{{ URL::asset('ajax/')}}/getcolsnearby.php?colid=" + colid,
@@ -273,8 +275,8 @@ getColsNearby = function(colid) {
 			}
 		}
 	})
-}
-
+}*/
+/*
 getPrevNextCol = function(number) {
 	$.ajax({
 		url : "/ajax/getprevnextcol.php?number=" + number,
@@ -312,7 +314,7 @@ getPrevNextCol = function(number) {
 		}
 	})
 }
-
+*/
 getTopStats = function(colid) {
 	$.ajax({
 		url : "/ajax/gettopstats.php?colid=" + colid,

@@ -62,10 +62,12 @@ CyclingCols - New
 							<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" class="flag flag2">
 @endif
 							<a href="/col/{{$newitem->ColIDString}}"> {{$newitem->Col}}</a>
-							<small>{{$newitem->Side}}</small>
+@if ($newitem->Side)
+							<span class="text-small-75"><img class="direction mr-1" src="/images/{{$newitem->Side}}.png"/>{{$newitem->Side}}</span>
+@endif
 							<span class="category category-{{$newitem->Category}}">{{$newitem->Category}}</span>
 						</div>
-						<div class="p-1 ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-filename="{{$newitem->FileName}}" data-col="{{$newitem->Col}}" data-side="{{$newitem->Side}}"><i class="fas fas-grey  fa-search-plus"></i></div>
+						<div class="p-1 ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-profile="{{$newitem}}""><i class="fas fas-grey  fa-search-plus"></i></div>
 					</div>		
 				</li>
 <?php

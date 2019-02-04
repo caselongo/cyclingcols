@@ -195,24 +195,25 @@ Route::get('stats', function()
 Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl)
 {   
 	/* stattype */
-	function createStatType($id,$name,$url,$suffix,$number_of_decimals){	
+	function createStatType($id,$name,$url,$suffix,$number_of_decimals,$icon){	
 		$stattype = new stdClass;
 		$stattype->id = $id;
 		$stattype->name = $name; 
 		$stattype->url = $url; 
 		$stattype->suffix = $suffix; 
 		$stattype->number_of_decimals = $number_of_decimals; 
+		$stattype->icon = $icon; 
 		
 		return $stattype;
 	}
 	
 	$stattypes = array();
-	array_push($stattypes,createStatType(0,"All Stats","all",null,null));
-	array_push($stattypes,createStatType(1,"Distance","distance","km",1));
-	array_push($stattypes,createStatType(2,"Altitude Gain","altitudegain","m",0));
-	array_push($stattypes,createStatType(3,"Average Slope","averageslope","%",1));
-	array_push($stattypes,createStatType(4,"Maximum Slope","maximumslope","%",1));
-	array_push($stattypes,createStatType(5,"Profile Index","profileindex","",0));
+	array_push($stattypes,createStatType(0,"All Stats","all",null,null,null));
+	array_push($stattypes,createStatType(1,"Distance","distance","km",1,"arrows-alt-h"));
+	array_push($stattypes,createStatType(2,"Altitude Gain","altitudegain","m",0,"arrows-alt-v"));
+	array_push($stattypes,createStatType(3,"Average Slope","averageslope","%",1,"location-arrow"));
+	array_push($stattypes,createStatType(4,"Maximum Slope","maximumslope","%",1,"bomb"));
+	array_push($stattypes,createStatType(5,"Profile Index","profileindex","",0,"signal"));
 	
 	$stattype_current = null;
 	foreach($stattypes as $stattype){
@@ -307,4 +308,10 @@ Route::post('password/reset', ['as' => 'password.reset.post', 'uses' => 'Auth\Re
 
 Route::get('welcome', 'WelcomeController@index')->name('welcome');
 
-Route::get('rating/{colIDString}','Col\UsersController@rating')->name('col.users.rating');
+/* col */
+Route::get('rating/{colIDString}','Col\ColController@rating')->name('col.col.rating');
+Route::get('nearby/{colIDString}','Col\ColController@nearby')->name('col.col.nearby');
+Route::get('first/{colIDString}','Col\ColController@first')->name('col.col.first');
+
+/* cols */
+Route::get('cols/all','Cols\ColsController@all')->name('cols.cols.all');

@@ -49,6 +49,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			dragging: false
 		};
 		var map = L.map('map', mapOptions).setView([lat, lng], 4);
+		map.scrollWheelZoom.disable();
 		
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -259,8 +260,8 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			type: "GET",
 			url : "/rating/{{$col->ColIDString}}",
 			dataType : 'json',
-			success : function(data) {		
-				if (data.length > 0){					
+			success : function(data) {
+				if (data.length > 0){
 					_rating_ = data[0];
 					_rating_.done_count = +_rating_.done_count;
 					_rating_.done = +_rating_.done;
@@ -274,19 +275,234 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			}
 		});
 	}
-
+	
+	var getColsNearby = function(){
+		$.ajax({
+			type: "GET",
+			url : "/nearby/{{$col->ColIDString}}",
+			dataType : 'json',
+			success : function(data) {		
+				for(var i = 0; i < data.length; i++) {	
+					var dis = parseInt(Math.round(parseFloat(data[i].Distance/1000)));
+					var int_dir = parseInt(data[i].Direction); 
+					var dir;
+					
+					if (int_dir <= 22) { dir = "South"; }
+					else if (int_dir <= 67) { dir = "South-West"; }
+					else if (int_dir <= 112) { dir = "West"; }
+					else if (int_dir <= 157) { dir = "North-West"; }
+					else if (int_dir <= 202) { dir = "North"; }
+					else if (int_dir <= 247) { dir = "North-East"; }
+					else if (int_dir <= 292) { dir = "East"; }
+					else if (int_dir <= 337) { dir = "South-East"; }
+					else { dir = "South"; }
+				
+					var html = '<div class="d-flex px-2 text-small-90">';
+					html += '<div class=""><a href="/col/' + data[i].ColIDString + '">' + data[i].Col + '</a></div>';
+					html += '<div class="ml-auto text-small-75">' + dis + ' km<img class="direction ml-1" src="/images/' + dir + '.png"/></div>';	
+					html += '</div>';
+					
+					$("#col-nearby").append(html);
+				}
+			}
+		});		
+	}
+			
+	var getPassages = function(colid) {
+		$.ajax({
+			type: "GET",
+			url : "/first/{{$col->ColIDString}}",
+			dataType : 'json',
+			success : function(data) {	
+				if (data.length > 0) {
+				
+					for(var i = 0; i < data.length; i++) {	
+						var	race = ""; 
+						var race_short = "";
+					
+						switch(parseInt(data[i].EventID)) {
+							case 1: race = "Tour de France"; race_short = "Tour"; break;
+							case 2: race = "Giro d'Italia"; race_short = "Giro"; break;
+							case 3: race = "Vuelta a España"; race_short = "Vuelta"; break;
+						}
+						
+						var person = data[i].Person;
+						var person_class = "rider";
+						var flag = true;
+						if (data[i].Neutralized == "1") {person = "-neutralized-"; flag = false;}
+						else if (data[i].Cancelled == "1") {person = "-cancelled-"; flag = false;}
+						else if (data[i].NatioAbbr == "") {person = "-cancelled-"; flag = false;}
+						
+						if (person == null) {person = ""; flag = false;}
+						
+						var display = "d-flex";
+						if (i >= 5) {display = "d-none";}
+						
+						var html = '<div class="px-2 text-small-90 align-items-baseline ' + display + '">';
+						html += '<div class="d-flex text-small-75 pr-3">';
+						html += '<div class="">' + race_short + '</div>'; 
+						html += '<div class="pl-1">' + data[i].Edition + '</div>';
+						html += '</div>'; 
+						html += '<div class="d-flex w-100">'; 
+						//html += '<div class="" title="' + race + '"><i>' + race_short + '</i></div>'; 
+						html += '<div class="">' + person + '</div>';
+						if (flag == true) {
+							html += "<img class=\"flag ml-auto\" src='/images/flags/small/" + data[i].NatioAbbr.toLowerCase() + ".gif' title='" + data[i].Natio + "'/>";
+						}
+						html += '</div></div>'; 
+						
+						$("#col-first").append(html);
+					}
+						
+					if (data.length <= 5) {
+						$("#col-first-all").hide();
+					} else {
+						$("#col-first-all").on("click", function(){
+							if ($(this).hasClass("fa-chevron-down")){
+								if ($(window).width() >= 992)
+								{
+									$(this).parents(".col-box").siblings().toggleClass("d-none d-flex");
+								}								
+							} else {
+								if ($(window).width() >= 992)
+								{
+									$(this).parents(".col-box").siblings().toggleClass("d-none d-flex");
+								}											
+							}
+							
+							$(this).toggleClass("fa-chevron-down fa-chevron-up");
+						});
+					}
+					$("#profs").show();
+				}
+			}
+		})
+	}
+	
+	var showFirst = function(el,limit){
+		if (el == null) return;
+		
+		el = $(el);
+		if (el.length == 0) return;
+		el = el[0];
+		
+		$(el).empty();	
+		
+		if (_first_.length > 0){
+		
+			for(var i = 0; i < _first_.length; i++){
+				var d = _first_[i];
+				
+				var display = "d-flex";
+				if (i >= limit) {display = "d-none";}
+				
+				var html = '<div class="px-2 text-small-90 align-items-baseline ' + display + '">';
+				html += '<div class="d-flex text-small-75" style="flex-basis: 80px;">';
+				html += '<div class="">' + d.race_short + '</div>'; 
+				html += '<div class="pl-1">' + d.Edition + '</div>';
+				html += '</div>'; 
+				html += '<div class="d-flex w-100">'; 
+				//html += '<div class="" title="' + race + '"><i>' + race_short + '</i></div>'; 
+				html += '<div class="px-1">' + d.person + '</div>';
+				if (d.flag == true) {
+					html += "<img class=\"flag ml-auto\" src='/images/flags/small/" + d.NatioAbbr.toLowerCase() + ".gif' title='" + d.Natio + "'/>";
+				}
+				html += '</div></div>'; 
+				
+				$(el).append(html);	
+			}
+		} else {
+			$(el).html("<span class=\"text-small-75 px-2\">Never climbed in Tour, Giro or Vuelta</span>");	
+		}
+	}
+	
+	var _first_ = null;
+	
+	var getFirst = function() {
+		$.ajax({
+			type: "GET",
+			url : "/first/{{$col->ColIDString}}",
+			dataType : 'json',
+			success : function(data) {	
+				if (data.length > 0) {
+				
+					for(var i = 0; i < data.length; i++) {	
+						var d = data[i];
+					
+						d.race = ""; 
+						d.race_short = "";
+					
+						switch(parseInt(data[i].EventID)) {
+							case 1: d.race = "Tour de France"; d.race_short = "Tour"; break;
+							case 2: d.race = "Giro d'Italia"; d.race_short = "Giro"; break;
+							case 3: d.race = "Vuelta a España"; d.race_short = "Vuelta"; break;
+						}
+						
+						d.person = d.Person;
+						//d.person_class = "rider";
+						d.flag = true;
+						if (d.Neutralized == "1") {d.person = "-neutralized-"; d.flag = false;}
+						else if (d.Cancelled == "1") {d.person = "-cancelled-"; d.flag = false;}
+						else if (d.NatioAbbr == "") {d.person = "-cancelled-"; d.flag = false;}
+						
+						if (d.person == null) {d.person = ""; d.flag = false;}
+					}
+					
+				}
+							
+				_first_ = data;
+				
+				showFirst($("#col-first"),5);
+						
+				if (data.length <= 5) {
+					$("#col-first-all").hide();
+				}
+			}
+		})
+	}
+	
+	var printContent = function (el){
+		var title = $(el).attr("id");
+		var divContents = $(el).html();
+		var printWindow = window.open('', '', 'height=400,width=800');
+		printWindow.document.write('<html><head><title>' + title + '</title>');
+		printWindow.document.write('<link rel="stylesheet" href="/css/bootstrap.css" type="text/css">');
+		printWindow.document.write('<link rel="stylesheet" href="/css/main.css" type="text/css">');
+		printWindow.document.write('</head><body>');
+		printWindow.document.write(divContents);
+		printWindow.document.write('</body></html>');
+			
+		/*printWindow.document.close();*/
+		printWindow.focus();
+		
+		setTimeout(function() { 
+			printWindow.print(); 
+			printWindow.close();
+		}, 500);
+	}
+	
 	$(document).ready(function() {
 		showCovers("{{$col->ColIDString}}",{{$hasCoverPhoto}});
-		getColsNearby({{$col->ColID}});
-		getPassages({{$col->ColID}});
-		getPrevNextCol({{$col->Number}});
+		getColsNearby();
+		getFirst();
+		//getPrevNextCol({{$col->Number}});
 		getTopStats({{$col->ColID}});
 		getBanners({{$col->ColID}});
 		
 		getRating();
-		
+			
+		$('#modal-first').on('show.bs.modal', function (event) {
+			var button = $(event.relatedTarget);
 
+			var modal = $(this);
+			
+			showFirst($(".modal-body"),1000);
+		});
 		
+		
+		$(".profile-print").click(function() { 
+			printContent($(this).parents(".col-box")[0]); 
+		});
 
 	});
 
@@ -402,8 +618,9 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		</div>
 @endif
 	</div>
-	<div class="d-flex w-100 p-0 m-0 border-bottom justify-content-between align-items-center">
-		<div class="d-none d-sm-block px-3 py-2 w-25">
+	<!--header-->
+	<div class="d-flex w-100 p-0 m-0 bg-white border-bottom justify-content-between align-items-center">
+		<div class="d-none d-sm-block px-3 py-2 w-25 text-right">
 @if ($col->PanelURL)
 			<img class="panel" src="/images/{{$col->PanelURL}}" />
 @else
@@ -411,7 +628,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 @endif
 		</div>
 		<div class="p-2 w-100 w-sm-75">
-			<h4 class="font-weight-light m-0 p-1">{!!html_entity_decode($colname)!!}</h4>
+			<h4 class="font-weight-light m-0 pl-1">{!!html_entity_decode($colname)!!}</h4>
 			@if (strlen($aliases_str) > 0)
 			<div class="line-height-1 px-1 pb-1"><small class="text-secondary">({{$aliases_str}})</small></div>
 			@endif		
@@ -429,10 +646,10 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				@endif
 			</div>
 		</div>		
-	</div>			
+	</div>	
+	<!--rating-->		
 	<div class="cc-col-user w-100 p-2 d-flex bg-dark text-white align-items-center">
 		<div id="col-rating-count" class="w-25">
-			25 users climbed this col
 		</div>
 		
 		<div id="col-rating-avg" class="w-25">
@@ -466,5 +683,122 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		</div>
 	@endauth
 	</div>
+	<!--content-->
+	<div class="w-100 d-flex align-items-start flex-wrap">
+		<div class="w-100 w-md-75 p-3"><!--profiles-->
+		x profiles
+<?php
+	foreach($profiles as $profile){
+		
+		$cat_dist = getStatCat(1,$profile->Distance);
+		$class_dist = "";
+		if ($cat_dist == 2) $class_dist = "color-2";
+		else if ($cat_dist == 1) $class_dist = "color-1";
+		
+		$cat_gain = getStatCat(2,$profile->HeightDiff);
+		$class_gain = "";
+		if ($cat_gain == 2) $class_gain = "color-2";
+		else if ($cat_gain == 1) $class_gain = "color-1";
+		
+		$cat_avg = getStatCat(3,$profile->AvgPerc);
+		$class_avg = "";
+		if ($cat_avg == 2) $class_avg = "color-2";
+		else if ($cat_avg == 1) $class_avg = "color-1";
+		
+		$cat_max = getStatCat(4,$profile->MaxPerc);
+		$class_max = "";
+		if ($cat_max == 2) $class_max = "color-2";
+		else if ($cat_max == 1) $class_max = "color-1";
+		
+		$cat_index = getStatCat(5,$profile->ProfileIdx);
+		$class_index = "";
+		if ($cat_index == 2) $class_index = "color-2";
+		else if ($cat_index == 1) $class_index = "color-1";
+?>
+			<div id="{{$profile->FileName}}" class="col-box w-100 mb-3">
+				<div class="profile-header border-bottom p-2 d-flex align-items-baseline">
+					<span class="category category-{{$profile->Category}}">{{$profile->Category}}</span>
+					<h6 class="font-weight-light mx-1">{{$col->Col}}</h6>
+		@if ($profile->Side != null)
+					<span class="text-small-75"><img class="direction mr-1" src="/images/{{$profile->Side}}.png"/>{{$profile->Side}}</span>
+		@endif
+				</div>
+				<div>
+					<img class="profile-img" src="/profiles/{{$profile->FileName}}.gif"/>
+				</div>
+				<div class="profile-footer border-top p-2 text-small-75 d-flex">
+					<div class="px-2 py-1">
+						<i class="fas fas-grey fa-arrows-alt-h no-pointer {{$class_dist}}" title="Distance"></i>
+						<span class="pl-1">{{formatStat(1,$profile->Distance)}}</span>
+					</div>
+					<div class="px-2 py-1">
+						<i class="fas fas-grey fa-arrows-alt-v no-pointer {{$class_gain}}" title="Altitude Gain"></i>
+						<span class="pl-1">{{formatStat(2,$profile->HeightDiff)}}</span>
+					</div>
+					<div class="px-2 py-1">
+						<i class="fas fas-grey fa-location-arrow no-pointer {{$class_avg}}" title="Average Slope"></i>
+						<span class="pl-1">{{formatStat(3,$profile->AvgPerc)}}</span>
+					</div>
+					<div class="px-2 py-1">
+						<i class="fas fas-grey fa-bomb no-pointer {{$class_max}}" title="Maximum Slope"></i>
+						<span class="pl-1">{{formatStat(4,$profile->MaxPerc)}}</span>
+					</div>
+					<div class="px-2 py-1">
+						<i class="fas fas-grey fa-signal no-pointer {{$class_index}}" title="Profile Index"></i>
+						<span class="pl-1">{{formatStat(5,$profile->ProfileIdx)}}</span>
+					</div>
+					<div class="px-2 py-1 ml-auto">
+						<i class="profile-print fas fas-grey fa-print" title="Print"></i>
+					</div>
+				</div>
+			
+			</div>
+		
+<?php				
+	}
+?>
+		</div>
+		<div class="w-100 w-md-25 px-3 pl-md-0 py-3"><!--sidebar-->
+			<div class="col-box w-100 mb-3">
+				<div id="map" class="col-map">
+				</div>
+				<div>
+					<h6 class="font-weight-light p-2 m-0 border-bottom">Cols Nearby</h6>
+					<div id="col-nearby" class="font-weight-light py-1">
+					</div>
+				</div>				
+			</div>
+			<div class="col-box w-100 mb-3">
+				<div class="profs" id="profs">
+					<div class="p-2 border-bottom d-flex align-items-center">
+						<h6 class="font-weight-light m-0">First On Top</h6>
+						<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
+							<i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i>
+						</div>
+					</div>
+					<div id="col-first" class="font-weight-light py-1">
+					</div>
+			</div>
+		</div>
+	</div>
+	
 </main>
+<div class="modal fade" id="modal-first" tabindex="-1" role="dialog" aria-labelledby="modal-first-label" aria-hidden="true">
+	<div class="d-flex align-items-center justify-content-around h-100" style="pointer-events: none">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div>
+						<h6 class="modal-title font-weight-light" id="modal-first-label">First On Top</h6>
+					</div>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body p-1 font-weight-light" style="max-height: 80vh; overflow-y: auto;">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 @stop

@@ -1,4 +1,4 @@
-<footer class="footer mt-auto bg-dark text-white text-small-8">
+<footer class="footer mt-auto bg-dark text-white text-small-75">
 	<div class="d-flex flex-row flex-wrap justify-content-between">
 		<div class="px-3 py-2">
 			Developed&nbsp;by&nbsp;Michiel&nbsp;van&nbsp;Lonkhuyzen&nbsp;and&nbsp;<a href="http://rmjg.nl" target="_blank">rmjg.nl</a>&nbsp;| Contact:&nbsp;<a href="mailto:cyclingcols@gmail.com">cyclingcols@gmail.com</a>&nbsp;|

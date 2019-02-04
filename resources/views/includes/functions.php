@@ -1,6 +1,6 @@
 <?php
-function formatStat($statid, $value) {
-	switch($statid) {
+function formatStat($stattypeid, $value) {
+	switch($stattypeid) {
 		case 1://distance
 			return number_format($value/10,1) . 'km';
 			break;
@@ -21,7 +21,55 @@ function formatStat($statid, $value) {
 	}
 }
 
-function statName($statid) {
+function getStatCat($stattypeid, $value) {
+
+	$category = 0;
+	
+	/* distance */
+	if ($stattypeid == 1){
+		if($value < 50) {$category = 5;} 
+		elseif($value < 100) {$category = 4;} 
+		elseif($value < 150) {$category = 3;} 
+		elseif($value < 200) {$category = 2;} 
+		else {$category = 1;}
+	}	
+	/* altitude gain */
+	else if ($stattypeid == 2){
+		if($value < 400) {$category = 5;} 
+		elseif($value < 800) {$category = 4;} 
+		elseif($value < 1300) {$category = 3;} 
+		elseif($value < 1800) {$category = 2;} 
+		else {$category = 1;}
+	}	
+	/* average slope */
+	else if ($stattypeid == 3){
+		if($value < 40) {$category = 5;} 
+		elseif($value < 60) {$category = 4;} 
+		elseif($value < 80) {$category = 3;} 
+		elseif($value < 100) {$category = 2;} 
+		else {$category = 1;}
+	}	
+	/* maximum slope */
+	else if ($stattypeid == 4){
+		if($value < 60) {$category = 5;} 
+		elseif($value < 80) {$category = 4;} 
+		elseif($value < 100) {$category = 3;} 
+		elseif($value < 120) {$category = 2;} 
+		else {$category = 1;}
+	}	
+	/* profile index */
+	else if ($stattypeid == 5){
+		if($value < 300) {$category = 5;} 
+		elseif($value < 500) {$category = 4;} 
+		elseif($value < 700) {$category = 3;} 
+		elseif($value < 900) {$category = 2;} 
+		else {$category = 1;}
+	}	
+
+	return $category;
+}
+
+/*function statName($statid) {
 	switch($statid) {
 		case 1://distance
 			return 'Distance';
@@ -41,9 +89,9 @@ function statName($statid) {
 		default:
 			return '???';
 	}
-}
+}*/
 
-function statNameShort($statid) {
+/*function statNameShort($statid) {
 	switch($statid) {
 		case 1://distance
 			return 'distance';
@@ -63,5 +111,5 @@ function statNameShort($statid) {
 		default:
 			return '???';
 	}
-}
+}*/
 ?>

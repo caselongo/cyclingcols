@@ -19,7 +19,10 @@ CyclingCols - Stats
 				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$stattype->name}}</a>
 				<div class="dropdown-menu">
 @foreach ($stattypes as $stattype_)
-					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype_->url}}/{{$country->url}}">{{$stattype_->name}}</a>
+					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype_->url}}/{{$country->url}}">
+						<i class="fas fas-grey fa-{{$stattype_->icon}} no-pointer"></i>
+						<span>{{$stattype_->name}}</span>
+					</a>
 	@if ($stattype_->id == 0)
 						<div class="dropdown-divider"></div>
 	@endif
@@ -62,9 +65,10 @@ CyclingCols - Stats
 			
 ?>
 			<div class="d-flex w-100 justify-content-between align-items-center px-2 pb-2 pt-3">
-				<h6 class="m-0 font-weight-light" >{{$stattype_current->name}}</h6>
+				<i class="fas fas-grey fa-{{$stattype_current->icon}} no-pointer"></i>
+				<h6 class="m-0 pl-1 font-weight-light" >{{$stattype_current->name}}</h6>
 @if ($stattype->id == 0)
-				<a href="/stats/{{$stattype_current->url}}/{{$country->url}}">
+				<a class="ml-auto" href="/stats/{{$stattype_current->url}}/{{$country->url}}">
 					<small>more...</small>
 				</a>
 @endif
@@ -73,19 +77,7 @@ CyclingCols - Stats
 <?php		
 		}
 						
-		$value = (string)$stat->Value;
-		
-		if ($stattype_current->number_of_decimals > 0){
-			$value_ = "." . substr($value, -1 * $stattype_current->number_of_decimals);
-			
-			if (strlen($value) > $stattype_current->number_of_decimals){
-				$value_ = substr($value, 0, strlen($value) - $stattype_current->number_of_decimals) . $value_;
-			} else {
-				$value_ = "0" . $value_;
-			}
-
-			$value = $value_;
-		}
+		$value = formatStat($stattype_current->id, $stat->Value);
 ?>	
 				<li class="list-group-item list-group-item-action no-pointer rounded-0">
 					<div class="d-flex align-items-center">
@@ -96,13 +88,15 @@ CyclingCols - Stats
 							<img src="/images/flags/{{$stat->Country2}}.gif" title="{{$stat->Country2}}" class="flag flag2">
 @endif
 							<a href="/col/{{$stat->ColIDString}}"> {{$stat->Col}}</a>
-							<small>{{$stat->Side}}</small>
+@if ($stat->Side)
+							<span class="text-small-75"><img class="direction mr-1" src="/images/{{$stat->Side}}.png"/>{{$stat->Side}}</span>
+@endif
 							<span class="category category-{{$stat->Category}}">{{$stat->Category}}</span>
 						</div>
 						new!!
-						<div class="p-1 ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-filename="{{$stat->FileName}}" data-col="{{$stat->Col}}" data-side="{{$stat->Side}}"><i class="fas fas-grey  fa-search-plus"></i></div>
+						<div class="p-1 ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-profile="{{$stat}}"><i class="fas fas-grey  fa-search-plus"></i></div>
 						<div class="p-1">
-							{{$value}}&nbsp;{{$stattype_current->suffix}}
+							{{$value}}
 						</div>
 					</div>		
 				</li>

@@ -159,7 +159,7 @@ var initAutoComplete = function(){
 		return ret;
 	};
 	
-	$.getJSON("/ajax/getcolsforsearch.php", function( data ) {
+	$.getJSON("/cols/all", function( data ) {
 		
 		$( "#search-box" ).autocomplete({
 			minLength: 2,
@@ -423,14 +423,17 @@ $(document).ready(function () {
 	
 	$('#modalProfile').on('show.bs.modal', function (event) {
 	  var button = $(event.relatedTarget);
-	  var filename = button.data('filename');
-	  var col = button.data('col');
-	  var side = button.data('side');
+	  var profile = button.data('profile');
 
 	  var modal = $(this);
-	  modal.find('.modal-title').text(col);
-	  modal.find('.modal-title-secondary').text(side);
-	  modal.find('.modal-body img').attr("src","/profiles/" + filename + ".gif");
+	  modal.find('.category').removeClass("category-1 category-2 category-3 category-4 category-5").addClass("category-" + profile.Category).text(profile.Category);
+	  modal.find('.modal-title').text(profile.Col);
+	  if (profile.Side){
+		modal.find('.modal-title-secondary').html("<img class=\"direction mr-1\" src=\"/images/" + profile.Side + ".png\"/>" + profile.Side);
+	  } else {
+		modal.find('.modal-title-secondary').text("");  
+	  }
+	  modal.find('.profile-img').attr("src","/profiles/" + profile.FileName + ".gif");
 	})
 })
 
