@@ -16,14 +16,14 @@ CyclingCols - Stats
 		<nav class="navbar navbar-expand-sm navbar-light border-bottom border-top p-0" id="nav-stats">
 			<ul class="navbar-nav">
 			  <li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$stattype->name}}</a>
+				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$stattype->StatType}}</a>
 				<div class="dropdown-menu">
 @foreach ($stattypes as $stattype_)
-					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype_->url}}/{{$country->url}}">
-						<i class="fas fas-grey fa-{{$stattype_->icon}} no-pointer"></i>
-						<span>{{$stattype_->name}}</span>
+					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype_->URL}}/{{$country->url}}">
+						<i class="fas fas-grey fa-{{$stattype_->Icon}} no-pointer"></i>
+						<span>{{$stattype_->StatType}}</span>
 					</a>
-	@if ($stattype_->id == 0)
+	@if ($stattype_->StatTypeID == 0)
 						<div class="dropdown-divider"></div>
 	@endif
 @endforeach
@@ -33,7 +33,7 @@ CyclingCols - Stats
 				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$country->name}}</a>
 				<div class="dropdown-menu">
 @foreach ($countries as $country_)
-					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype->url}}/{{$country_->url}}">
+					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype->URL}}/{{$country_->url}}">
 						<img src="/images/flags/{{$country_->flag}}.gif" class="flag">{{$country_->name}}
 					</a>
 	@if ($country_->id == 0)
@@ -57,7 +57,7 @@ CyclingCols - Stats
 			$statid = $stat->StatID;
 			
 			foreach($stattypes as $stattype_){
-				if ($stattype_->id == $statid){
+				if ($stattype_->StatTypeID == $statid){
 					$stattype_current = $stattype_;
 					break;
 				}
@@ -66,8 +66,8 @@ CyclingCols - Stats
 ?>
 			<div class="d-flex w-100 justify-content-between align-items-center px-2 pb-2 pt-3">
 				<i class="fas fas-grey fa-{{$stattype_current->icon}} no-pointer"></i>
-				<h6 class="m-0 pl-1 font-weight-light" >{{$stattype_current->name}}</h6>
-@if ($stattype->id == 0)
+				<h6 class="m-0 pl-1 font-weight-light" >{{$stattype_current->StatType}}</h6>
+@if ($stattype->StatTypeID == 0)
 				<a class="ml-auto" href="/stats/{{$stattype_current->url}}/{{$country->url}}">
 					<small>more...</small>
 				</a>

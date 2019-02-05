@@ -315,6 +315,8 @@ getPrevNextCol = function(number) {
 	})
 }
 */
+
+/*
 getTopStats = function(colid) {
 	$.ajax({
 		url : "/ajax/gettopstats.php?colid=" + colid,
@@ -352,4 +354,4 @@ getTopStats = function(colid) {
 			}
 		}
 	})
-}
+}*/

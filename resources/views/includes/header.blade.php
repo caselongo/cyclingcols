@@ -112,7 +112,9 @@
 			</a>
 		  </li>  
 		@endguest
-
+		  <li class="nav-item">
+			<a class="nav-link" href="https://twitter.com/cyclingcols" target="_blank"><i class="fab fa-twitter"></i></a>
+		  </li> 
 		</ul> 
 		@if (!$home)	
 		<div class="navbar-nav">

@@ -26,6 +26,11 @@ class UserCollsTable extends Migration
             $table->timestamp('UpdatedAt')->nullable();
 
         });
+		
+		Schema::table('stats', function(Blueprint $table)
+		{
+			$table->renameColumn('StatID', 'StatTypeID');
+		});
     }
 
     /**
@@ -36,5 +41,10 @@ class UserCollsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('usercol');
+		
+		Schema::table('stats', function(Blueprint $table)
+		{
+			$table->renameColumn('StatTypeID', 'StatID');
+		});
     }
 }

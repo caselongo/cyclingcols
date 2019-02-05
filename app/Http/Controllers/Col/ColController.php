@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Col;
 
 use App\Col;
 use App\Passage;
+use App\Stat;
+use App\StatType;
+use App\Country;
+
 use App\Http\Controllers\Controller;
-/*use Carbon\Carbon;*/
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -72,5 +76,42 @@ class ColController extends Controller
                      ->get();
 
 		return response()->json($first);
+    }
+	
+    public function top(Request $request, $colIDString)
+    {
+		$col = Col::where('ColIDString', $colIDString)->first();
+
+        if ($col == null) {
+            return response(['success' => false], 404);
+        }
+		
+		$top = Stat::where('ColID', $col->ColID)
+					 ->orderBy('StatTypeID', 'ASC')
+					 ->orderBy('GeoID', 'ASC')
+					 ->orderBy('Rank', 'ASC')
+                     ->get();
+		
+		/* get urls*/
+		$stattypes = StatType::get();
+		$countries = Country::get();
+		
+		foreach($top as $t){
+			foreach($stattypes as $st){
+				if ($st->StatTypeID == $t->StatTypeID){
+					$t->stat_url = $st->URL;
+					break;
+				}
+			}	
+			
+			foreach($countries as $c){
+				if ($c->CountryID == $t->GeoID){
+					$t->country_url = strtolower($c->CountryAbbr);
+					break;
+				}
+			}	
+		}
+
+		return response()->json($top);
     }
 }

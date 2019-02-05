@@ -91,7 +91,7 @@ CyclingCols - Main
 				}
 
 				$.ajax({
-					url : "/ajax/getphotos.php",
+					url : "/cols/photos",
 					data : "",
 					dataType : 'json',
 					success : function(data) {

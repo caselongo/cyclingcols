@@ -189,13 +189,13 @@ Route::get('rides', function()
 
 Route::get('stats', function()
 {   
-	return Redirect::to('stats/all/0');
+	return Redirect::to('stats/all/all');
 });
 
 Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl)
 {   
 	/* stattype */
-	function createStatType($id,$name,$url,$suffix,$number_of_decimals,$icon){	
+	/*function createStatType($id,$name,$url,$suffix,$number_of_decimals,$icon){	
 		$stattype = new stdClass;
 		$stattype->id = $id;
 		$stattype->name = $name; 
@@ -213,11 +213,13 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	array_push($stattypes,createStatType(2,"Altitude Gain","altitudegain","m",0,"arrows-alt-v"));
 	array_push($stattypes,createStatType(3,"Average Slope","averageslope","%",1,"location-arrow"));
 	array_push($stattypes,createStatType(4,"Maximum Slope","maximumslope","%",1,"bomb"));
-	array_push($stattypes,createStatType(5,"Profile Index","profileindex","",0,"signal"));
+	array_push($stattypes,createStatType(5,"Profile Index","profileindex","",0,"signal"));*/
+	
+	$stattypes = \App\StatType::get();
 	
 	$stattype_current = null;
 	foreach($stattypes as $stattype){
-		if ($stattype->url == $stattypeurl){
+		if ($stattype->URL == $stattypeurl){
 			$stattype_current = $stattype;
 			break;
 		}
@@ -261,21 +263,11 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	} else if (is_null($country_current)){
 		return Redirect::to('stats/' . $stattypeurl . "/all");		
 	}
-	
-	//$stats = \App\Profile::where('CountryID1',$country_current->id)->orWhere($country_current->id,0)->orWhere('CountryID2',$country_current->id)->orderBy('Distance','DESC')->take(5)->get();
-	/*$stats = DB::table('profiles')
-				->join('cols', 'profiles.ColID', '=', 'cols.ColID')
-				->where('cols.Country1ID', $country_current->id)
-				->orWhere('cols.Country2ID', $country_current->id)
-				->orWhereRaw($country_current->id . ' = 0')
-				->orderBy('profiles.Distance','DESC')
-				->take(10)
-				->get();*/
 
-	if ($stattype_current->id > 0) {
-		$stats = \App\Stat::where('StatID', $stattype_current->id)->where('GeoID', $country_current->id)->orderBy('Rank','ASC')->get();
+	if ($stattype_current->StatTypeID > 0) {
+		$stats = \App\Stat::where('StatTypeID', $stattype_current->StatTypeID)->where('GeoID', $country_current->id)->orderBy('Rank','ASC')->get();
 	} else {
-		$stats = \App\Stat::where('GeoID', $country_current->id)->where('Rank','<=', 5)->orderBy('StatID','ASC')->orderBy('Rank','ASC')->get();
+		$stats = \App\Stat::where('GeoID', $country_current->id)->where('Rank','<=', 5)->orderBy('StatTypeID','ASC')->orderBy('Rank','ASC')->get();
 	}
 	
 	if (is_null($stats))
@@ -308,10 +300,14 @@ Route::post('password/reset', ['as' => 'password.reset.post', 'uses' => 'Auth\Re
 
 Route::get('welcome', 'WelcomeController@index')->name('welcome');
 
-/* col */
-Route::get('rating/{colIDString}','Col\ColController@rating')->name('col.col.rating');
-Route::get('nearby/{colIDString}','Col\ColController@nearby')->name('col.col.nearby');
-Route::get('first/{colIDString}','Col\ColController@first')->name('col.col.first');
+	Route::middleware(['ajax'])->group(function () {
+	/* col */
+	Route::get('rating/{colIDString}','Col\ColController@rating')->name('col.col.rating');
+	Route::get('nearby/{colIDString}','Col\ColController@nearby')->name('col.col.nearby');
+	Route::get('first/{colIDString}','Col\ColController@first')->name('col.col.first');
+	Route::get('top/{colIDString}','Col\ColController@top')->name('col.col.top');
 
-/* cols */
-Route::get('cols/all','Cols\ColsController@all')->name('cols.cols.all');
+	/* cols */
+	Route::get('cols/all','Cols\ColsController@all')->name('cols.cols.all');
+	Route::get('cols/photos','Cols\ColsController@photos')->name('cols.cols.photos');
+});

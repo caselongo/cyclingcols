@@ -308,7 +308,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		});		
 	}
 			
-	var getPassages = function(colid) {
+	var getPassages = function() {
 		$.ajax({
 			type: "GET",
 			url : "/first/{{$col->ColIDString}}",
@@ -456,6 +456,47 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 						
 				if (data.length <= 5) {
 					$("#col-first-all").hide();
+				}
+			}
+		})
+	}
+	
+	var getTopStats = function() {
+		$.ajax({
+			type: "GET",
+			url : "/top/{{$col->ColIDString}}",
+			dataType : 'json',
+			success : function(data) {	
+				var stattypeid = 0;
+				var rank = 0;
+			
+				for(var i = 0; i < data.length; i++) {
+					if (stattypeid != data[i].StatTypeID || (rank > 1 && data[i].Rank < rank)) {
+						rank = data[i].Rank;
+						var rankAdd = 'th';
+						if (rank == 1) rankAdd = 'st';
+						if (rank == 2) rankAdd = 'nd';
+						if (rank == 3) rankAdd = 'rd';
+						
+						var geo = "Europe";
+						if (data[i].GeoID > 0) {
+							if (data[i].GeoID == data[i].Country1ID) geo = data[i].Country1;
+							else if (data[i].GeoID == data[i].Country2ID) geo = data[i].Country2;
+						}
+						geo = geo.toLowerCase();
+						var geo_img = "<img src='/images/flags/" + geo + ".gif' class='flag pl-1' title='" + geo + "'/>";
+						var el = $("#" + data[i].FileName).find(".stat" + data[i].StatTypeID);
+						var el2 = document.createElement("div");
+						//$(el2).addClass("d-inline-block");
+						$(el).append(el2);
+						var html = '<a href="/stats/' + data[i].stat_url + '/' + data[i].country_url + '">' + data[i].Rank + rankAdd + ' of' + geo_img + '</a>';
+						$(el2).html(html);
+						if (rank <= 10) $(el2).addClass("stat_top_bold");
+						if (data[i].GeoID == 0) $(el2).addClass("stat_top_overall");
+						$(el).show();
+					
+						stattypeid = data[i].StatTypeID;
+					}
 				}
 			}
 		})
@@ -648,11 +689,12 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		</div>		
 	</div>	
 	<!--rating-->		
-	<div class="cc-col-user w-100 p-2 d-flex bg-dark text-white align-items-center">
-		<div id="col-rating-count" class="w-25">
+	<div class="cc-col-user w-100 p-2 d-flex bg-dark text-white align-items-center flex-wrap">
+		<div id="col-rating-count" class="w-100 w-sm-50 w-md-25">
 		</div>
 		
-		<div id="col-rating-avg" class="w-25">
+		<div id="col-rating-avg" class="w-100 w-sm-50 w-md-25">
+			<span class="col-rating-value"></span>
 			<div class="d-inline-block">
 				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
 				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
@@ -660,14 +702,14 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
 				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
 			</div>
-			<span class="col-rating-value"></span>
 		</div>
 	@auth
-		<div id="col-rating-done" class="w-25">
+		<div id="col-rating-done" class="w-100 w-sm-50 w-md-25">
+			<span class="col-done-value"></span>
 			<i class="col-done fas fa-check col-done-no"></i>
-			<span class="col-done-value ml-1"></span>
 		</div>
-		<div id="col-rating-user" class="w-25">
+		<div id="col-rating-user" class="w-100 w-sm-50 w-md-25">
+			<span class="col-rating-value"></span>	
 			<div class="d-inline-block">
 				<i data-rating="1" class="col-rating no-pointer fas fa-star col-rating-no"></i>
 				<i data-rating="2" class="col-rating no-pointer fas fa-star col-rating-no"></i>
@@ -675,7 +717,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				<i data-rating="4" class="col-rating no-pointer fas fa-star col-rating-no"></i>
 				<i data-rating="5" class="col-rating no-pointer fas fa-star col-rating-no"></i>
 			</div>
-			<span class="col-rating-value"></span>	
 		</div>
 	@else
 		<div class="w-50">
@@ -685,8 +726,26 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	</div>
 	<!--content-->
 	<div class="w-100 d-flex align-items-start flex-wrap">
-		<div class="w-100 w-md-75 p-3"><!--profiles-->
-		x profiles
+		<div class="w-100 w-md-75 px-3 pb-2"><!--profiles-->
+		
+		    <div class="font-weight-light text-small-90 py-2">
+<?php 
+
+$profile_count = 0; 
+$profile_string = "";
+
+foreach($profiles as $profile) {
+	$profile_count = $profile_count + 1;
+	if ($profile_count > 1) {$profile_string .= " | ";}
+	$profile_string .= "<a href='#" . $profile->FileName . "'>" . $profile->Side . " (" . $profile->Start . ")</a>";
+}
+
+$profile_string = ": " . $profile_string;
+if ($profile_count > 1) {$profile_string = "s" . $profile_string;}
+$profile_string = $profile_count . " profile" . $profile_string;
+?>
+				{!!html_entity_decode($profile_string)!!}
+			</div>
 <?php
 	foreach($profiles as $profile){
 		
@@ -716,36 +775,41 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		else if ($cat_index == 1) $class_index = "color-1";
 ?>
 			<div id="{{$profile->FileName}}" class="col-box w-100 mb-3">
-				<div class="profile-header border-bottom p-2 d-flex align-items-baseline">
-					<span class="category category-{{$profile->Category}}">{{$profile->Category}}</span>
-					<h6 class="font-weight-light mx-1">{{$col->Col}}</h6>
+				<div class="profile-header border-bottom p-2 d-flex align-items-baseline flex-wrap">
+					<div class="d-flex align-items-baseline flex-wrap">
+						<span class="category category-{{$profile->Category}}">{{$profile->Category}}</span>
+						<h6 class="font-weight-light mx-1">{{$col->Col}}</h6>
 		@if ($profile->Side != null)
-					<span class="text-small-75"><img class="direction mr-1" src="/images/{{$profile->Side}}.png"/>{{$profile->Side}}</span>
+						<span class="text-small-75"><img class="direction mr-1" src="/images/{{$profile->Side}}.png"/>{{$profile->Side}}</span>
+		@endif
+					</div>
+		@if ($profile->Start != null)
+					<span class="text-small-75 px-4"><i class="fas fas-grey fa-angle-right no-pointer pr-1"></i>{{$profile->Start}}</span>
 		@endif
 				</div>
 				<div>
 					<img class="profile-img" src="/profiles/{{$profile->FileName}}.gif"/>
 				</div>
-				<div class="profile-footer border-top p-2 text-small-75 d-flex">
-					<div class="px-2 py-1">
-						<i class="fas fas-grey fa-arrows-alt-h no-pointer {{$class_dist}}" title="Distance"></i>
-						<span class="pl-1">{{formatStat(1,$profile->Distance)}}</span>
+				<div class="profile-footer p-0 text-small-75 d-flex" title="Distance">
+					<div class="stat1 px-2 py-1 border m-2">
+						<i class="fas fas-grey fa-arrows-alt-h no-pointer {{$class_dist}} pr-1"></i>
+						<span>{{formatStat(1,$profile->Distance)}}</span>
 					</div>
-					<div class="px-2 py-1">
-						<i class="fas fas-grey fa-arrows-alt-v no-pointer {{$class_gain}}" title="Altitude Gain"></i>
-						<span class="pl-1">{{formatStat(2,$profile->HeightDiff)}}</span>
+					<div class="stat2 px-2 py-1 border m-2" title="Altitude Gain">
+						<i class="fas fas-grey fa-arrows-alt-v no-pointer {{$class_gain}} pr-1"></i>
+						<span>{{formatStat(2,$profile->HeightDiff)}}</span>
 					</div>
-					<div class="px-2 py-1">
-						<i class="fas fas-grey fa-location-arrow no-pointer {{$class_avg}}" title="Average Slope"></i>
-						<span class="pl-1">{{formatStat(3,$profile->AvgPerc)}}</span>
+					<div class="stat3 px-2 py-1 border m-2" title="Average Slope">
+						<i class="fas fas-grey fa-location-arrow no-pointer {{$class_avg}} pr-1"></i>
+						<span>{{formatStat(3,$profile->AvgPerc)}}</span>
 					</div>
-					<div class="px-2 py-1">
-						<i class="fas fas-grey fa-bomb no-pointer {{$class_max}}" title="Maximum Slope"></i>
-						<span class="pl-1">{{formatStat(4,$profile->MaxPerc)}}</span>
+					<div class="stat4 px-2 py-1 border m-2" title="Maximum Slope">
+						<i class="fas fas-grey fa-bomb no-pointer {{$class_max}} pr-1"></i>
+						<span>{{formatStat(4,$profile->MaxPerc)}}</span>
 					</div>
-					<div class="px-2 py-1">
-						<i class="fas fas-grey fa-signal no-pointer {{$class_index}}" title="Profile Index"></i>
-						<span class="pl-1">{{formatStat(5,$profile->ProfileIdx)}}</span>
+					<div class="stat5 px-2 py-1 border m-2" title="Profile Index">
+						<i class="fas fas-grey fa-signal no-pointer {{$class_index}} pr-1"></i>
+						<span>{{formatStat(5,$profile->ProfileIdx)}}</span>
 					</div>
 					<div class="px-2 py-1 ml-auto">
 						<i class="profile-print fas fas-grey fa-print" title="Print"></i>
