@@ -238,7 +238,7 @@ var initAutoComplete = function(){
 			} else {
 				var html = "<a><img class=\"flag\" src=\"/images/flags/" + item.Country1 + ".gif\"/>";
 				if (item.Country2){
-					html += "<img class=\"flag\" src=\"/images/flags/" + item.Country2 + ".gif\"/>";
+					html += "<img class=\"flag ml-1\" src=\"/images/flags/" + item.Country2 + ".gif\"/>";
 				}
 				html += "<span class=\"px-1\">" + item.label + "</span>";
 				html += "<span class=\"badge badge-altitude font-weight-light\">" + item.Height + "m</span></a>";

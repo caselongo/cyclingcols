@@ -300,7 +300,7 @@ Route::post('password/reset', ['as' => 'password.reset.post', 'uses' => 'Auth\Re
 
 Route::get('welcome', 'WelcomeController@index')->name('welcome');
 
-	Route::middleware(['ajax'])->group(function () {
+Route::middleware(['ajax'])->group(function () {
 	/* col */
 	Route::get('rating/{colIDString}','Col\ColController@rating')->name('col.col.rating');
 	Route::get('nearby/{colIDString}','Col\ColController@nearby')->name('col.col.nearby');
@@ -310,4 +310,5 @@ Route::get('welcome', 'WelcomeController@index')->name('welcome');
 	/* cols */
 	Route::get('cols/all','Cols\ColsController@all')->name('cols.cols.all');
 	Route::get('cols/photos','Cols\ColsController@photos')->name('cols.cols.photos');
+	
 });

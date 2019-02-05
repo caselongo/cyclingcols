@@ -157,7 +157,8 @@ footer{
 .flag{
 	height: 1em;
 	border-radius: 0.1em;
-	margin: 0.2em;
+	/*margin: 0.2em;*/
+	margin-bottom: 0.1em;
 }
 .flag2{
 	margin-left: -0.1em;

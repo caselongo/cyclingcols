@@ -9,7 +9,7 @@ CyclingCols - About
 	<div class="header px-4 py-3">
 		<h4 class="font-weight-light">About CyclingCols</h4>
 	</div>
-	<div class="container-fluid">
+	<div class="container-fluid font-weight-light">
 		<div class="row px-2">
 			<div class="col-xs-12 col-md-6 col-lg-8">
 				<p>This website is a collection of unique and accurate information about cols in Europe, maintained by myself, Michiel van Lonkhuyzen (1977). </p>

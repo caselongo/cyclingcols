@@ -1,4 +1,7 @@
 <?php
 
-Route::get('user/cols','Users\ColsController@index')->name('user.cols.index');
-Route::post('ajax/col/{colID}','Users\ColsController@store')->name('user.cols.store');
+Route::middleware(['ajax'])->group(function () {
+	/* user */
+	Route::get('user/cols','User\ColsController@index')->name('user.cols.index');
+	Route::get('user/col','User\ColsController@store')->name('user.cols.store');
+});

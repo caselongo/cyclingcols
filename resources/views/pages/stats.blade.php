@@ -34,7 +34,7 @@ CyclingCols - Stats
 				<div class="dropdown-menu">
 @foreach ($countries as $country_)
 					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype->URL}}/{{$country_->url}}">
-						<img src="/images/flags/{{$country_->flag}}.gif" class="flag">{{$country_->name}}
+						<img src="/images/flags/{{$country_->flag}}.gif" class="flag mr-1">{{$country_->name}}
 					</a>
 	@if ($country_->id == 0)
 						<div class="dropdown-divider"></div>

@@ -32,3 +32,9 @@ resources/views/pages/new.blade - Copy.php
 public/__ajax/
 public/css/__main.css
 public/css/__main.less
+resources/views/pages/__zwitserland.blade.php
+resources/views/pages/__spanje.blade.php
+resources/views/pages/__oostenrijk.blade.php
+resources/views/pages/__italie.blade.php
+resources/views/pages/__frankrijk.blade.php
+app/Http/Controllers/__Users/

@@ -189,9 +189,12 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				showRating();	
 				
 				$.ajax({
-					type: "POST",
-					url : "/ajax/col/{{$col->ColID}}",
-					data: {"done": true},
+					type: "GET",
+					url : "/user/col",
+					data: {
+						"colIDString": "{{$col->ColIDString}}",
+						"done": true
+					},
 					dataType : 'json',
 					success : function(data) {							
 					}
@@ -234,18 +237,15 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			_rating_.rating = rating;
 			_rating_.rating_avg = rating_sum/_rating_.rating_count;
 			
-			showRating();	
-			
-			/*var el = $(this);
-			el.addClass("col-rating-yes").removeClass("col-rating-no col-rating-no-hover col-rating-yes-hover");
-			el.prevAll().addClass("col-rating-yes").removeClass("col-rating-no col-rating-no-hover col-rating-yes-hover");
-			el.nextAll().addClass("col-rating-no").removeClass("col-rating-yes col-rating-no-hover col-rating-yes-hover");	
-			el.parent().parent().find(".col-rating-value").html("Your rating " + rating + "/5");*/
+			showRating();
 			
 			$.ajax({
-				type: "POST",
-				url : "/ajax/col/{{$col->ColID}}",
-				data: {"rating": rating},
+				type: "GET",
+				url : "/user/col",
+				data: {
+					"colIDString": "{{$col->ColIDString}}",
+					"rating": rating
+				},
 				dataType : 'json',
 				success : function(data) {			
 				}
@@ -299,7 +299,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				
 					var html = '<div class="d-flex px-2 text-small-90">';
 					html += '<div class=""><a href="/col/' + data[i].ColIDString + '">' + data[i].Col + '</a></div>';
-					html += '<div class="ml-auto text-small-75">' + dis + ' km<img class="direction ml-1" src="/images/' + dir + '.png"/></div>';	
+					html += '<div class="ml-auto text-small-75 text-right" style="flex-basis: 60px;">' + dis + ' km<img class="direction ml-1" src="/images/' + dir + '.png"/></div>';	
 					html += '</div>';
 					
 					$("#col-nearby").append(html);
@@ -401,7 +401,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				html += '<div class="">' + d.race_short + '</div>'; 
 				html += '<div class="pl-1">' + d.Edition + '</div>';
 				html += '</div>'; 
-				html += '<div class="d-flex w-100">'; 
+				html += '<div class="d-flex w-100 align-items-center">'; 
 				//html += '<div class="" title="' + race + '"><i>' + race_short + '</i></div>'; 
 				html += '<div class="px-1">' + d.person + '</div>';
 				if (d.flag == true) {
@@ -484,12 +484,12 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 							else if (data[i].GeoID == data[i].Country2ID) geo = data[i].Country2;
 						}
 						geo = geo.toLowerCase();
-						var geo_img = "<img src='/images/flags/" + geo + ".gif' class='flag pl-1' title='" + geo + "'/>";
+						var geo_img = "<img src='/images/flags/" + geo + ".gif' class='flag pr-1' title='" + geo + "'/>";
 						var el = $("#" + data[i].FileName).find(".stat" + data[i].StatTypeID);
 						var el2 = document.createElement("div");
 						//$(el2).addClass("d-inline-block");
 						$(el).append(el2);
-						var html = '<a href="/stats/' + data[i].stat_url + '/' + data[i].country_url + '">' + data[i].Rank + rankAdd + ' of' + geo_img + '</a>';
+						var html = '<a href="/stats/' + data[i].stat_url + '/' + data[i].country_url + '">' + geo_img + data[i].Rank + rankAdd + '</a>';
 						$(el2).html(html);
 						if (rank <= 10) $(el2).addClass("stat_top_bold");
 						if (data[i].GeoID == 0) $(el2).addClass("stat_top_overall");
@@ -811,7 +811,7 @@ $profile_string = $profile_count . " profile" . $profile_string;
 						<i class="fas fas-grey fa-signal no-pointer {{$class_index}} pr-1"></i>
 						<span>{{formatStat(5,$profile->ProfileIdx)}}</span>
 					</div>
-					<div class="px-2 py-1 ml-auto">
+					<div class="px-2 py-1 ml-auto d-none d-lg-inline-block">
 						<i class="profile-print fas fas-grey fa-print" title="Print"></i>
 					</div>
 				</div>

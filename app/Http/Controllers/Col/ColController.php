@@ -104,12 +104,16 @@ class ColController extends Controller
 				}
 			}	
 			
-			foreach($countries as $c){
-				if ($c->CountryID == $t->GeoID){
-					$t->country_url = strtolower($c->CountryAbbr);
-					break;
-				}
-			}	
+			if ($t->GeoID == 0){
+				$t->country_url = "all";
+			} else {
+				foreach($countries as $c){
+					if ($c->CountryID == $t->GeoID){
+						$t->country_url = strtolower($c->CountryAbbr);
+						break;
+					}
+				}	
+			}
 		}
 
 		return response()->json($top);

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<main role="main" class="bd-content p-3">
+<main role="main" class="bd-content p-3 font-weight-light">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">

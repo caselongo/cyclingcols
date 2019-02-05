@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Users;
+namespace App\Http\Controllers\User;
 
 use App\Col;
 use App\Http\Controllers\Controller;
@@ -59,11 +59,12 @@ class ColsController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function store(Request $request, $colID)
+    public function store(Request $request)
     {
+		$colIDString = $request->input("colIDString");
 
         $user = Auth::user();
-        $col = Col::where('ColID', $colID)->first();
+        $col = Col::where('ColIDString', $colIDString)->first();
 
         if ($col == null) {
             return response(['success' => false], 404);
@@ -81,7 +82,7 @@ class ColsController extends Controller
             }
         }
 
-        if ($user->cols()->where('cols.ColId', $colID)->first() != null) {
+        if ($user->cols()->where('cols.ColID', $col->ColID)->first() != null) {
 
             $array['UpdatedAT'] = Carbon::now();
             $user->cols()->updateExistingPivot($col->ColID, $array, false);
@@ -95,9 +96,3 @@ class ColsController extends Controller
         return response(['success' => true], 200);
     }
 }
-
-
-//** return object
-// ['collID' => id, 'rating'=>int, 'favorite'=>boolean]
-//
-// */
