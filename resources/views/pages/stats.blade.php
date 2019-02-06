@@ -4,8 +4,6 @@
 CyclingCols - Stats
 @stop
 
-@include('includes.functions')
-
 @section('content')
 
 <main role="main" class="bd-content">
@@ -19,7 +17,7 @@ CyclingCols - Stats
 				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$stattype->StatType}}</a>
 				<div class="dropdown-menu">
 @foreach ($stattypes as $stattype_)
-					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype_->URL}}/{{$country->url}}">
+					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype_->URL}}/{{$country->URL}}">
 						<i class="fas fas-grey fa-{{$stattype_->Icon}} no-pointer"></i>
 						<span>{{$stattype_->StatType}}</span>
 					</a>
@@ -30,13 +28,13 @@ CyclingCols - Stats
 				</div>
 			  </li>			  
 			  <li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$country->name}}</a>
+				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$country->Country}}</a>
 				<div class="dropdown-menu">
 @foreach ($countries as $country_)
-					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype->URL}}/{{$country_->url}}">
-						<img src="/images/flags/{{$country_->flag}}.gif" class="flag mr-1">{{$country_->name}}
+					<a class="dropdown-item font-weight-light" href="/stats/{{$stattype->URL}}/{{$country_->URL}}">
+						<img src="/images/flags/{{$country_->Flag}}.gif" class="flag mr-1">{{$country_->Country}}
 					</a>
-	@if ($country_->id == 0)
+	@if ($country_->CountryID == 0)
 						<div class="dropdown-divider"></div>
 	@endif
 @endforeach
@@ -47,17 +45,17 @@ CyclingCols - Stats
 		<div class="p-0">
 		
 <?php
-	$statid = -1;
+	$stattypeid = -1;
 	$stattype_current = null;
 	$value = null;
 	
 	foreach ($stats as $stat){
 		
-		if ($stat->StatID != $statid){
-			$statid = $stat->StatID;
+		if ($stat->StatTypeID != $stattypeid){
+			$stattypeid = $stat->StatTypeID;
 			
 			foreach($stattypes as $stattype_){
-				if ($stattype_->StatTypeID == $statid){
+				if ($stattype_->StatTypeID == $stattypeid){
 					$stattype_current = $stattype_;
 					break;
 				}
@@ -68,7 +66,7 @@ CyclingCols - Stats
 				<i class="fas fas-grey fa-{{$stattype_current->icon}} no-pointer"></i>
 				<h6 class="m-0 pl-1 font-weight-light" >{{$stattype_current->StatType}}</h6>
 @if ($stattype->StatTypeID == 0)
-				<a class="ml-auto" href="/stats/{{$stattype_current->url}}/{{$country->url}}">
+				<a class="ml-auto" href="/stats/{{$stattype_current->URL}}/{{$country->URL}}">
 					<small>more...</small>
 				</a>
 @endif
@@ -77,7 +75,7 @@ CyclingCols - Stats
 <?php		
 		}
 						
-		$value = formatStat($stattype_current->id, $stat->Value);
+		$value = formatStat($stattype_current->StatTypeID, $stat->Value);
 ?>	
 				<li class="list-group-item list-group-item-action no-pointer rounded-0">
 					<div class="d-flex align-items-center">

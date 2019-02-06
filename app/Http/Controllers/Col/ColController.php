@@ -7,6 +7,7 @@ use App\Passage;
 use App\Stat;
 use App\StatType;
 use App\Country;
+use App\Profile;
 
 use App\Http\Controllers\Controller;
 
@@ -78,20 +79,7 @@ class ColController extends Controller
 		return response()->json($first);
     }
 	
-    public function top(Request $request, $colIDString)
-    {
-		$col = Col::where('ColIDString', $colIDString)->first();
-
-        if ($col == null) {
-            return response(['success' => false], 404);
-        }
-		
-		$top = Stat::where('ColID', $col->ColID)
-					 ->orderBy('StatTypeID', 'ASC')
-					 ->orderBy('GeoID', 'ASC')
-					 ->orderBy('Rank', 'ASC')
-                     ->get();
-		
+	private function top($top){
 		/* get urls*/
 		$stattypes = StatType::get();
 		$countries = Country::get();
@@ -116,6 +104,64 @@ class ColController extends Controller
 			}
 		}
 
-		return response()->json($top);
+		return response()->json($top);		
+	}
+	
+    public function topprofile(Request $request, $fileName)
+    {
+		$profile = Profile::where('FileName', $fileName)->first();
+
+        if ($profile == null) {
+            return response(['success' => false], 404);
+        }
+		
+		$top = Stat::where('ProfileID', $profile->ProfileID)
+					 ->orderBy('ProfileID', 'ASC')
+					 ->orderBy('StatTypeID', 'ASC')
+					 ->orderBy('GeoID', 'ASC')
+					 ->orderBy('Rank', 'ASC')
+                     ->get();	
+					 
+		return $this->top($top);	
+	}
+	
+    public function topcol(Request $request, $colIDString)
+    {
+		$col = Col::where('ColIDString', $colIDString)->first();
+
+        if ($col == null) {
+            return response(['success' => false], 404);
+        }
+		
+		$top = Stat::where('ColID', $col->ColID)
+					 ->orderBy('ProfileID', 'ASC')
+					 ->orderBy('StatTypeID', 'ASC')
+					 ->orderBy('GeoID', 'ASC')
+					 ->orderBy('Rank', 'ASC')
+                     ->get();
+		
+		return $this->top($top);
+    }
+	
+    public function profile(Request $request, $fileName)
+    {
+		$profile = Profile::where('FileName', $fileName)->first();
+
+        if ($profile == null) {
+            return response(['success' => false], 404);
+        }
+		
+		$profile->Distance = formatStat(1,$profile->Distance);
+		$profile->DistanceCat = getStatCat(1,$profile->Distance);
+		$profile->HeightDiff = formatStat(2,$profile->HeightDiff);
+		$profile->HeightDiffCat = getStatCat(2,$profile->HeightDiff);
+		$profile->AvgPerc = formatStat(3,$profile->AvgPerc);
+		$profile->AvgPercCat = getStatCat(3,$profile->AvgPerc);
+		$profile->MaxPerc = formatStat(4,$profile->MaxPerc);
+		$profile->MaxPercCat = getStatCat(4,$profile->MaxPerc);
+		$profile->ProfileIdx = formatStat(5,$profile->ProfileIdx);
+		$profile->ProfileIdxCat = getStatCat(5,$profile->ProfileIdx);
+
+		return response()->json($profile);
     }
 }

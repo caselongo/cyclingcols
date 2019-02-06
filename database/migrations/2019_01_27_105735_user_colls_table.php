@@ -31,6 +31,11 @@ class UserCollsTable extends Migration
 		{
 			$table->renameColumn('StatID', 'StatTypeID');
 		});
+		
+		Schema::table('profiles', function(Blueprint $table)
+		{
+			$table->index('FileName','idx_profiles_filename');
+		});
     }
 
     /**
@@ -45,6 +50,11 @@ class UserCollsTable extends Migration
 		Schema::table('stats', function(Blueprint $table)
 		{
 			$table->renameColumn('StatTypeID', 'StatID');
+		});
+		
+		Schema::table('profiles', function(Blueprint $table)
+		{
+			$table->dropIndex('idx_profiles_filename');
 		});
     }
 }

@@ -222,6 +222,7 @@ footer{
     width: 1rem;
     border-radius: 50%;
     border: 0.05rem solid gray;
+    margin-bottom: 0.2em;
 }
 
 /*category*/
@@ -418,10 +419,6 @@ footer{
 .col-box{
     box-shadow: 0 0 1rem 0.05rem rgba(0,0,0,0.1);
     background-color: #fff;
-}
-
-.profile-header > * {
-	/*display: inline-block;*/
 }
 
 .profile-img{

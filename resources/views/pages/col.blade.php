@@ -27,8 +27,6 @@ http://www.cyclingcols.com/col/{{$col->ColIDString}}
 http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 @stop
 
-@include('includes.functions')
-
 @section('content')
 
 <?php
@@ -258,7 +256,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var getRating = function(){
 		$.ajax({
 			type: "GET",
-			url : "/rating/{{$col->ColIDString}}",
+			url : "/col/rating/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {
 				if (data.length > 0){
@@ -279,7 +277,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var getColsNearby = function(){
 		$.ajax({
 			type: "GET",
-			url : "/nearby/{{$col->ColIDString}}",
+			url : "/col/nearby/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {		
 				for(var i = 0; i < data.length; i++) {	
@@ -307,11 +305,11 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			}
 		});		
 	}
-			
+	/*		
 	var getPassages = function() {
 		$.ajax({
 			type: "GET",
-			url : "/first/{{$col->ColIDString}}",
+			url : "/col/first/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {	
 				if (data.length > 0) {
@@ -377,7 +375,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				}
 			}
 		})
-	}
+	}*/
 	
 	var showFirst = function(el,limit){
 		if (el == null) return;
@@ -421,7 +419,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var getFirst = function() {
 		$.ajax({
 			type: "GET",
-			url : "/first/{{$col->ColIDString}}",
+			url : "/col/first/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {	
 				if (data.length > 0) {
@@ -461,47 +459,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		})
 	}
 	
-	var getTopStats = function() {
-		$.ajax({
-			type: "GET",
-			url : "/top/{{$col->ColIDString}}",
-			dataType : 'json',
-			success : function(data) {	
-				var stattypeid = 0;
-				var rank = 0;
-			
-				for(var i = 0; i < data.length; i++) {
-					if (stattypeid != data[i].StatTypeID || (rank > 1 && data[i].Rank < rank)) {
-						rank = data[i].Rank;
-						var rankAdd = 'th';
-						if (rank == 1) rankAdd = 'st';
-						if (rank == 2) rankAdd = 'nd';
-						if (rank == 3) rankAdd = 'rd';
-						
-						var geo = "Europe";
-						if (data[i].GeoID > 0) {
-							if (data[i].GeoID == data[i].Country1ID) geo = data[i].Country1;
-							else if (data[i].GeoID == data[i].Country2ID) geo = data[i].Country2;
-						}
-						geo = geo.toLowerCase();
-						var geo_img = "<img src='/images/flags/" + geo + ".gif' class='flag pr-1' title='" + geo + "'/>";
-						var el = $("#" + data[i].FileName).find(".stat" + data[i].StatTypeID);
-						var el2 = document.createElement("div");
-						//$(el2).addClass("d-inline-block");
-						$(el).append(el2);
-						var html = '<a href="/stats/' + data[i].stat_url + '/' + data[i].country_url + '">' + geo_img + data[i].Rank + rankAdd + '</a>';
-						$(el2).html(html);
-						if (rank <= 10) $(el2).addClass("stat_top_bold");
-						if (data[i].GeoID == 0) $(el2).addClass("stat_top_overall");
-						$(el).show();
-					
-						stattypeid = data[i].StatTypeID;
-					}
-				}
-			}
-		})
-	}
-	
 	var printContent = function (el){
 		var title = $(el).attr("id");
 		var divContents = $(el).html();
@@ -527,7 +484,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		getColsNearby();
 		getFirst();
 		//getPrevNextCol({{$col->Number}});
-		getTopStats({{$col->ColID}});
+		getTopStats("{{$col->ColIDString}}",null);
 		getBanners({{$col->ColID}});
 		
 		getRating();
@@ -790,8 +747,8 @@ $profile_string = $profile_count . " profile" . $profile_string;
 				<div>
 					<img class="profile-img" src="/profiles/{{$profile->FileName}}.gif"/>
 				</div>
-				<div class="profile-footer p-0 text-small-75 d-flex" title="Distance">
-					<div class="stat1 px-2 py-1 border m-2">
+				<div class="profile-footer p-0 text-small-75 d-flex">
+					<div class="stat1 px-2 py-1 border m-2" title="Distance">
 						<i class="fas fas-grey fa-arrows-alt-h no-pointer {{$class_dist}} pr-1"></i>
 						<span>{{formatStat(1,$profile->Distance)}}</span>
 					</div>

@@ -111,6 +111,7 @@ Route::get('col/{colIDString}', function($colIDString)
 });
 
 /*Col page - select upmost profile*/
+/*
 Route::get('col/{colIDString}/{profileID}', function($colIDString,$profileID)
 {
 	$col = \App\Col::where('ColIDString',$colIDString)->first();
@@ -137,7 +138,7 @@ Route::get('col/{colIDString}/{profileID}', function($colIDString,$profileID)
 		->with('user',$user)
 		->with('usercol',$usercol)
 		->with('pagetype','coltemplate');
-});
+});*/
 
 /* googlemaps pages*/
 Route::get('map', function()
@@ -194,27 +195,7 @@ Route::get('stats', function()
 
 Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl)
 {   
-	/* stattype */
-	/*function createStatType($id,$name,$url,$suffix,$number_of_decimals,$icon){	
-		$stattype = new stdClass;
-		$stattype->id = $id;
-		$stattype->name = $name; 
-		$stattype->url = $url; 
-		$stattype->suffix = $suffix; 
-		$stattype->number_of_decimals = $number_of_decimals; 
-		$stattype->icon = $icon; 
-		
-		return $stattype;
-	}
-	
-	$stattypes = array();
-	array_push($stattypes,createStatType(0,"All Stats","all",null,null,null));
-	array_push($stattypes,createStatType(1,"Distance","distance","km",1,"arrows-alt-h"));
-	array_push($stattypes,createStatType(2,"Altitude Gain","altitudegain","m",0,"arrows-alt-v"));
-	array_push($stattypes,createStatType(3,"Average Slope","averageslope","%",1,"location-arrow"));
-	array_push($stattypes,createStatType(4,"Maximum Slope","maximumslope","%",1,"bomb"));
-	array_push($stattypes,createStatType(5,"Profile Index","profileindex","",0,"signal"));*/
-	
+	/* stattype */	
 	$stattypes = \App\StatType::get();
 	
 	$stattype_current = null;
@@ -225,34 +206,25 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 		}
 	}
 	
-	/* country */
-	function createCountry($id,$name,$url,$flag){	
-		$country = new stdClass;
-		$country->id = $id;
-		$country->name = $name; 
-		$country->url = $url; 
-		$country->flag = $flag; 
-		
-		return $country;
-	}
+	/* country */	
+	$countries = \App\Country::get();
 	
-	$countries = array();
-	array_push($countries,createCountry(0,"All Countries","all","Europe"));
-	array_push($countries,createCountry(2,"Andorra","and","Andorra"));
-	array_push($countries,createCountry(3,"Austria","aut","Austria"));
-	array_push($countries,createCountry(4,"France","fra","France"));
-	array_push($countries,createCountry(5833,"Great-Britain","gbr","Great-Britain"));
-	array_push($countries,createCountry(5,"Italy","ita","Italy"));
-	array_push($countries,createCountry(6383,"Norway","nor","Norway"));
-	array_push($countries,createCountry(6,"Slovenia","slo","Slovenia"));
-	array_push($countries,createCountry(7,"Spain","spa","Spain"));
-	array_push($countries,createCountry(8,"Switzerland","swi","Switzerland"));
+	$country_all = new stdClass;
+	$country_all->CountryID = 0;
+	$country_all->Country = "All Countries"; 
+	$country_all->URL = "all"; 
+	$country_all->Flag = "europe"; 		
+	$countries->prepend($country_all);	
 	
 	$country_current = null;
 	foreach($countries as $country){
-		if ($country->url == $countryurl){
+		if ($country->CountryID > 0){
+			$country->URL = strtolower($country->CountryAbbr);
+			$country->Flag = strtolower($country->Country);
+		}
+		
+		if ($country->URL == $countryurl){
 			$country_current = $country;
-			break;
 		}
 	}
 	
@@ -265,9 +237,9 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	}
 
 	if ($stattype_current->StatTypeID > 0) {
-		$stats = \App\Stat::where('StatTypeID', $stattype_current->StatTypeID)->where('GeoID', $country_current->id)->orderBy('Rank','ASC')->get();
+		$stats = \App\Stat::where('StatTypeID', $stattype_current->StatTypeID)->where('GeoID', $country_current->CountryID)->orderBy('Rank','ASC')->get();
 	} else {
-		$stats = \App\Stat::where('GeoID', $country_current->id)->where('Rank','<=', 5)->orderBy('StatTypeID','ASC')->orderBy('Rank','ASC')->get();
+		$stats = \App\Stat::where('GeoID', $country_current->CountryID)->where('Rank','<=', 5)->orderBy('StatTypeID','ASC')->orderBy('Rank','ASC')->get();
 	}
 	
 	if (is_null($stats))
@@ -302,10 +274,12 @@ Route::get('welcome', 'WelcomeController@index')->name('welcome');
 
 Route::middleware(['ajax'])->group(function () {
 	/* col */
-	Route::get('rating/{colIDString}','Col\ColController@rating')->name('col.col.rating');
-	Route::get('nearby/{colIDString}','Col\ColController@nearby')->name('col.col.nearby');
-	Route::get('first/{colIDString}','Col\ColController@first')->name('col.col.first');
-	Route::get('top/{colIDString}','Col\ColController@top')->name('col.col.top');
+	Route::get('col/rating/{colIDString}','Col\ColController@rating')->name('col.col.rating');
+	Route::get('col/nearby/{colIDString}','Col\ColController@nearby')->name('col.col.nearby');
+	Route::get('col/first/{colIDString}','Col\ColController@first')->name('col.col.first');
+	Route::get('col/top/{colIDString}','Col\ColController@topcol')->name('col.col.topcol');
+	Route::get('col/profile/top/{profileFileName}','Col\ColController@topprofile')->name('col.col.topprofile');
+	Route::get('col/profile/{fileName}','Col\ColController@profile')->name('col.col.profile');
 
 	/* cols */
 	Route::get('cols/all','Cols\ColsController@all')->name('cols.cols.all');
