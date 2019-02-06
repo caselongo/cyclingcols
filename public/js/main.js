@@ -423,42 +423,44 @@ $(document).ready(function () {
 	
 	$('#modalProfile').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget);
-		var profile = button.data('profile');
-
+		var fileName = button.data('profile');
+		var col = button.data('col');
+ 
 		var modal = $(this);
-		modal.find('.category').removeClass("category-1 category-2 category-3 category-4 category-5").addClass("category-" + profile.Category).text(profile.Category);
-		modal.find('.modal-title').text(profile.Col);
-		if (profile.Side){
-			modal.find('.modal-title-secondary').html("<img class=\"direction mr-1\" src=\"/images/" + profile.Side + ".png\"/>" + profile.Side);
-		} else {
-			modal.find('.modal-title-secondary').text("");  
-		}
-		modal.find('.profile-img').attr("src","/profiles/" + profile.FileName + ".gif");
-	  
+				
 		$.ajax({
 			type: "GET",
-			url : "/col/profile/" + profile.FileName,
+			url : "/col/profile/" + fileName,
 			dataType : 'json',
 			success : function(data) {
-				modal.find('.stat1 span').html(data.Distance);
+				modal.find('.category').removeClass("category-1 category-2 category-3 category-4 category-5").addClass("category-" + data.Category).text(data.Category);
+				modal.find('.modal-title').text(col);
+				if (data.Side){
+					modal.find('.modal-title-secondary').html("<img class=\"direction mr-1\" src=\"/images/" + data.Side + ".png\"/>" + data.Side);
+				} else {
+					modal.find('.modal-title-secondary').text("");  
+				}
+				modal.find('.profile-img').attr("src","/profiles/" + data.FileName + ".gif");
+				
+				modal.find('.stat1 span').html(data.DistanceFormatted);
 				modal.find('.stat1 i').removeClass("color-1 color-2");
 				if (data.DistanceCat <= 2) modal.find('.stat1 i').addClass("color-" + data.DistanceCat);
-				modal.find('.stat2 span').html(data.HeightDiff);
+				modal.find('.stat2 span').html(data.HeightDiffFormatted);
 				modal.find('.stat2 i').removeClass("color-1 color-2");
 				if (data.HeightDiffCat <= 2) modal.find('.stat2 i').addClass("color-" + data.HeightDiffCat);
-				modal.find('.stat3 span').html(data.AvgPerc);
+				modal.find('.stat3 span').html(data.AvgPercFormatted);
 				modal.find('.stat3 i').removeClass("color-1 color-2");
 				if (data.AvgPercCat <= 2) modal.find('.stat3 i').addClass("color-" + data.AvgPercCat);
-				modal.find('.stat4 span').html(data.MaxPerc);
+				modal.find('.stat4 span').html(data.MaxPercFormatted);
 				modal.find('.stat4 i').removeClass("color-1 color-2");
 				if (data.MaxPercCat <= 2) modal.find('.stat4 i').addClass("color-" + data.MaxPercCat);
-				modal.find('.stat5 span').html(data.ProfileIdx);
+				modal.find('.stat5 span').html(data.ProfileIdxFormatted);
 				modal.find('.stat5 i').removeClass("color-1 color-2");
 				if (data.ProfileIdxCat <= 2) modal.find('.stat5 i').addClass("color-" + data.ProfileIdxCat);
 				
-				modal.find('.modal-footer').attr("id",profile.FileName);
+				modal.find('.modal-footer').attr("id",data.FileName);
 				
-				getTopStats(null,profile.FileName);
+				getTopStats(null,data.FileName);
 			}
 		});
 	})

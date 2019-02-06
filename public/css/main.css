@@ -82,11 +82,6 @@ footer{
 	z-index: 1000;
 }
 
-.list-group-item{
-	cursor: pointer;
-	padding: 5px;
-}
-
 .ui-autocomplete .list-group-item:first-child{
 	border-top-left-radius: 0!important;
     border-top-right-radius: 0!important;
@@ -97,22 +92,23 @@ footer{
     border-bottom-right-radius: 0;
 }
 
+/*
 .searchitemflag {
     width: 20px;
     border-radius: 2px;
     margin-right: 4px;
     margin-bottom: 2px;
 }
+*/
+/*
 .searchitemheight {
 	font-size: 0.8em;
     color: #666666;
-    /* border: 1px solid #666666; */
     border-radius: 3px;
     padding: 2px;
     margin: 2px 4px;
     font-weight: 600;
-    /* background: #dddddd; */
-}
+}*/
 	
 #search-box{
 	/*margin: auto;
@@ -177,12 +173,6 @@ footer{
 }
 
 /* card */
-/*
-.card-profile{
-	font-size: 0.8em;
-    border-top: 0.05em solid #ccc;
-    padding: 3px;
-}
 
 .card-img-background{
 	height: 100px;
@@ -212,7 +202,7 @@ footer{
 .badge-new {
 	color: #fff;
     background-image: linear-gradient(#f80, #fb9);
-}*/
+}
 
 /*direction*/
 
@@ -292,7 +282,7 @@ footer{
 
 /* card-deck responsive fix, from https://www.codeply.com/go/peDJfhRYJT/bootstrap-4-responsive-card-deck-(css) */ 
 /* responsively enforce wrapping */
-.card-deck span.dummy {
+/*.card-deck span.dummy {
       display: none;
 }
 
@@ -321,27 +311,27 @@ footer{
       display: block;
       width: 100%;
     }
-}
+}*/
 
 /* add css for margin fix -- this will not be needed after beta */
 .card-deck .card {
-    margin-left: 15px;
-    margin-right: 15px;
+    box-shadow: 0 0 1rem 0.05rem rgba(0,0,0,0.1);
+	border: none;
 }
-
+/*
 .card-deck .card:not(:last-child) {
     margin-right: 15px;
 }
 
 .card-deck .card:not(:first-child) {
     margin-left: 15px;
-}
+}*/
 
 /* added mvl */
-/*.card-invisible{
+.card-invisible{
 	background: transparent;
     border: none;
-}*/
+}
 
 .no-pointer{
 	cursor: default!important;

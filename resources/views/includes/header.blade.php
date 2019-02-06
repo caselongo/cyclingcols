@@ -7,6 +7,7 @@
 	$home = ($path == "/");
 	$new = ($path == "new");
 	$stats = ($path == "stats");
+	$stats2 = ($path == "stats2");
 	$help = ($path == "help");
 	$about = ($path == "about");
 	$map = ($path == "map");
@@ -112,7 +113,7 @@
 			</a>
 		  </li>  
 		@endguest
-		  <li class="nav-item">
+		  <li class="nav-item d-flex align-items-center">
 			<a class="nav-link" href="https://twitter.com/cyclingcols" target="_blank"><i class="fab fa-twitter"></i></a>
 		  </li> 
 		</ul> 

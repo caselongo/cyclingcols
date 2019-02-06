@@ -39,3 +39,5 @@ resources/views/pages/__italie.blade.php
 resources/views/pages/__frankrijk.blade.php
 app/Http/Controllers/__Users/
 resources/views/includes/__functions.php
+resources/views/pages/OLDnew.blade.php
+resources/views/pages/OLDstats.blade.php

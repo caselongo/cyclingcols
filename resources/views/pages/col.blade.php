@@ -53,22 +53,9 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 		}).addTo(map);
 		
-		/*L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-			minZoom: 4,
-			maxZoom: 4,
-			id: 'mapbox.streets',
-			accessToken: 'pk.eyJ1IjoiY3ljbGluZ2NvbHMiLCJhIjoiY2pudTdycTc4MDc2ZTNyb2kyMTUzampjcCJ9.PUlrY1MZeyqtE8_WKj7Smw'
-		}).addTo(map);*/
-		
 		var icon = L.icon({
 			iconUrl: '/images/ColRed.png',
-			//iconSize: [38, 95],
 			iconAnchor: [16,35]
-			//popupAnchor: [-3, -76],
-			//shadowUrl: 'my-icon-shadow.png',
-			//shadowSize: [68, 95],
-			//shadowAnchor: [22, 94]
 		});
 		
 		var markerOptions = {
@@ -201,14 +188,13 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		});
 
 		$(".col-rating").on("mouseenter",function(){
-			$(this).addClass("col-rating-yes-hover").removeClass("col-rating-no-hover");//.removeClass("col-rating-no");
-			$(this).prevAll().addClass("col-rating-yes-hover").removeClass("col-rating-no-hover");//.removeClass("col-rating-no");
-			$(this).nextAll().addClass("col-rating-no-hover").removeClass("col-rating-yes-hover");//.removeClass("col-rating-no");
+			$(this).addClass("col-rating-yes-hover").removeClass("col-rating-no-hover");
+			$(this).prevAll().addClass("col-rating-yes-hover").removeClass("col-rating-no-hover");
+			$(this).nextAll().addClass("col-rating-no-hover").removeClass("col-rating-yes-hover");
 		});
 		
 		$(".col-rating").on("mouseleave",function(){
 			$(this).removeClass("col-rating-yes-hover col-rating-no-hover");
-			//$(this).prevAll().addClass("col-rating-no").removeClass("col-rating-yesno");
 			$(this).siblings().removeClass("col-rating-yes-hover col-rating-no-hover");
 		});
 		
@@ -305,77 +291,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			}
 		});		
 	}
-	/*		
-	var getPassages = function() {
-		$.ajax({
-			type: "GET",
-			url : "/col/first/{{$col->ColIDString}}",
-			dataType : 'json',
-			success : function(data) {	
-				if (data.length > 0) {
-				
-					for(var i = 0; i < data.length; i++) {	
-						var	race = ""; 
-						var race_short = "";
-					
-						switch(parseInt(data[i].EventID)) {
-							case 1: race = "Tour de France"; race_short = "Tour"; break;
-							case 2: race = "Giro d'Italia"; race_short = "Giro"; break;
-							case 3: race = "Vuelta a España"; race_short = "Vuelta"; break;
-						}
-						
-						var person = data[i].Person;
-						var person_class = "rider";
-						var flag = true;
-						if (data[i].Neutralized == "1") {person = "-neutralized-"; flag = false;}
-						else if (data[i].Cancelled == "1") {person = "-cancelled-"; flag = false;}
-						else if (data[i].NatioAbbr == "") {person = "-cancelled-"; flag = false;}
-						
-						if (person == null) {person = ""; flag = false;}
-						
-						var display = "d-flex";
-						if (i >= 5) {display = "d-none";}
-						
-						var html = '<div class="px-2 text-small-90 align-items-baseline ' + display + '">';
-						html += '<div class="d-flex text-small-75 pr-3">';
-						html += '<div class="">' + race_short + '</div>'; 
-						html += '<div class="pl-1">' + data[i].Edition + '</div>';
-						html += '</div>'; 
-						html += '<div class="d-flex w-100">'; 
-						//html += '<div class="" title="' + race + '"><i>' + race_short + '</i></div>'; 
-						html += '<div class="">' + person + '</div>';
-						if (flag == true) {
-							html += "<img class=\"flag ml-auto\" src='/images/flags/small/" + data[i].NatioAbbr.toLowerCase() + ".gif' title='" + data[i].Natio + "'/>";
-						}
-						html += '</div></div>'; 
-						
-						$("#col-first").append(html);
-					}
-						
-					if (data.length <= 5) {
-						$("#col-first-all").hide();
-					} else {
-						$("#col-first-all").on("click", function(){
-							if ($(this).hasClass("fa-chevron-down")){
-								if ($(window).width() >= 992)
-								{
-									$(this).parents(".col-box").siblings().toggleClass("d-none d-flex");
-								}								
-							} else {
-								if ($(window).width() >= 992)
-								{
-									$(this).parents(".col-box").siblings().toggleClass("d-none d-flex");
-								}											
-							}
-							
-							$(this).toggleClass("fa-chevron-down fa-chevron-up");
-						});
-					}
-					$("#profs").show();
-				}
-			}
-		})
-	}*/
 	
 	var showFirst = function(el,limit){
 		if (el == null) return;
@@ -400,7 +315,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				html += '<div class="pl-1">' + d.Edition + '</div>';
 				html += '</div>'; 
 				html += '<div class="d-flex w-100 align-items-center">'; 
-				//html += '<div class="" title="' + race + '"><i>' + race_short + '</i></div>'; 
 				html += '<div class="px-1">' + d.person + '</div>';
 				if (d.flag == true) {
 					html += "<img class=\"flag ml-auto\" src='/images/flags/small/" + d.NatioAbbr.toLowerCase() + ".gif' title='" + d.Natio + "'/>";
@@ -437,7 +351,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 						}
 						
 						d.person = d.Person;
-						//d.person_class = "rider";
 						d.flag = true;
 						if (d.Neutralized == "1") {d.person = "-neutralized-"; d.flag = false;}
 						else if (d.Cancelled == "1") {d.person = "-cancelled-"; d.flag = false;}

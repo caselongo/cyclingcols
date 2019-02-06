@@ -7,76 +7,106 @@ CyclingCols - New
 @section('content')
 <main role="main" class="bd-content">
     <div class="header px-4 py-3">
-        <h4 class="font-weight-light m-0">New and updated cols and profiles</h4>
+        <h4 class="font-weight-light">New and updated cols and profiles</h4>
 	</div>	
-	<div class="container-fluid px-4 pb-3">
-		<div class="p-0">
-		
-<?php
-	use Carbon\Carbon;
+	<div class="container-fluid">
+		<div class="card-deck">
 
-	$datesort = -1;
-	$is_new = -1;
+<?php	
+	$datesort = 0;
+	$colidstring = "";
 	$count = 0;
-	
-	foreach ($newitems as $newitem){
+
+	foreach($newitems as $newitem) {
 		
-		if ($newitem->DateSort != $datesort){
+		if ($newitem->DateSort != $datesort || $newitem->ColIDString != $colidstring) {
 			$datesort = $newitem->DateSort;
-			$is_new = -1;
-			
-			$diff_for_humans = Carbon::createFromFormat('Ymd',$newitem->DateSort)->diffForHumans();
-			$date = Carbon::createFromFormat('Ymd',$newitem->DateSort)->format('j M Y');
-			
-?>
-			<div class="d-flex w-100 align-items-center px-2 py-1 border-bottom border-top p-0">
-				<h6 class="m-0 font-weight-light" >{{$date}}</h6>&nbsp;
-				<small>({{$diff_for_humans}})</small>
-			</div>
-<?php		
+			$colidstring = $newitem->ColIDString;
 		}
 		
-		if ($newitem->IsNew != $is_new){
-			$is_new = $newitem->IsNew;
-?>
-@if ($count > 0)
-		</lu>
-@endif
-
+		//$diff_for_humans = Carbon::createFromFormat('Ymd',$newitem->DateSort)->diffForHumans();
+		//$date = Carbon::createFromFormat('Ymd',$newitem->DateSort)->format('j M Y');
+?>	
+			<div class="card mb-4">
+				<div class="card-img-top card-img-background" onclick='goToCol("{{$newitem->ColIDString}}")' style='background-position: 50% 47%; background-image: url("/images/covers/small/{{$newitem->ColIDString}}.jpg")'>
 @if ($newitem->IsNew)
-			<div class="rounded-top bg-primary cc-new-label mt-2">new</div>
-@else	
-			<div class="rounded-top bg-secondary cc-new-label mt-2">updated</div>
+					<div class="card-img-new">New</div>
 @endif
-			<lu class="list-group">
-<?php
-				
-
-		}
-?>	
-				<li class="list-group-item list-group-item-action no-pointer rounded-0">
-					<div class="d-flex align-items-center">
-						<div class="p-1">
-							<img src="/images/flags/{{$newitem->Country1}}.gif" title="{{$newitem->Country1}}" class="flag">
+					<div class="card-go-to"><small><i class="fas fa-search"></i></small></div>
+				</div><!--card-img-top-->
+				<div class="card-body p-0">
+					<h6 class="card-title p-2 m-0 font-weight-light">
+						<img src="/images/flags/{{$newitem->Country1}}.gif" title="{{$newitem->Country1}}" class="flag">
 @if ($newitem->Country2)
-							<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" class="flag flag2">
+						<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" class="flag flag2">
 @endif
-							<a href="/col/{{$newitem->ColIDString}}"> {{$newitem->Col}}</a>
-@if ($newitem->Side)
-							<span class="text-small-75"><img class="direction mr-1" src="/images/{{$newitem->Side}}.png"/>{{$newitem->Side}}</span>
+						{{$newitem->Col}}
+						<span class="badge badge-altitude font-weight-light">{{$newitem->Height}}m</span>
+					</h6>
+@foreach ($newitem->Profiles as $profile)
+					<div class="card-profile px-2 py-1 border-top text-small-75 d-flex flex-row justify-content-between align-items-baseline">
+						<div>
+							<span class="category category-{{$profile->Category}}">{{$profile->Category}}</span>
+@if ($profile->Side != null)
+							<span>{{$profile->Side}}</span>
+							<img class="direction" src="/images/{{$profile->Side}}.png">
 @endif
-							<span class="category category-{{$newitem->Category}}">{{$newitem->Category}}</span>
-						</div>
-						<div class="p-1 ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-profile="{{$newitem}}""><i class="fas fas-grey  fa-search-plus"></i></div>
-					</div>		
-				</li>
-<?php
-
+							<small>{{$profile->Start}}</small>
+@if (!$newitem->IsNew && $profile->IsNew)
+							<span class="badge badge-new">New</span>
+@endif
+						</div>	
+						<a tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-profile="{{$profile->FileName}}" data-col="{{$newitem->Col}}"><i class="fas fas-grey  fa-search-plus"></i></a>		
+					</div>
+@endforeach
+				</div><!--card-body-->
+				<div class="card-footer text-muted">
+					<span class="text-small-75">
+@if ($newitem->IsNew) 
+			Added
+@else
+			Updated
+@endif
+			{{$newitem->DiffForHumans}} - {{$newitem->DateString}}</span>
+				</div><!--card-footer-->
+			</div><!--card-->
+<?php	
 		$count++;
+?>
+		<!-- card wrapping, see https://www.codeply.com/go/nIB6oSbv6q -->
+		@if ($count > 0 && $count % 2 == 0)
+			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 2 on sm--></div>
+		@endif
+		@if ($count > 0 && $count % 3 == 0)
+			<div class="w-100 d-none d-md-block d-lg-none"><!-- wrap every 3 on md--></div>
+		@endif
+		@if ($count > 0 && $count % 4 == 0)
+			<div class="w-100 d-none d-lg-block"><!-- wrap every 4 on lg or larger--></div>
+		@endif
+<?php
 	}
-?>	
-			</lu>
-		</div>
+	
+	for ($i = 0; $i < 4; $i++){
+?>
+		<!--add some invisible cards to be sure last cards are of equal size-->
+		<div class="card card-invisible"></div>
+			
+<?php
+		$count++;
+?>
+		@if ($count > 0 && $count % 2 == 0)
+			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 2 on sm--></div>
+		@endif
+		@if ($count > 0 && $count % 3 == 0)
+			<div class="w-100 d-none d-md-block d-lg-none"><!-- wrap every 3 on md--></div>
+		@endif
+		@if ($count > 0 && $count % 4 == 0)
+			<div class="w-100 d-none d-lg-block"><!-- wrap every 4 on lg or larger--></div>
+		@endif
+<?php
+	}
+?>
+		</div><!--row-->
 	</div><!--container-->
 </main>
 @stop

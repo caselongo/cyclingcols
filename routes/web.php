@@ -22,9 +22,9 @@ Route::get('/', function()
 /* New page*/
 Route::get('new', function()
 {
-	$newitems = \App\NewItem::orderBy('DateSort','DESC')->orderBy('IsNew','DESC')->orderBy('ColIDString','ASC')->get();
+	$newitems = \App\NewItem::orderBy('DateSort','DESC')->orderBy('ColIDString','ASC')->orderBy('IsNew','DESC')->get();
 	
-	/*$datesort = 0;
+	$datesort = 0;
 	$colidstring = "";
 	
 	$cols = array();
@@ -35,6 +35,7 @@ Route::get('new', function()
 			
 			$col = new stdClass;
 			$col->DateSort = $newitem->DateSort;
+			$col->DateString = Carbon::createFromFormat('Ymd',$newitem->DateSort)->format('j M Y');
 			$col->DiffForHumans = Carbon::createFromFormat('Ymd',$newitem->DateSort)->diffForHumans();
 			$col->ColIDString = $newitem->ColIDString;
 			$col->Col = $newitem->Col;
@@ -67,10 +68,10 @@ Route::get('new', function()
 		}
 		
 		array_push($col->Profiles,$profile);
-	}*/
+	}
 	
 	return View::make('pages.new')
-		->with('newitems',$newitems);
+		->with('newitems',$cols);
 });
 
 /* About page*/
@@ -109,36 +110,6 @@ Route::get('col/{colIDString}', function($colIDString)
 		->with('profiles',$profiles)
 		->with('usercol',$usercol);
 });
-
-/*Col page - select upmost profile*/
-/*
-Route::get('col/{colIDString}/{profileID}', function($colIDString,$profileID)
-{
-	$col = \App\Col::where('ColIDString',$colIDString)->first();
-	
-	if (is_null($col))
-	{
-		return Redirect::to('/');
-	}
-	
-	$orderBy ='CASE WHEN ProfileID = ' . $profileID . ' THEN 0 ELSE 1 END';
-	
-	$profiles = \App\Profile::where('ColID',$col->ColID)->orderBy(DB::raw($orderBy),'ASC')->get();
-	
-	$user = Auth::user();
-	$usercol = null;
-	if($user != null)
-	{
-		$usercol = $user->cols()->where('cols.ColID','=',$col->ColID)->first();
-	}
-	
-	return View::make('pages.col')
-		->with('col',$col)
-		->with('profiles',$profiles)
-		->with('user',$user)
-		->with('usercol',$usercol)
-		->with('pagetype','coltemplate');
-});*/
 
 /* googlemaps pages*/
 Route::get('map', function()
@@ -245,6 +216,15 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	if (is_null($stats))
 	{
 		return Redirect::to('stats/all/all');
+	}
+	
+	foreach($stats as $stat){
+		$col = \App\Col::where('ColID',$stat->ColID)->first();
+		
+		if ($col != null){
+			$stat->Height = $col->Height;
+			$stat->CoverPhotoPosition = $col->CoverPhotoPosition;
+		}
 	}
 	
     return View::make('pages.stats')

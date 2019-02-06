@@ -151,15 +151,15 @@ class ColController extends Controller
             return response(['success' => false], 404);
         }
 		
-		$profile->Distance = formatStat(1,$profile->Distance);
+		$profile->DistanceFormatted = formatStat(1,$profile->Distance);
 		$profile->DistanceCat = getStatCat(1,$profile->Distance);
-		$profile->HeightDiff = formatStat(2,$profile->HeightDiff);
+		$profile->HeightDiffFormatted = formatStat(2,$profile->HeightDiff);
 		$profile->HeightDiffCat = getStatCat(2,$profile->HeightDiff);
-		$profile->AvgPerc = formatStat(3,$profile->AvgPerc);
+		$profile->AvgPercFormatted = formatStat(3,$profile->AvgPerc);
 		$profile->AvgPercCat = getStatCat(3,$profile->AvgPerc);
-		$profile->MaxPerc = formatStat(4,$profile->MaxPerc);
+		$profile->MaxPercFormatted = formatStat(4,$profile->MaxPerc);
 		$profile->MaxPercCat = getStatCat(4,$profile->MaxPerc);
-		$profile->ProfileIdx = formatStat(5,$profile->ProfileIdx);
+		$profile->ProfileIdxFormatted = formatStat(5,$profile->ProfileIdx);
 		$profile->ProfileIdxCat = getStatCat(5,$profile->ProfileIdx);
 
 		return response()->json($profile);
