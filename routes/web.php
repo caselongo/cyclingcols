@@ -161,7 +161,7 @@ Route::get('rides', function()
 
 Route::get('stats', function()
 {   
-	return Redirect::to('stats/all/all');
+	return Redirect::to('stats/distance/all');
 });
 
 Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl)
@@ -200,9 +200,9 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	}
 	
 	if (is_null($stattype_current) && is_null($country_current)){
-		return Redirect::to('stats/all/all');
+		return Redirect::to('stats/distance/all');
 	} else if (is_null($stattype_current)){
-		return Redirect::to('stats/all/' . $countryurl);
+		return Redirect::to('stats/distance/' . $countryurl);
 	} else if (is_null($country_current)){
 		return Redirect::to('stats/' . $stattypeurl . "/all");		
 	}
@@ -215,15 +215,32 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	
 	if (is_null($stats))
 	{
-		return Redirect::to('stats/all/all');
+		return Redirect::to('stats/distance/all');
 	}
+	
+	$user = Auth::user();
 	
 	foreach($stats as $stat){
 		$col = \App\Col::where('ColID',$stat->ColID)->first();
 		
+		$done = 0;
+		$rating = 0;
+		if($user != null){
+			$usercol = \App\UserCol::where('ColID',$col->ColID)->first();
+			
+			if ($usercol){
+				$done = $usercol->Done;
+				$rating = $usercol->Rating;
+			}
+		}
+		
 		if ($col != null){
 			$stat->Height = $col->Height;
 			$stat->CoverPhotoPosition = $col->CoverPhotoPosition;
+			$stat->Latitude = $col->Latitude;
+			$stat->Longitude = $col->Longitude;
+			$stat->Done = $done;
+			$stat->Rating = $rating;
 		}
 	}
 	

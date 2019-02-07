@@ -80,7 +80,7 @@ function showCovers(colIDString,coverPhotoPosition) {
 		path += "medium/";
 	}
 	
-	if (coverPhotoPosition == 1){
+	if (coverPhotoPosition){
 		$(".colimage").css("background-image","url(\"" + path + colIDString + ".jpg\")");
 		if (image2){  
 			$(".colimage2").css("background-image","url(\"" + path + colIDString + "_2.jpg\")");

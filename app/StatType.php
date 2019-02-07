@@ -10,6 +10,7 @@ class StatType extends Model
     protected $fillable = array(
 		'StatTypeID','StatType',
 		'URL','Suffix',
-		'NumberOfDecimals','Icon'
+		'NumberOfDecimals','Icon',
+		'Description'
 	);
 }

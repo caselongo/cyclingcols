@@ -29,10 +29,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 
 @section('content')
 
-<?php
-	$hasCoverPhoto = 1;
-	if (is_null($col->CoverPhotoPosition)) $hasCoverPhoto = 0;
-?>
 <script src="/js/col.js" type="text/javascript"></script>
 <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
 <script type="text/javascript">	
@@ -393,7 +389,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	}
 	
 	$(document).ready(function() {
-		showCovers("{{$col->ColIDString}}",{{$hasCoverPhoto}});
+		showCovers("{{$col->ColIDString}}",{{$col->CoverPhotoPosition}});
 		getColsNearby();
 		getFirst();
 		//getPrevNextCol({{$col->Number}});
@@ -559,12 +555,11 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		</div>		
 	</div>	
 	<!--rating-->		
-	<div class="cc-col-user w-100 p-2 d-flex bg-dark text-white align-items-center flex-wrap">
+	<div class="w-100 p-2 d-flex bg-dark text-white text-small-75 align-items-center flex-wrap">
 		<div id="col-rating-count" class="w-100 w-sm-50 w-md-25">
 		</div>
 		
 		<div id="col-rating-avg" class="w-100 w-sm-50 w-md-25">
-			<span class="col-rating-value"></span>
 			<div class="d-inline-block">
 				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
 				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
@@ -572,14 +567,14 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
 				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
 			</div>
+			<span class="col-rating-value"></span>
 		</div>
 	@auth
 		<div id="col-rating-done" class="w-100 w-sm-50 w-md-25">
-			<span class="col-done-value"></span>
 			<i class="col-done fas fa-check col-done-no"></i>
+			<span class="col-done-value"></span>
 		</div>
 		<div id="col-rating-user" class="w-100 w-sm-50 w-md-25">
-			<span class="col-rating-value"></span>	
 			<div class="d-inline-block">
 				<i data-rating="1" class="col-rating no-pointer fas fa-star col-rating-no"></i>
 				<i data-rating="2" class="col-rating no-pointer fas fa-star col-rating-no"></i>
@@ -587,6 +582,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				<i data-rating="4" class="col-rating no-pointer fas fa-star col-rating-no"></i>
 				<i data-rating="5" class="col-rating no-pointer fas fa-star col-rating-no"></i>
 			</div>
+			<span class="col-rating-value"></span>	
 		</div>
 	@else
 		<div class="w-50">

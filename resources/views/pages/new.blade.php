@@ -32,7 +32,7 @@ CyclingCols - New
 @if ($newitem->IsNew)
 					<div class="card-img-new">New</div>
 @endif
-					<div class="card-go-to"><small><i class="fas fa-search"></i></small></div>
+					<!--<div class="card-go-to"><small><i class="fas fa-search"></i></small></div>-->
 				</div><!--card-img-top-->
 				<div class="card-body p-0">
 					<h6 class="card-title p-2 m-0 font-weight-light">
@@ -40,8 +40,8 @@ CyclingCols - New
 @if ($newitem->Country2)
 						<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" class="flag flag2">
 @endif
-						{{$newitem->Col}}
-						<span class="badge badge-altitude font-weight-light">{{$newitem->Height}}m</span>
+						<a href="/col/{{$newitem->ColIDString}}">{{$newitem->Col}}</a>
+						<span class="badge badge-altitude font-weight-light text-small-70">{{$newitem->Height}}m</span>
 					</h6>
 @foreach ($newitem->Profiles as $profile)
 					<div class="card-profile px-2 py-1 border-top text-small-75 d-flex flex-row justify-content-between align-items-baseline">

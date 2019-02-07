@@ -152,14 +152,17 @@ sup {
 }
 
 a {
-  color: #ff8000;
+  /*color: #ff8000;*/
+  color: inherit;/**/
+  /*font-weight: 400;*/
   text-decoration: none;
   background-color: transparent;
 }
 
 a:hover {
-  color: #ff0000;
-  text-decoration: underline;
+  /*color: #ff0000;*/
+  color: #ff8000;
+  text-decoration: none;
 }
 
 a:not([href]):not([tabindex]) {
@@ -6555,6 +6558,10 @@ button.bg-dark:focus {
 .rounded-top {
   border-top-left-radius: 0.25rem !important;
   border-top-right-radius: 0.25rem !important;
+}
+
+.rounded-top-left {
+  border-top-left-radius: 0.5rem !important;/**/
 }
 
 .rounded-right {

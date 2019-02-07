@@ -57,6 +57,10 @@ footer{
 	height: 40px;
 }
 
+.text-small-70{
+	font-size: 0.7rem;
+}
+
 .text-small-75{
 	font-size: 0.75rem;
 }
@@ -167,8 +171,8 @@ footer{
 
 /* altitude */
 .badge-altitude{
-	border: 0.05em solid #aaa;
-    background: #ddd;
+	border: 0.05em solid #bbb;
+    background: #ededed;
     color: #333;
 }
 
@@ -329,8 +333,9 @@ footer{
 
 /* added mvl */
 .card-invisible{
-	background: transparent;
-    border: none;
+	background: transparent!important;
+    border: none!important;
+	box-shadow: none!important;
 }
 
 .no-pointer{
@@ -342,10 +347,6 @@ footer{
     text-align: center;
     font-size: 0.7em;
 	color: #fff;
-}
-
-.cc-col-user{
-	font-size: 0.75rem;
 }
 
 /* col page */
@@ -381,6 +382,9 @@ footer{
 .col-done-no {
 	color: #666;
 }
+.col-done-no-light {
+	color: #ccc;
+}
 .col-done-yes-hover {
 	color: #ff8000;
 }
@@ -403,7 +407,7 @@ footer{
 /**/
 
 .col-map{
-	height: 300px;
+	height: 250px;
 }
 
 .col-box{
@@ -428,4 +432,13 @@ footer{
 
 .color-2{
 	color: #f80;
+}
+
+.number-icon
+{
+    background-image: url("/images/ColRed.png");
+    text-align:center;
+    color:white;   
+    padding-top: 4px;
+    font-size: 16px; 
 }
