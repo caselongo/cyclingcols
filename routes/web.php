@@ -182,8 +182,8 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	
 	$country_all = new stdClass;
 	$country_all->CountryID = 0;
-	$country_all->Country = "All Countries"; 
-	$country_all->URL = "all"; 
+	$country_all->Country = "Europe"; 
+	$country_all->URL = "eur"; 
 	$country_all->Flag = "europe"; 		
 	$countries->prepend($country_all);	
 	
@@ -200,11 +200,11 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	}
 	
 	if (is_null($stattype_current) && is_null($country_current)){
-		return Redirect::to('stats/distance/all');
+		return Redirect::to('stats/distance/eur');
 	} else if (is_null($stattype_current)){
 		return Redirect::to('stats/distance/' . $countryurl);
 	} else if (is_null($country_current)){
-		return Redirect::to('stats/' . $stattypeurl . "/all");		
+		return Redirect::to('stats/' . $stattypeurl . "/eur");		
 	}
 
 	if ($stattype_current->StatTypeID > 0) {
@@ -215,7 +215,7 @@ Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl
 	
 	if (is_null($stats))
 	{
-		return Redirect::to('stats/distance/all');
+		return Redirect::to('stats/distance/eur');
 	}
 	
 	$user = Auth::user();
@@ -281,5 +281,8 @@ Route::middleware(['ajax'])->group(function () {
 	/* cols */
 	Route::get('cols/all','Cols\ColsController@all')->name('cols.cols.all');
 	Route::get('cols/photos','Cols\ColsController@photos')->name('cols.cols.photos');
+
+	/* stat */
+	Route::get('stats_/top/{country_url}','Stats\StatsController@top')->name('stat.stats.top');	
 	
 });

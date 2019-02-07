@@ -252,7 +252,8 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 					showRating();		
 					createRatingEventHandlers();
 				}
-			}
+			},
+			cache: false
 		});
 	}
 	

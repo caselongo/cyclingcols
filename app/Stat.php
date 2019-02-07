@@ -11,4 +11,9 @@ class Stat extends Model
 		'Country1ID','Country1','Country2ID','Country2',
 		'ProfileID','SideID','Side','FileName','Value','Rank'
 	);
+	
+	public function stattype()
+    {
+        return $this->hasOne('App\StatType', 'StatTypeID', 'StatTypeID');
+    }
 }

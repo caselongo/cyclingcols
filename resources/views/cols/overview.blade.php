@@ -5,10 +5,11 @@
 @stop
 
 @section('content')
-    <div id="stats" class="canvas col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <div class="header">
-            <h1>My Cyclingcols.com</h1>
-        </div>
+<main role="main" class="bd-content">
+	<div class="header px-4 py-3">
+		<h4 class="font-weight-light">My CyclingCols</h4>
+	</div>
+	<div id="stats" class="container-fluid font-weight-light">
         <div class="content">
             <!--<div class="table_header">Stat:</div>-->
             <div class="table_header clearfix" style="text-align:center; padding-bottom:30px;">

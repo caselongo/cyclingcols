@@ -11,7 +11,8 @@ CyclingCols - Stats
 	window.onload = function(){
 		var markers = [];
 		
-<?php	
+<?php
+
 foreach($stats as $stat){
 ?>
 	markers.push({
@@ -67,11 +68,60 @@ foreach($stats as $stat){
 			parent.document.location.href = "/col/" + m.colIDString;
 		});
 	});
+	
+	var getTopStats = function(){
+		$.ajax({
+			type: "GET",
+			url : "/stats_/top/{{$country->URL}}",
+			dataType : 'json',
+			success : function(data) {
+				var top = $("#top");
+				
+				data.forEach(function(d){
+					var div1 = document.createElement("div");
+					$(div1)
+						.addClass("px-2 pt-1 font-weight-light text-small-75")
+						.html("Highest " + d.StatType.StatType);
+					var div2 = document.createElement("div");
+					$(div2)
+						.addClass("px-2 pb-1 font-weight-light border-bottom");
+					var a = document.createElement("a");
+					$(a).attr("href","/col/" + d.ColIDString);
+					var span = document.createElement("span");
+					$(span)
+						.addClass("pr-1")
+						.html(d.Col);
+					
+					top.append(div1,div2);
+					$(div2).append(a);
+					$(a).append(span);	
+						
+					if (d.Side){
+						var img = document.createElement("img");
+						$(img)
+							.addClass("direction")
+							.attr("src","/images/" + d.Side + ".png");
+						var span1 = document.createElement("span");
+						$(span1)
+							.addClass("pl-1 text-small-75")
+							.html(d.Side);
+									
+						$(div2).append(img,span1);	
+					}
+				});
+				
+			}
+		});
+	}
+	
+	$(document).ready(function() {
+		getTopStats();
+	});
 }
-			
+
+/*
 var createRatingEventHandlers = function(){
-@if (Auth::user())
-	/* event handlers */
+if (Auth::user())
 	$(".col-done").on("mouseenter",function(){
 		$(this).addClass("col-done-yes-hover").removeClass("col-done-no-light");
 	});
@@ -83,8 +133,11 @@ var createRatingEventHandlers = function(){
 	$(".col-done").on("click",function(){	
 		if ($(this).hasClass("col-done-yes")) return;
 		$(this).toggleClass("col-done-yes col-done-no-light");
-			
+		
 		var col = $(this).data('col');
+		
+		colsDone.push(col);
+			
 		$.ajax({
 			type: "GET",
 			url : "/user/col",
@@ -97,12 +150,12 @@ var createRatingEventHandlers = function(){
 			}
 		});
 	});
-@endif		
+endif		
 }
 			
 $(document).ready(function() {
 	createRatingEventHandlers();
-});
+});*/
 
 </script>
 
@@ -151,11 +204,7 @@ $(document).ready(function() {
 					</div>
 					<div class="card-body p-2 font-weight-light text-small-90">
 						<div>{{$stattype->Description}}</div>
-@if ($country->CountryID > 0)
-						<div class="mt-2">See here the top 25 for {{$country->Country}}.</div>
-@else
-						<div class="mt-2">See here the top 25 overall.</div>
-@endif
+						<div class="mt-2">Here is the top 25 for {{$country->Country}}.</div>
 					</div>
 				</div>
 <?php
@@ -172,9 +221,13 @@ $(document).ready(function() {
 <?php
 		if (Auth::user()){
 			$col_done_class = "col-done-no-light";
-			if ($stat->Done == 1) $col_done_class = "col-done-yes";
+			$col_done_title = "You did not climb this col";
+			if ($stat->Done == 1) {
+				$col_done_class = "col-done-yes";
+				$col_done_title = "You climbed this col";
+			}
 ?>
-					<i class="col-done fas fa-check {{$col_done_class}} p-1 text-small-90" data-col="{{$stat->ColIDString}}"></i>
+					<i class="col-done fas fa-check {{$col_done_class}} p-1 text-small-90 no-pointer" title="{{$col_done_title}}"></i>
 <?php
 		}
 ?>
@@ -281,6 +334,16 @@ $(document).ready(function() {
 			<div class="col-box w-100 mb-3">
 				<div id="map" class="col-map">
 				</div>			
+			</div>			
+			<div class="col-box w-100 mb-3">
+				<div class="profs" id="profs">
+					<div class="p-2 border-bottom d-flex align-items-center">
+						<h6 class="font-weight-light m-0">Top cols in {{$country->Country}}</h6>
+					</div>
+					<div id="top" class="font-weight-light p-0">
+						
+					</div>
+				</div>
 			</div>
 		</div>
 	</div><!--container-->

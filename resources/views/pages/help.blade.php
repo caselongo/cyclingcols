@@ -6,14 +6,11 @@ CyclingCols - Help
 
 @section('content')
 
-<main role="main" class="bd-content p-3">
-    <div class="header">
-
-        <h1>CyclingCols Help</h1>
+<main role="main" class="bd-content">
+	<div class="header px-4 py-3">
+		<h4 class="font-weight-light">CyclingCols Help</h4>
 	</div>
-	
-	
-	<div class="content">
+	<div class="container-fluid font-weight-light">
 		<div class="profileinfo_header">A CyclingCols altitude profile can contain the following information:<br/>
 			<span class="remark">Select a row in the table to highlight the corresponding element in the profile and vice versa.</span>
 		</div>

@@ -3,7 +3,9 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <title>@yield('title')</title>
+    <meta http-equiv="Expires" content="Mon, 25 Jun 2012 21:31:12 GMT" />
+
+	<title>@yield('title')</title>
     <meta property="og:title" content="@yield('og_title')"/>
     <meta property="og:type" content="article"/>
     <meta property="og:url" content="@yield('og_url')"/>

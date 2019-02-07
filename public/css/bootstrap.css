@@ -152,16 +152,16 @@ sup {
 }
 
 a {
-  /*color: #ff8000;*/
-  color: inherit;/**/
+  color: #ff8000;
+  /*color: inherit;*//**/
   /*font-weight: 400;*/
   text-decoration: none;
   background-color: transparent;
 }
 
 a:hover {
-  /*color: #ff0000;*/
-  color: #ff8000;
+  color: #ff0000;
+  /*color: #ff8000;*/
   text-decoration: none;
 }
 
