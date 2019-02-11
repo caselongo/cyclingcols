@@ -159,95 +159,100 @@ var initAutoComplete = function(){
 		return ret;
 	};
 	
-	$.getJSON("/cols/all", function( data ) {
-		
-		$( "#search-box" ).autocomplete({
-			minLength: 2,
-			delay: 300,
-			appendTo: "#search-box-wrapper",
-			//position: { my : "right top", at: "right bottom" },
-			source: function( request, response ) {
-				var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
-				var res = $.grep( data, function( value ) {
-					value = value.label || value.value || value;
-					return matcher.test( value ) || matcher.test( normalize( value ) );
-				})
-				
-				searchCount = res.length;
-				if (searchCount > 0){
-					firstColIDString = res[0].ColIDString;
-				}
-				
-				response(res.slice(0,10));
-			},
-			select: function( event, ui ) {		
-				//$("#searchstatus").hide();
-				//$( "#searchbox" ).val("");
-				//$( "#searchbox" ).val( ui.item.label );
-				if (history.pushState) {
-					history.pushState(null, null, window.location.href);
-				}
-				window.location.replace("/col/" + ui.item.ColIDString);
-	 
-				return false;
-			},
-			response: function(event, ui) {
-				var remark = null;
-				
-				if (ui.content.length === 0) {
-					remark = "No cols found";
-				} else {
-					remark = searchCount + " cols found" + (searchCount > 10 ? ", showing first 10" : "");
-				}
+	$.ajax({
+		type: "GET",
+		url : "/cols/search",
+		dataType : 'json',
+		success : function(data) {
+			
+			$( "#search-box" ).autocomplete({
+				minLength: 2,
+				delay: 300,
+				appendTo: "#search-box-wrapper",
+				//position: { my : "right top", at: "right bottom" },
+				source: function( request, response ) {
+					var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
+					var res = $.grep( data, function( value ) {
+						value = value.label || value.value || value;
+						return matcher.test( value ) || matcher.test( normalize( value ) );
+					})
+					
+					searchCount = res.length;
+					if (searchCount > 0){
+						firstColIDString = res[0].ColIDString;
+					}
+					
+					response(res.slice(0,10));
+				},
+				select: function( event, ui ) {		
+					//$("#searchstatus").hide();
+					//$( "#searchbox" ).val("");
+					//$( "#searchbox" ).val( ui.item.label );
+					if (history.pushState) {
+						history.pushState(null, null, window.location.href);
+					}
+					window.location.replace("/col/" + ui.item.ColIDString);
+		 
+					return false;
+				},
+				response: function(event, ui) {
+					var remark = null;
+					
+					if (ui.content.length === 0) {
+						remark = "No cols found";
+					} else {
+						remark = searchCount + " cols found" + (searchCount > 10 ? ", showing first 10" : "");
+					}
 
-				var remarks = { "isRemark": true, "remark": remark };
-				
-				ui.content.forEach(function(c){
-					c.isRemark = false;
-				});
-				
-				ui.content.unshift(remarks);
-			},
-			open: function() {
-				var ui = $("#search-box");
-						
-				if (ui.parent().find("#search-box-wrapper").length > 0){
-					var width = ui.outerWidth();
-					var height = ui.outerHeight();
-					var top = ui.position().top;
+					var remarks = { "isRemark": true, "remark": remark };
+					
+					ui.content.forEach(function(c){
+						c.isRemark = false;
+					});
+					
+					ui.content.unshift(remarks);
+				},
+				open: function() {
+					var ui = $("#search-box");
 							
-					ui.parent().find("#search-box-wrapper")
-						.width(width)
-						.css("top", top);
+					if (ui.parent().find("#search-box-wrapper").length > 0){
+						var width = ui.outerWidth();
+						var height = ui.outerHeight();
+						var top = ui.position().top;
+								
+						ui.parent().find("#search-box-wrapper")
+							.width(width)
+							.css("top", top);
+					}
+					
+					ui.addClass("ui-autocomplete-input-open");
+					$(".ui-autocomplete").addClass("list-group");
+				},
+				close: function() {
+					$("#search-box").removeClass("ui-autocomplete-input-open");
 				}
-				
-				ui.addClass("ui-autocomplete-input-open");
-				$(".ui-autocomplete").addClass("list-group");
-			},
-			close: function() {
-				$("#search-box").removeClass("ui-autocomplete-input-open");
-			}
-		})
-		.autocomplete( "instance" )._renderItem = function( ul, item ) {
-			if (item.isRemark){
-				var html = item.remark;
-				return $( "<li>" )
-					.append(html)
-					.addClass("list-group-item list-group-item-action p-1 font-weight-light disabled")
-					.appendTo( ul );				
-			} else {
-				var html = "<a><img class=\"flag\" src=\"/images/flags/" + item.Country1 + ".gif\"/>";
-				if (item.Country2){
-					html += "<img class=\"flag ml-1\" src=\"/images/flags/" + item.Country2 + ".gif\"/>";
+			})
+			.autocomplete( "instance" )._renderItem = function( ul, item ) {
+				if (item.isRemark){
+					var html = item.remark;
+					return $( "<li>" )
+						.append(html)
+						.addClass("list-group-item list-group-item-action p-1 font-weight-light disabled")
+						.appendTo( ul );				
+				} else {
+					var html = "<a><img class=\"flag\" src=\"/images/flags/" + item.Country1 + ".gif\"/>";
+					if (item.Country2){
+						html += "<img class=\"flag ml-1\" src=\"/images/flags/" + item.Country2 + ".gif\"/>";
+					}
+					html += "<span class=\"px-1\">" + item.label + "</span>";
+					html += "<span class=\"badge badge-altitude font-weight-light\">" + item.Height + "m</span></a>";
+					return $( "<li>" )
+						.append(html)
+						.addClass("list-group-item list-group-item-action p-1 font-weight-light")
+						.appendTo( ul );
 				}
-				html += "<span class=\"px-1\">" + item.label + "</span>";
-				html += "<span class=\"badge badge-altitude font-weight-light\">" + item.Height + "m</span></a>";
-				return $( "<li>" )
-					.append(html)
-					.addClass("list-group-item list-group-item-action p-1 font-weight-light")
-					.appendTo( ul );
-			}
-		};
+			};
+		}
 	});
 }
 

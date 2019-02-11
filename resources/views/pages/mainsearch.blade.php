@@ -13,7 +13,7 @@ CyclingCols - Main
         </div>
 		<div id="slide" class="d-flex w-100 justify-content-around">		
 			<div id="search" class="ui-front">
-				<input class="form-control font-weight-light" id="search-box" type="search" placeholder="Search a col in Europe...">
+				<input class="form-control font-weight-light px-2 py-1" id="search-box" type="search" placeholder="Search a col in Europe...">
 			</div>
 			<div id="phototext" class="phototext"><a href=""></a></div>
         </div>

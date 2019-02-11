@@ -733,3 +733,5 @@ $profile_string = $profile_count . " profile" . $profile_string;
 	</div>
 </div>
 @stop
+
+@include('includes.profilemodal')

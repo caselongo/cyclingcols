@@ -280,9 +280,14 @@ Route::middleware(['ajax'])->group(function () {
 
 	/* cols */
 	Route::get('cols/all','Cols\ColsController@all')->name('cols.cols.all');
+	Route::get('cols/search','Cols\ColsController@search')->name('cols.cols.search');
 	Route::get('cols/photos','Cols\ColsController@photos')->name('cols.cols.photos');
 
 	/* stat */
 	Route::get('stats_/top/{country_url}','Stats\StatsController@top')->name('stat.stats.top');	
 	
+	/* general */
+	Route::get('countries','General\GeneralController@countries')->name('general.general.countries');
+	Route::get('regions','General\GeneralController@regions')->name('general.general.regions');		
+	Route::get('subregions','General\GeneralController@subregions')->name('general.general.subregions');		
 });

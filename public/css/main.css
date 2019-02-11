@@ -230,7 +230,7 @@ footer{
     border-radius: 50%;
     border: 0.05rem solid gray;
     /*margin-right: 0.5rem;*/
-    line-height: 1.1rem;
+    line-height: 1rem;
     font-size: 0.8rem;
 }
 .category-1 {
@@ -347,6 +347,11 @@ footer{
     text-align: center;
     font-size: 0.7em;
 	color: #fff;
+}
+
+.cc-img-help{
+	max-width: 100%;
+	display: block;
 }
 
 /* col page */

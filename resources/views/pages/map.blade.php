@@ -92,7 +92,7 @@ CyclingCols - Search On Map
 			},100);
 		}
 			
-		console.log("tryShowMarkers ready");
+		//console.log("tryShowMarkers ready");
 	}
 	
 	window.onload = function() {
@@ -121,14 +121,6 @@ CyclingCols - Search On Map
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 		}).addTo(map);
-		
-		/*L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-			minZoom: 4,
-			//maxZoom: 4,
-			id: 'mapbox.streets',
-			accessToken: 'pk.eyJ1IjoiY3ljbGluZ2NvbHMiLCJhIjoiY2pudTdycTc4MDc2ZTNyb2kyMTUzampjcCJ9.PUlrY1MZeyqtE8_WKj7Smw'
-		}).addTo(map);*/
 		
 		var searchControl = L.esri.Geocoding.geosearch().addTo(map);
 
@@ -194,11 +186,9 @@ CyclingCols - Search On Map
 		var heights = new Array();
 		var colMarker = null;
 		
-		//colsMarkers = new L.FeatureGroup();
-
 		$.ajax({
-			url : "{{ URL::asset('ajax/getcols.php') }}",
-			data : "",
+			type: "GET",
+			url : "/cols/all",
 			dataType : 'json',
 			success : function(data) {
 			
@@ -215,12 +205,7 @@ CyclingCols - Search On Map
 					
 					var icon = L.icon({
 						iconUrl: img,
-						//iconSize: [38, 95],
 						iconAnchor: [16,35]
-						//popupAnchor: [-3, -76],
-						//shadowUrl: 'my-icon-shadow.png',
-						//shadowSize: [68, 95],
-						//shadowAnchor: [22, 94]
 					});
 						
 					var markerOptions = {
@@ -278,8 +263,8 @@ CyclingCols - Search On Map
 		
 		//load countries
 		$.ajax({
-			url : "{{ URL::asset('ajax/getcountries.php') }}",
-			data : "",
+			type: "GET",
+			url : "/countries",
 			dataType : 'json',
 			success : function(data) {
 				for(var j = 0; j < data.length; j++)
@@ -306,12 +291,7 @@ CyclingCols - Search On Map
 					
 					var icon = L.icon({
 						iconUrl: "/images/ColRed.png",
-						//iconSize: [38, 95],
 						iconAnchor: [16,35]
-						//popupAnchor: [-3, -76],
-						//shadowUrl: 'my-icon-shadow.png',
-						//shadowSize: [68, 95],
-						//shadowAnchor: [22, 94]
 					});
 						
 					var markerOptions = {
@@ -369,8 +349,8 @@ CyclingCols - Search On Map
 		
 		//load regions
 		$.ajax({
-			url : "{{ URL::asset('ajax/getregions.php') }}",
-			data : "",
+			type: "GET",
+			url : "/regions",
 			dataType : 'json',
 			success : function(data) {
 				for(var j = 0; j < data.length; j++)
@@ -405,12 +385,7 @@ CyclingCols - Search On Map
 					
 					var icon = L.icon({
 						iconUrl: "/images/ColDarkOrange.png",
-						//iconSize: [38, 95],
 						iconAnchor: [16,35]
-						//popupAnchor: [-3, -76],
-						//shadowUrl: 'my-icon-shadow.png',
-						//shadowSize: [68, 95],
-						//shadowAnchor: [22, 94]
 					});
 						
 					var markerOptions = {
@@ -466,8 +441,8 @@ CyclingCols - Search On Map
 		
 		//load subregions
 		$.ajax({
-			url : "{{ URL::asset('ajax/getsubregions.php') }}",
-			data : "",
+			type: "GET",
+			url : "/subregions",
 			dataType : 'json',
 			success : function(data) {
 				for(var j = 0; j < data.length; j++)
@@ -491,12 +466,7 @@ CyclingCols - Search On Map
 					
 					var icon = L.icon({
 						iconUrl: "/images/ColLightYellow.png",
-						//iconSize: [38, 95],
 						iconAnchor: [16,35]
-						//popupAnchor: [-3, -76],
-						//shadowUrl: 'my-icon-shadow.png',
-						//shadowSize: [68, 95],
-						//shadowAnchor: [22, 94]
 					});
 						
 					var markerOptions = {

@@ -20,17 +20,19 @@ CyclingCols - Help
 					Scale
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
-					<p>Until 2016 all profiles have strictly been generated with 1km sections. Later, I started generating more and more profiles in 500m section scale or sometimes even 200m scale.</p>
+					<img class="cc-img-help mx-auto" src="/images/help/scale.jpg" style="height: 40px"/>
+					<p class="mt-1">Until 2016 all profiles have strictly been generated with 1km sections. Later, I started generating more and more profiles in 500m section scale or sometimes even 200m scale.</p>
 					<p>These higher resolution scales unveil a lot of interesting details, especially irregular slopes, and give a better picture of the character of a climb.</p>
 				</div>
 			</div>	
-			<div class="card mb-3 w-25 ">
+			<div class="card mb-3">
 				<div class="card-header p-2">
 					Category
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
-					<p>All profiles have been categorized on difficulty from category 5 (easy) to category 1 (very difficult).</p>
-					<p>These categories are calculated from a profile's profile index and total distance.</p>
+					<img class="cc-img-help mx-auto" src="/images/help/category.jpg" style="height: 30px"/>
+					<p class="mt-1">All profiles have been categorized on difficulty from category 5 (easy) to category 1 (very difficult).</p>
+					<p>These categories are calculated from the profile's profile index and total distance.</p>
 					<p>Each category covers approximately 20% of all climbs present on CyclingCols.com. So a category 1 climb is amongst the 20% most difficult climbs.</p>
 				</div>
 			</div>	
@@ -40,8 +42,9 @@ CyclingCols - Help
 					Statistics
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
-					<p>Underneath each profile five global statistics are shown: distance, elevation gain, average slope, maximum slope and profile index (more statistics may be add later on).</p>
-					<p>A flag and a rank is shown below if the statistic is amongst the highest values of its country or even of Europe.</p>
+					<img class="cc-img-help mx-auto" src="/images/help/stats.jpg" style="height: 50px"/>
+					<p class="mt-1">Underneath each profile five global statistics are shown: distance, elevation gain, average slope, maximum slope and profile index (more statistics may be added later on).</p>
+					<p>A country flag and a rank is shown below if the statistic is amongst the highest values of its country or even of Europe.</p>
 				</div>
 			</div>	
 			<div class="w-100 d-none d-md-block d-lg-none"></div>
@@ -50,7 +53,8 @@ CyclingCols - Help
 					Steepest intervals
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
-					<p>Three banners underneath the profile baseline locate the steepest 5km, 1km and 200m sections within the entire climb.</p>
+					<img class="cc-img-help mx-auto" src="/images/help/steepest.jpg" style="height: 50px"/>
+					<p class="mt-1">Three banners underneath the profile baseline locate the steepest 5km, 1km and 200m sections within the entire climb.</p>
 				</div>
 			</div>
 			<div class="w-100 d-none d-lg-block"></div>	
@@ -60,7 +64,8 @@ CyclingCols - Help
 					Short steep sections
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
-					<p>Sections of minimum 200m length that are significantly steeper than the average slope of their covering section are indicated in red.</p>
+					<img class="cc-img-help mx-auto" src="/images/help/steep.jpg" style="height: 65px"/>
+					<p class="mt-1">Sections of minimum 200m length that are significantly steeper than the average slope of their covering section are indicated in red.</p>
 				</div>
 			</div>	
 			<div class="card mb-3">
@@ -68,8 +73,9 @@ CyclingCols - Help
 					Tunnels
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
-					<p>Tunnels along the route are indicated. Consecutive short tunnels can be denoted by a single tunnel icon.</p>
-					<p>Not all profiles have yet been generated with tunnel icons.</p>
+					<img class="cc-img-help mx-auto" src="/images/help/tunnel.jpg" style="height: 65px"/>
+					<p class="mt-1">Tunnels along the route are indicated. Consecutive short tunnels can be denoted by a single tunnel icon.</p>
+					<p class="text-small-75">Not all profiles have yet been generated with tunnel icons.</p>
 				</div>
 			</div>	
 			<div class="w-100 d-none d-md-block d-lg-none"></div>
@@ -79,8 +85,9 @@ CyclingCols - Help
 					Hairpin curves
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
-					<p>A black solid vertical line just underneath the profile stands for a hairpin curve to the right, a dashed one depicts a leftward hairpin curve.</p>
-					<p>Not all profiles have yet been generated with hairpin curve indicators.</p>
+					<img class="cc-img-help mx-auto" src="/images/help/hairpins.jpg" style="height: 65px"/>
+					<p class="mt-1">A black solid vertical line just underneath the profile stands for a hairpin curve to the right, a dashed one depicts a leftward hairpin curve.</p>
+					<p class="text-small-75">Not all profiles have yet been generated with hairpin curve indicators.</p>
 				</div>
 			</div>	
 			<div class="card mb-3">
@@ -88,7 +95,8 @@ CyclingCols - Help
 					Unpaved sections
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
-					<p>Unpaved sections of the road are indicated by a gray line along the profile.</p>
+					<img class="cc-img-help mx-auto" src="/images/help/unpaved.jpg" style="height: 65px"/>
+					<p class="mt-1">Unpaved sections of the road are indicated by a gray line along the profile.</p>
 				</div>
 			</div>
 			<div class="w-100 d-none d-lg-block"></div>	

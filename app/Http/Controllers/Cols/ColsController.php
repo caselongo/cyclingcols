@@ -14,12 +14,19 @@ class ColsController extends Controller
 
     public function all(Request $request)
     {
-		$all = DB::table('colsearch')
+		$all = Col::select('ColID','ColIDString','Col','Latitude','Longitude','Height')->get();
+
+		return response()->json($all);
+    }
+	
+    public function search(Request $request)
+    {
+		$search = DB::table('colsearch')
                     ->select(DB::raw('ColIDString, Col AS label, Country1, Country2, Height'))
                     ->orderBy('Priority', 'ASC')
                     ->get();
 
-		return response()->json($all);
+		return response()->json($search);
     }
 	
     public function photos(Request $request)
