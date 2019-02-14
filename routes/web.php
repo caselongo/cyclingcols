@@ -289,5 +289,8 @@ Route::middleware(['ajax'])->group(function () {
 	/* general */
 	Route::get('countries','General\GeneralController@countries')->name('general.general.countries');
 	Route::get('regions','General\GeneralController@regions')->name('general.general.regions');		
-	Route::get('subregions','General\GeneralController@subregions')->name('general.general.subregions');		
+	Route::get('subregions','General\GeneralController@subregions')->name('general.general.subregions');
+	Route::get('banners','General\GeneralController@banners_all')->name('general.general.banners_all');	
+	Route::get('banners/{colIDString}','General\GeneralController@banners')->name('general.general.banners');			
 });
+

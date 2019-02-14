@@ -264,17 +264,6 @@ footer{
   border-color: #999999;
 }
 
-/* banner */
-.banner{
-	padding: 10px;
-    text-align: center;
-    height: 170px;
-}
-
-.banner img{
-    max-height: 150px;
-}
-
 /* about */
 .about-image{
 	text-align: center;
@@ -446,4 +435,19 @@ footer{
     color:white;   
     padding-top: 4px;
     font-size: 16px; 
+}
+
+/* ads*/
+
+#ads-wrapper {
+  z-index: 2147483647;
+}
+@media (max-width: 589px) {
+  #ads-wrapper {
+    display: none;
+  }
+}
+img.ad {
+	/*max-width: 200px;*/
+	max-height: 150px;
 }

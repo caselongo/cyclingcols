@@ -43,9 +43,9 @@ CyclingCols - About
 
 	foreach($banners as $banner) {
 ?>	
-			<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 banner">
+			<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 p-3 text-center">
 				<a href="http://{{$banner->RedirectURL}}" target="_blank">
-					<img src="/images/banners/{{$banner->BannerFileName}}">
+					<img class="ad rounded" src="/images/banners/{{$banner->BannerFileName}}">
 				</a>
 			</div>
 <?php

@@ -29,7 +29,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 
 @section('content')
 
-<script src="/js/col.js" type="text/javascript"></script>
 <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
 <script type="text/javascript">	
 	window.onload = function(){
@@ -368,6 +367,42 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			}
 		})
 	}
+		
+	var getBanners = function() {
+		$.ajax({
+			type: "GET",
+			url : "/banners/{{$col->ColIDString}}",
+			dataType : 'json',
+			success : function(data) {
+				if (data.length > 0){
+					$("#ads").toggleClass("d-block d-none");
+					
+					/*var div = document.createElement("div");
+					$(div).addClass("ads");
+					var firstProfile = $(".leftinfo").children().first();
+					$(firstProfile).after(div);*/
+						
+					for(var i = 0; i < data.length; i++){
+						var a = document.createElement("a");
+						var img = document.createElement("img");
+						$(img)							
+							.addClass("ad rounded")
+							.attr("src","/images/banners/" + data[i].BannerFileName);
+							
+						if (i > 0){$(img)							
+							.addClass("mt-2")		
+						}
+						
+						$(a)							
+							.attr("href","http://" + data[i].RedirectURL)
+							.attr("target","_blank");
+						$("#ads").append(a);
+						$(a).append(img);
+					}
+				}			
+			}
+		});
+	}
 	
 	var printContent = function (el){
 		var title = $(el).attr("id");
@@ -387,6 +422,33 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			printWindow.print(); 
 			printWindow.close();
 		}, 500);
+	}
+	
+	var showCovers = function(colIDString,coverPhotoPosition) {
+		//load images
+		var w = $(window).width();
+		var h = $(window).height();
+		var wh = w;
+		if (h > w) wh = h;
+		var path = "/images/covers/";
+		var image2 = ($(".colimage2").length > 0);
+		
+		if (wh <= 680){	 
+			path += "small/";
+		} else if (wh <= 1024){	 
+			path += "medium/";
+		} else if (image2){  
+			path += "medium/";
+		}
+		
+		if (coverPhotoPosition){
+			$(".colimage").css("background-image","url(\"" + path + colIDString + ".jpg\")");
+			if (image2){  
+				$(".colimage2").css("background-image","url(\"" + path + colIDString + "_2.jpg\")");
+			}
+		} else {
+			$(".colimage").css("background-image","url(\"" + path + "_Dummy.jpg\")");		
+		}
 	}
 	
 	$(document).ready(function() {
@@ -698,17 +760,18 @@ $profile_string = $profile_count . " profile" . $profile_string;
 					<div id="col-nearby" class="font-weight-light py-1">
 					</div>
 				</div>				
+			</div>	
+			<div id="ads" class="w-100 mb-3 text-center p-1 d-none">			
 			</div>
 			<div class="col-box w-100 mb-3">
-				<div class="profs" id="profs">
-					<div class="p-2 border-bottom d-flex align-items-center">
-						<h6 class="font-weight-light m-0">First On Top</h6>
-						<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-							<i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i>
-						</div>
+				<div class="p-2 border-bottom d-flex align-items-center">
+					<h6 class="font-weight-light m-0">First On Top</h6>
+					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
+						<i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i>
 					</div>
-					<div id="col-first" class="font-weight-light py-1">
-					</div>
+				</div>
+				<div id="col-first" class="font-weight-light py-1">
+				</div>
 			</div>
 		</div>
 	</div>

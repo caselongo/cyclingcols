@@ -41,3 +41,4 @@ app/Http/Controllers/__Users/
 resources/views/includes/__functions.php
 resources/views/pages/OLDnew.blade.php
 resources/views/pages/OLDstats.blade.php
+public/js/__col.js

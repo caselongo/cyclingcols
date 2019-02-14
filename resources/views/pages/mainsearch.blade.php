@@ -9,7 +9,7 @@ CyclingCols - Main
 
 <main role="main" class="bd-content p-0 overflow-hidden">
     <div class="d-flex w-100">
-        <div id="news_ads">
+        <div id="ads-wrapper" class="position-absolute d-flex flex-column justify-content-end p-1">
         </div>
 		<div id="slide" class="d-flex w-100 justify-content-around">		
 			<div id="search" class="ui-front">
@@ -24,29 +24,31 @@ CyclingCols - Main
 			
 			function getBanners() {	
 				var width = $(window).width();
-				var height = $(window).height() - $('.footer').height() - $('.homemenu').height();
+				var height = $(window).height() - $('footer').height() - $('header').height();
 				var count = parseInt(height/150);
 				
 				if (width < 992) return;
+				
+				$("#ads-wrapper").css("height", height);
 			
 				$.ajax({
-					url : "/ajax/getbanners.php?colid=0",
-					data : "",
+					type: "GET",
+					url : "/banners",
 					dataType : 'json',
 					success : function(data) {
-						/*for(var i = 0; i < count; i++){
+						for(var i = 0; i < count; i++){
 							var a = document.createElement("a");
 							var img = document.createElement("img");
 							$(img)							
-								.addClass("banner")
+								.addClass("ad m-1 rounded")
 								.attr("src","/images/banners/" + data[i].BannerFileName);
 							$(a)							
-								.addClass("banner")
+								.addClass("d-block")
 								.attr("href","http://" + data[i].RedirectURL)
 								.attr("target","_blank");
-							$('#news_ads').append(a);
+							$('#ads-wrapper').append(a);
 							$(a).append(img);
-						}*/
+						}
 					}
 				})
 			}
