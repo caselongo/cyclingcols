@@ -425,6 +425,17 @@ $(document).ready(function () {
 	//$(document).on("focusout","#searchbox",function(){
 	//	$("#searchstatus").hide();
 	//});
+		
+	$('#modalRide').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		var fileName = button.data('ride');
+		var date = button.data('date');
+ 
+		var modal = $(this);
+		
+		modal.find('.date').text(date);				
+		modal.find('.ride-img').attr("src","/tours/" + fileName + ".gif");	
+	});
 	
 	$('#modalProfile').on('show.bs.modal', function (event) {
 		var button = $(event.relatedTarget);

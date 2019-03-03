@@ -49,6 +49,12 @@ Route::get('new', function()
 			
 			$datesort = $newitem->DateSort;
 			$colidstring = $newitem->ColIDString;
+			
+			$col_ = \App\Col::where("ColID",$newitem->ColID)->first();
+			
+			if ($col_){
+				$col->CoverPhotoPosition = $col_->CoverPhotoPosition;
+			}
 		}
 		
 		if ($newitem->IsNewCol){
@@ -290,7 +296,9 @@ Route::middleware(['ajax'])->group(function () {
 	Route::get('countries','General\GeneralController@countries')->name('general.general.countries');
 	Route::get('regions','General\GeneralController@regions')->name('general.general.regions');		
 	Route::get('subregions','General\GeneralController@subregions')->name('general.general.subregions');
+	Route::get('rides/all','General\GeneralController@rides')->name('general.general.rides');
 	Route::get('banners','General\GeneralController@banners_all')->name('general.general.banners_all');	
 	Route::get('banners/{colIDString}','General\GeneralController@banners')->name('general.general.banners');			
 });
 
+	

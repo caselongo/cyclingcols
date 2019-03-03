@@ -164,9 +164,10 @@ footer{
 	margin-left: -0.1em;
 }
 
-/* flags */
+/* panels */
 .panel{
 	border-radius: 0.2em;
+	max-width: 100%;
 }
 
 /* altitude */
@@ -450,4 +451,41 @@ footer{
 img.ad {
 	/*max-width: 200px;*/
 	max-height: 150px;
+}
+
+/* rides */
+.ride{
+	line-height: 2;
+}
+.ride-date {
+	width: 80px;
+}
+.ride-countries {
+	width: 80px;
+}
+.ride-index {
+	display: inline-block;
+    width: 2em;
+}
+.ride-index-0 {
+	background: #ffffff;
+}
+.ride-index-1 {
+	background: #ffff40;
+}
+.ride-index-2 {
+	background: #ffbb00;
+}
+.ride-index-3 {
+	background: #ff6600;
+}
+.ride-index-4 {
+	background: #ff0000;
+}
+.ride-profile {
+	height: 25px;
+	cursor: pointer;
+}
+.ride-weather{
+	height: 1.5em;
 }

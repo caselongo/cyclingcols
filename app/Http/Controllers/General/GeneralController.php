@@ -5,6 +5,7 @@ namespace App\Http\Controllers\General;
 use App\Country;
 use App\Region;
 use App\SubRegion;
+use App\Ride;
 use App\Banner;
 use App\Col;
 
@@ -35,6 +36,13 @@ class GeneralController extends Controller
 		$subregions = SubRegion::get();
 		
 		return response()->json($subregions);
+    }
+
+    public function rides(Request $request)
+    {
+		$rides = Ride::orderBy('DateSort','DESC')->get();
+		
+		return response()->json($rides);
     }
 
     public function banners_all(Request $request){

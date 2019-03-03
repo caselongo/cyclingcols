@@ -4,8 +4,6 @@
 CyclingCols - Rides
 @stop
 
-@include('includes.functions')
-
 @section('content')
 <script type="text/javascript">	
 $(document).ready(function() {
@@ -34,8 +32,8 @@ var years = [];
 
 getRides = function() {
 	$.ajax({
-		url : "/ajax/getrides.php",
-		data : "",
+		type: "GET",
+		url : "/rides/all",
 		dataType : 'json',
 		success : function(data) {
 			rides = data;
@@ -145,7 +143,7 @@ showRides = function(){
 		var c = r.Countries.split(",");
 		var countries = "";
 		for (var j = 0; j < c.length; j++){
-			countries += "<img class=\"ride-flag\" src=\"/images/flags/" + c[j] + ".gif\"></img>";
+			countries += "<img class=\"flag ml-1\" src=\"/images/flags/" + c[j] + ".gif\"></img>";
 		}
 		
 		var cols = "";
@@ -155,12 +153,13 @@ showRides = function(){
 		
 		var weather = "";
 		if (r.WeatherCode > 0){
-			weather = "<img class=\"ride-flag\" src=\"/images/weather/weather" + r.WeatherCode + ".gif\"></img>";
+			weather = "<img class=\"ride-weather\" src=\"/images/weather/weather" + r.WeatherCode + ".gif\"></img>";
 		}
 		
 		var profile = "";
 		if (r.FileName){
-			profile = "<img class=\"ride-profile\" src=\"/tours/" + r.FileName + ".gif\" onclick=\"showProfile('" + r.FileName + "')\"></img>";
+			
+			profile = "<a tabindex=\"0\" role=\"button\" data-toggle=\"modal\" data-target=\"#modalRide\" data-ride=\"" + r.FileName + "\" data-date=\"" + r.Date + "\"><img class=\"ride-profile\" src=\"/tours/" + r.FileName + ".gif\"></img></a>";
 		}
 		
 		var class_ = "ride-index-4";
@@ -169,13 +168,13 @@ showRides = function(){
 		if (r.RideIndex <= 19) { class_ = "ride-index-1"; }
 		if (r.RideIndex <= 16) { class_ = "ride-index-0"; }
 
-		var html = "<tr class=\"ride\">";
+		var html = "<tr class=\"text-small-75 border-bottom ride\">";
 		html += "<td class=\"ride-date\">" + r.Date + "</td>";
 		html += "<td>" + stage + "</td>";
 		html += "<td class=\"ride-countries\">" + countries + "</td>";
 		html += "<td>" + distance + "</td>";
 		html += "<td>" + heightdiff + "</td>";
-		html += "<td><div class=\"ride-index " + class_ + "\">" + r.RideIndex + "</div></td>";
+		html += "<td><div class=\"border rounded text-center ride-index " + class_ + "\">" + r.RideIndex + "</div></td>";
 		html += "<td>" + profile + "</td>";
 		html += "<td>" + cols + "</td>";
 		html += "<td>" + weather + "</td>";
@@ -186,51 +185,14 @@ showRides = function(){
 	}		
 }
 
-showProfile = function(fileName) {
-	var div = document.createElement("div");
-	$(div).addClass("popup_canvas");
-	$(div).height($(window).height());
-	document.body.appendChild(div);
-
-	var img = document.createElement("img");
-	$(img).attr("src","/tours/" + fileName + ".gif");
-	$(img).addClass("profile_popup_img");
-	document.body.appendChild(img);
-	
-	//setTimeout(function(){
-	$(img).load(function() {
-		var width = img.width;//img.clientWidth;
-		var height = img.height;//img.clientHeight;
-		if (width > $(window).width()) width = $(window).width();
-		if (height > $(window).height()) height = $(window).height();
-		var top = ($(window).height()-height)/2;
-		if (top < 30) top = 30;
-		var left = ($(window).width()-width)/2;
-		
-		$(img).css("top",top);
-		$(img).css("left",left);
-		$(img).css("max-height",$(window).height());
-		$(img).css("max-width",$(window).width());
-		
-		$('body').addClass('stop-scrolling');
-		
-		$(img).add(div).on("click",function(){
-			$(img).remove();
-			$(div).remove();
-			$('body').removeClass('stop-scrolling');
-		});
-	});
-}
-
 </script>
 
-<div id="canvas" class="canvas col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="header">
-        <h1>CyclingCols Rides</h1>
-	</div>
-	
-	<div class="content" style="width:95%">
-		<div class="table_header clearfix">
+<main role="main" class="bd-content">
+    <div class="header px-4 py-3">
+        <h4 class="font-weight-light">CyclingCols Rides</h4>
+	</div>	
+	<div class="container-fluid px-4 pb-4">
+		<div class="font-weight-light">
 			<label for="year">Year</label>
 			<select id="year">
 				<option value="-1">All</option>
@@ -300,20 +262,20 @@ showProfile = function(fileName) {
 				<option value="coldest">Coldest</option>
 			</select>
 		</div>
-		<div class="table_table clearfix">
-			<table id="#rides">
-				<thead class="rides-header">
+		<div class="font-weight-light">
+			<table id="#rides" class="w-100">
+				<thead class="border-top border-bottom">
 					<tr>
-						<th>Date</th>
-						<th>From( - To)</th>
-						<th>Countries</th>
-						<th>KM</th>
-						<th>HM</th>
-						<th>Index</th>
-						<th>Profile</th>
-						<th>Cols</th>
-						<th>Weather</th>
-						<th>Temp</th>
+						<td>Date</td>
+						<td>From( - To)</td>
+						<td>Countries</td>
+						<td>KM</td>
+						<td>HM</td>
+						<td>Index</td>
+						<td>Profile</td>
+						<td>Cols</td>
+						<td>Weather</td>
+						<td>Temp</td>
 					</tr>
 				</thead>
 				<tbody>	
@@ -324,3 +286,6 @@ showProfile = function(fileName) {
     </div>
 </div>
 @stop
+
+@include('includes.ridemodal')
+

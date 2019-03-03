@@ -16,6 +16,7 @@ CyclingCols - New
 	$datesort = 0;
 	$colidstring = "";
 	$count = 0;
+	
 
 	foreach($newitems as $newitem) {
 		
@@ -24,11 +25,18 @@ CyclingCols - New
 			$colidstring = $newitem->ColIDString;
 		}
 		
+		$coverPhoto = "_Dummy";
+		$coverPhotoPosition = 50;
+		if ($newitem->CoverPhotoPosition){
+			$coverPhoto = $newitem->ColIDString;
+			$coverPhotoPosition = $newitem->CoverPhotoPosition;
+		}
+		
 		//$diff_for_humans = Carbon::createFromFormat('Ymd',$newitem->DateSort)->diffForHumans();
 		//$date = Carbon::createFromFormat('Ymd',$newitem->DateSort)->format('j M Y');
 ?>	
 			<div class="card mb-4">
-				<div class="card-img-top card-img-background" onclick='goToCol("{{$newitem->ColIDString}}")' style='background-position: 50% 47%; background-image: url("/images/covers/small/{{$newitem->ColIDString}}.jpg")'>
+				<div class="card-img-top card-img-background" onclick='goToCol("{{$newitem->ColIDString}}")' style='background-position: 50% {{$coverPhotoPosition}}%; background-image: url("/images/covers/small/{{$coverPhoto}}.jpg")'>
 @if ($newitem->IsNew)
 					<div class="card-img-new">New</div>
 @endif

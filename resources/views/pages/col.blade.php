@@ -655,7 +655,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	</div>
 	<!--content-->
 	<div class="w-100 d-flex align-items-start flex-wrap">
-		<div class="w-100 w-md-75 px-3 pb-2"><!--profiles-->
+		<div class="w-100 w-lg-75 px-3 pb-2"><!--profiles-->
 		
 		    <div class="font-weight-light text-small-90 py-2">
 <?php 
@@ -751,7 +751,7 @@ $profile_string = $profile_count . " profile" . $profile_string;
 	}
 ?>
 		</div>
-		<div class="w-100 w-md-25 px-3 pl-md-0 py-3"><!--sidebar-->
+		<div class="w-100 w-lg-25 px-3 pl-md-0 py-3"><!--sidebar-->
 			<div class="col-box w-100 mb-3">
 				<div id="map" class="col-map">
 				</div>
