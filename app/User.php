@@ -37,8 +37,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = ['password', 'remember_token'];
 
-    public function cols(){
-
+    public function cols()
+	{
         return $this->belongsToMany(Col::class,'usercol','UserID','ColID',null,'ColID')
             ->withPivot(['Done','CreatedAt','UpdatedAt','Rating','ToDo']);
     }

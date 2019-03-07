@@ -31,7 +31,34 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 
 <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
 <script type="text/javascript">	
-	window.onload = function(){
+		
+	$(document).ready(function() {
+		initMap();
+		
+		showCovers("{{$col->ColIDString}}",{{$col->CoverPhotoPosition}});
+		getColsNearby();
+		getFirst();
+		getTopStats("{{$col->ColIDString}}",null);
+		getBanners({{$col->ColID}});
+		
+		getRating();
+			
+		$('#modal-first').on('show.bs.modal', function (event) {
+			var button = $(event.relatedTarget);
+
+			var modal = $(this);
+			
+			showFirst($("#modal-first").find(".modal-body"),1000);
+		});
+		
+		
+		$(".profile-print").click(function() { 
+			printContent($(this).parents(".col-box")[0]); 
+		});
+
+	});
+	
+	var initMap = function(){
 		
 		var lat = {{$col->Latitude/1000000}};
 		var lng = {{$col->Longitude/1000000}};
@@ -170,7 +197,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				
 				$.ajax({
 					type: "GET",
-					url : "/user/col",
+					url : "/service/user/col",
 					data: {
 						"colIDString": "{{$col->ColIDString}}",
 						"done": true
@@ -220,7 +247,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			
 			$.ajax({
 				type: "GET",
-				url : "/user/col",
+				url : "/service/user/col",
 				data: {
 					"colIDString": "{{$col->ColIDString}}",
 					"rating": rating
@@ -237,7 +264,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var getRating = function(){
 		$.ajax({
 			type: "GET",
-			url : "/col/rating/{{$col->ColIDString}}",
+			url : "/service/col/rating/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {
 				if (data.length > 0){
@@ -259,7 +286,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var getColsNearby = function(){
 		$.ajax({
 			type: "GET",
-			url : "/col/nearby/{{$col->ColIDString}}",
+			url : "/service/col/nearby/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {		
 				for(var i = 0; i < data.length; i++) {	
@@ -278,8 +305,8 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 					else { dir = "South"; }
 				
 					var html = '<div class="d-flex px-2 text-small-90">';
-					html += '<div class=""><a href="/col/' + data[i].ColIDString + '">' + data[i].Col + '</a></div>';
-					html += '<div class="ml-auto text-small-75 text-right" style="flex-basis: 60px;">' + dis + ' km<img class="direction ml-1" src="/images/' + dir + '.png"/></div>';	
+					html += '<div class="text-truncate" title="' + data[i].Col + '"><a href="/col/' + data[i].ColIDString + '">' + data[i].Col + '</a></div>';
+					html += '<div class="ml-auto text-small-75 text-right" style="flex: 0 0 60px;">' + dis + ' km<img class="direction ml-1" src="/images/' + dir + '.png"/></div>';	
 					html += '</div>';
 					
 					$("#col-nearby").append(html);
@@ -291,9 +318,9 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var showFirst = function(el,limit){
 		if (el == null) return;
 		
-		el = $(el);
+		//el = $(el);
 		if (el.length == 0) return;
-		el = el[0];
+		//el = el[0];
 		
 		$(el).empty();	
 		
@@ -306,12 +333,12 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				if (i >= limit) {display = "d-none";}
 				
 				var html = '<div class="px-2 text-small-90 align-items-baseline ' + display + '">';
-				html += '<div class="d-flex text-small-75" style="flex-basis: 80px;">';
+				html += '<div class="d-flex text-small-75" style="flex: 0 0 80px;">';
 				html += '<div class="">' + d.race_short + '</div>'; 
 				html += '<div class="pl-1">' + d.Edition + '</div>';
 				html += '</div>'; 
 				html += '<div class="d-flex w-100 align-items-center">'; 
-				html += '<div class="px-1">' + d.person + '</div>';
+				html += '<div class="px-1 text-truncate">' + d.person + '</div>';
 				if (d.flag == true) {
 					html += "<img class=\"flag ml-auto\" src='/images/flags/small/" + d.NatioAbbr.toLowerCase() + ".gif' title='" + d.Natio + "'/>";
 				}
@@ -321,7 +348,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			}
 		} else {
 			$(el).html("<span class=\"text-small-75 px-2\">Never climbed in Tour, Giro or Vuelta</span>");	
-		}
+		}	
 	}
 	
 	var _first_ = null;
@@ -329,7 +356,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var getFirst = function() {
 		$.ajax({
 			type: "GET",
-			url : "/col/first/{{$col->ColIDString}}",
+			url : "/service/col/first/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {	
 				if (data.length > 0) {
@@ -371,7 +398,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var getBanners = function() {
 		$.ajax({
 			type: "GET",
-			url : "/banners/{{$col->ColIDString}}",
+			url : "/service/banners/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {
 				if (data.length > 0){
@@ -450,31 +477,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			$(".colimage").css("background-image","url(\"" + path + "_Dummy.jpg\")");		
 		}
 	}
-	
-	$(document).ready(function() {
-		showCovers("{{$col->ColIDString}}",{{$col->CoverPhotoPosition}});
-		getColsNearby();
-		getFirst();
-		//getPrevNextCol({{$col->Number}});
-		getTopStats("{{$col->ColIDString}}",null);
-		getBanners({{$col->ColID}});
-		
-		getRating();
-			
-		$('#modal-first').on('show.bs.modal', function (event) {
-			var button = $(event.relatedTarget);
-
-			var modal = $(this);
-			
-			showFirst($(".modal-body"),1000);
-		});
-		
-		
-		$(".profile-print").click(function() { 
-			printContent($(this).parents(".col-box")[0]); 
-		});
-
-	});
 
 </script>
 

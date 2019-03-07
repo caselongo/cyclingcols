@@ -96,7 +96,7 @@
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 			  <a class="dropdown-item font-weight-light" href="/logout">Logout</a>
 			  <div class="dropdown-divider"></div>
-			  <a class="dropdown-item font-weight-light" href="/user/cols">My CyclingCols</a>
+			  <a class="dropdown-item font-weight-light" href="/user">My CyclingCols</a>
 			</div>
 		  </li>
 		@endauth

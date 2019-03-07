@@ -11,15 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class ColsController extends Controller
 {
-
-    public function all(Request $request)
+	/* service */
+    public function _cols(Request $request)
     {
 		$all = Col::select('ColID','ColIDString','Col','Latitude','Longitude','Height')->get();
 
 		return response()->json($all);
     }
 	
-    public function search(Request $request)
+    public function _search(Request $request)
     {
 		$search = DB::table('colsearch')
                     ->select(DB::raw('ColIDString, Col AS label, Country1, Country2, Height'))
@@ -29,7 +29,7 @@ class ColsController extends Controller
 		return response()->json($search);
     }
 	
-    public function photos(Request $request)
+    public function _photos(Request $request)
     {
 		$photos = Col::whereNotNull('CoverPhotoPosition')
 					->where('CoverPhotoMainPage', 1)

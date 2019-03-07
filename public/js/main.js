@@ -1,49 +1,7 @@
 var searchCount;
 var firstColIDString;
 
-/*sets the height of the map-canvas so that it always fills the screen height*/
-var calculatescrollheight = function() {//added 20151213
-    if ($('body').hasClass('mappage')) {	
-		$('#div-scroll').css("overflow-y","auto");
-	} else {
-		var height = $(window).height() - $('.homemenu').height();
-		$('#div-scroll').height(height);
-	}
-}
-
-/*sets the height of the map-canvas so that it always fills the screen height*/
-var calculatemapheight = function() {
-    if ($('body').hasClass('mappage')) {
-        var height = $(window).height() - $('.footer').height() - $('#canvas').offset().top;
-	
-		$('#canvas').height(height);
-		$('#map-canvas').height(height);
-    }
-}
-
-var calculateprofilemaxwidth = function() {
-    if ($('body').hasClass('coltemplate')) {
-		$(".profileimage").each(function(){
-			$(this).css('max-width',$(this).parent().parent().width() - 135);
-			$(this).find("img").css('max-width',$(this).parent().parent().width() - 135);
-		});
-    }
-}
-
-var goToCol = function(colIDString){
-	window.location.replace("/col/" + colIDString);
-}
-
-$(window).resize(function() {
-	calculatescrollheight();
-	calculatemapheight();
-	calculateprofilemaxwidth();
-});
-
 $(document).ready(function() {
-	calculatescrollheight();
-    calculatemapheight();
-	calculateprofilemaxwidth();
 	
     /*on keyboard enter press*/
     $(document).keypress(function(e) {
@@ -58,60 +16,68 @@ $(document).ready(function() {
         }
     });
 
-    /*select menu headeritem*/
-    $(".menuitem").removeClass("selectedtab"); //remove     
-    $('.home #menuleft a:nth-child(2) .menuitem').addClass("selectedtab");
-	$('.newtemplate #menuleft a:nth-child(3) .menuitem').addClass("selectedtab");
-    $('.statstemplate #menuleft a:nth-child(4) .menuitem').addClass("selectedtab");
-    $('.helptemplate #menuleft a:nth-child(5) .menuitem').addClass("selectedtab");
-    $('.abouttemplate #menuleft a:nth-child(6) .menuitem').addClass("selectedtab");
-    $('.mappage #menuleft a:nth-child(7) .menuitem').addClass("selectedtab");
-
+	/* init autocomplete */
 	initAutoComplete();
 	
-	/*$("#login").on("click",function(){
-		 window.location.replace("/login");
+	/* init modal ride */
+	$('#modalRide').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		var fileName = button.data('ride');
+		var date = button.data('date');
+ 
+		var modal = $(this);
+		
+		modal.find('.date').text(date);				
+		modal.find('.ride-img').attr("src","/tours/" + fileName + ".gif");	
 	});
 	
-	$("#logout").on("click",function(){
-		window.location.replace("/logout");
-	});*/
-	
-	$(".headeruser").on("mouseenter", function(){
-		var loggedIn = $(this).find("#user").length > 0;
-		
-		if (loggedIn){
-			var height = $(this).find(".menuitem").height();
-			var width = $(this).find(".menuitem").width();
-			
-			var dropdown = document.createElement("div");
-			$(dropdown)
-				.css("top", height + "px")
-				.css("width", width + "px")
-				.addClass("_dropdown");
-			
-			$(this).append(dropdown);
+	/* init modal profile */
+	$('#modalProfile').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		var fileName = button.data('profile');
+		var col = button.data('col');
+ 
+		var modal = $(this);
+		modal.find('.modal-content').hide();
 				
-			var logout = document.createElement("div");
-			$(logout).html("<a href=\"/logout\"><i class=\"glyphicon glyphicon-log-out\"></i>&nbsp;Logout</a>");
-			var profile = document.createElement("div");
-			$(profile).html("<a href=\"/user/cols\"><i class=\"glyphicon glyphicon-list\"></i>&nbsp;My CyclingCols</a>");
-			
-			$(dropdown).append(logout,profile);
-		}
-	});
-	
-	$(".headeruser").on("mouseleave", function(){
-		var loggedIn = $(this).find("#user").length > 0;
-		
-		if (loggedIn){
-			$(this).parent().find("._dropdown").remove();
-		}
-	});
-	
-	$(function () {
-	  $('[data-toggle="popover"]').popover()
-	});
+		$.ajax({
+			type: "GET",
+			url : "/service/col/profile/" + fileName,
+			dataType : 'json',
+			success : function(data) {
+				modal.find('.category').removeClass("category-1 category-2 category-3 category-4 category-5").addClass("category-" + data.Category).text(data.Category);
+				modal.find('.modal-title').text(col);
+				if (data.Side){
+					modal.find('.modal-title-secondary').html("<img class=\"direction mr-1\" src=\"/images/" + data.Side + ".png\"/>" + data.Side);
+				} else {
+					modal.find('.modal-title-secondary').text("");  
+				}
+				modal.find('.profile-img').attr("src","/profiles/" + data.FileName + ".gif");
+				
+				modal.find('.stat1 span').html(data.DistanceFormatted);
+				modal.find('.stat1 i').removeClass("color-1 color-2");
+				if (data.DistanceCat <= 2) modal.find('.stat1 i').addClass("color-" + data.DistanceCat);
+				modal.find('.stat2 span').html(data.HeightDiffFormatted);
+				modal.find('.stat2 i').removeClass("color-1 color-2");
+				if (data.HeightDiffCat <= 2) modal.find('.stat2 i').addClass("color-" + data.HeightDiffCat);
+				modal.find('.stat3 span').html(data.AvgPercFormatted);
+				modal.find('.stat3 i').removeClass("color-1 color-2");
+				if (data.AvgPercCat <= 2) modal.find('.stat3 i').addClass("color-" + data.AvgPercCat);
+				modal.find('.stat4 span').html(data.MaxPercFormatted);
+				modal.find('.stat4 i').removeClass("color-1 color-2");
+				if (data.MaxPercCat <= 2) modal.find('.stat4 i').addClass("color-" + data.MaxPercCat);
+				modal.find('.stat5 span').html(data.ProfileIdxFormatted);
+				modal.find('.stat5 i').removeClass("color-1 color-2");
+				if (data.ProfileIdxCat <= 2) modal.find('.stat5 i').addClass("color-" + data.ProfileIdxCat);
+				
+				modal.find('.modal-footer').attr("id",data.FileName);
+				
+				getTopStats(null,data.FileName);
+				
+				modal.find('.modal-content').show();
+			}
+		});
+	})
 });
 
 var initAutoComplete = function(){
@@ -161,7 +127,7 @@ var initAutoComplete = function(){
 	
 	$.ajax({
 		type: "GET",
-		url : "/cols/search",
+		url : "/service/cols/search",
 		dataType : 'json',
 		success : function(data) {
 			
@@ -256,260 +222,12 @@ var initAutoComplete = function(){
 	});
 }
 
-/*help page*/
-var showInfo = function () {
-	hideInfo();
-	
-	$(this).addClass("selected");
-    var id = "#div_" + $(this).find(".infotype").attr("id");
-    $(id).addClass("selected");
-}
-
-var hideInfo = function () {	
-	$(".info").removeClass("selected");
-    $(".infotype_row").removeClass("selected");
-}
-
-var showInfoType = function () {
-	hideInfo();
-	
-	$(this).addClass("selected");
-    var id = "#" + $(this).attr("id").replace("div_", "");
-	$(id).parent().addClass("selected");
-}
-
-var hideInfoType = function () {
-    hideInfo();
-}
-
-
-var showInfo2 = function () {
-	hideInfo2();
-	
-	$(this).addClass("selected2");
-    var id = "#div_" + $(this).find(".infotype").attr("id");
-    $(id).addClass("selected2");
-}
-
-var hideInfo2 = function () {	
-	$(".info").removeClass("selected2");
-    $(".infotype_row").removeClass("selected2");
-}
-
-var showInfoType2 = function () {
-	hideInfo2();
-	
-	$(this).addClass("selected2");
-    var id = "#" + $(this).attr("id").replace("div_", "");
-	$(id).parent().addClass("selected2");
-}
-
-var hideInfoType2 = function () {
-    hideInfo2();
-}
-
-var showTableProfile = function() {
-	var id = $(this).attr("id");
-	var idx = id.indexOf("-");
-	
-	if (idx == -1) return;
-	
-	var colIDString = id.substr(0,idx);
-	var fileName = id.substr(idx+1);
-	
-	var div = document.createElement("div");
-	$(div).addClass("popup_canvas");
-	$(div).height($(window).height());
-	document.body.appendChild(div);
-
-	var img = document.createElement("img");
-	$(img).attr("src","/profiles/" + fileName + ".gif");
-	$(img).addClass("profile_popup_img");
-	document.body.appendChild(img);
-
-	var div2 = document.createElement("div");
-	$(div2).addClass("profile_popup_goto");
-	$(div2).html("<a href=\"/col/" + colIDString + "\">Go to col</a>");
-	document.body.appendChild(div2);
-	
-	//setTimeout(function(){
-	$(img).load(function() {
-		var width = img.width;//img.clientWidth;
-		var height = img.height;//img.clientHeight;
-		if (width > $(window).width()) width = $(window).width();
-		if (height > $(window).height()) height = $(window).height();
-		var top = ($(window).height()-height)/2;
-		if (top < 30) top = 30;
-		var left = ($(window).width()-width)/2;
-		
-		$(img).css("top",top);
-		$(img).css("left",left);
-		$(img).css("max-height",$(window).height());
-		$(img).css("max-width",$(window).width());
-		
-		$(div2).css("top",top - 15);
-		$(div2).css("left",left);
-		$(div2).css("width",img.clientWidth + 2);
-		
-		$('body').addClass('stop-scrolling');
-		
-		$(img).add(div).on("click",function(){
-			$(img).remove();
-			$(div).remove();
-			$(div2).remove();
-			$('body').removeClass('stop-scrolling');
-		});
-	});
-	//},300);//wait for image being downloaded (otherwise img.width/height = 0)
-}
-
-
-var showTableProfile2 = function(filename) {
-	var div = document.createElement("div");
-	$(div).addClass("popup_canvas");
-	$(div).height($(window).height());
-	document.body.appendChild(div);
-
-	var img = document.createElement("img");
-	$(img).attr("src","/profiles/" + fileName + ".gif");
-	$(img).addClass("profile_popup_img");
-	document.body.appendChild(img);
-
-	var div2 = document.createElement("div");
-	$(div2).addClass("profile_popup_goto");
-	//$(div2).html("<a href=\"/col/" + colIDString + "\">Go to col</a>");
-	document.body.appendChild(div2);
-	
-	//setTimeout(function(){
-	$(img).load(function() {
-		var width = img.width;//img.clientWidth;
-		var height = img.height;//img.clientHeight;
-		if (width > $(window).width()) width = $(window).width();
-		if (height > $(window).height()) height = $(window).height();
-		var top = ($(window).height()-height)/2;
-		if (top < 30) top = 30;
-		var left = ($(window).width()-width)/2;
-		
-		$(img).css("top",top);
-		$(img).css("left",left);
-		$(img).css("max-height",$(window).height());
-		$(img).css("max-width",$(window).width());
-		
-		$(div2).css("top",top - 15);
-		$(div2).css("left",left);
-		$(div2).css("width",img.clientWidth + 2);
-		
-		$('body').addClass('stop-scrolling');
-		
-		$(img).add(div).on("click",function(){
-			$(img).remove();
-			$(div).remove();
-			$(div2).remove();
-			$('body').removeClass('stop-scrolling');
-		});
-	});
-	//},300);//wait for image being downloaded (otherwise img.width/height = 0)
-}
-
-$(document).ready(function () {
-    $(".infotype_row").hover(showInfo2, hideInfo2);
-    $(".infotype_row").on("click",showInfo);
-    $(".info").hover(showInfoType2, hideInfoType2);
-    $(".info").on("click",showInfoType);
-	$(".table_row").click(showTableProfile);
-	$(".profile_print").click(function() { 
-		var title = $(this).parent().attr("id");
-		printContent($(this).parent().parent(), title); 
-	} );
-	 
-	//$(document).on("focusout","#searchbox",function(){
-	//	$("#searchstatus").hide();
-	//});
-		
-	$('#modalRide').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget);
-		var fileName = button.data('ride');
-		var date = button.data('date');
- 
-		var modal = $(this);
-		
-		modal.find('.date').text(date);				
-		modal.find('.ride-img').attr("src","/tours/" + fileName + ".gif");	
-	});
-	
-	$('#modalProfile').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget);
-		var fileName = button.data('profile');
-		var col = button.data('col');
- 
-		var modal = $(this);
-				
-		$.ajax({
-			type: "GET",
-			url : "/col/profile/" + fileName,
-			dataType : 'json',
-			success : function(data) {
-				modal.find('.category').removeClass("category-1 category-2 category-3 category-4 category-5").addClass("category-" + data.Category).text(data.Category);
-				modal.find('.modal-title').text(col);
-				if (data.Side){
-					modal.find('.modal-title-secondary').html("<img class=\"direction mr-1\" src=\"/images/" + data.Side + ".png\"/>" + data.Side);
-				} else {
-					modal.find('.modal-title-secondary').text("");  
-				}
-				modal.find('.profile-img').attr("src","/profiles/" + data.FileName + ".gif");
-				
-				modal.find('.stat1 span').html(data.DistanceFormatted);
-				modal.find('.stat1 i').removeClass("color-1 color-2");
-				if (data.DistanceCat <= 2) modal.find('.stat1 i').addClass("color-" + data.DistanceCat);
-				modal.find('.stat2 span').html(data.HeightDiffFormatted);
-				modal.find('.stat2 i').removeClass("color-1 color-2");
-				if (data.HeightDiffCat <= 2) modal.find('.stat2 i').addClass("color-" + data.HeightDiffCat);
-				modal.find('.stat3 span').html(data.AvgPercFormatted);
-				modal.find('.stat3 i').removeClass("color-1 color-2");
-				if (data.AvgPercCat <= 2) modal.find('.stat3 i').addClass("color-" + data.AvgPercCat);
-				modal.find('.stat4 span').html(data.MaxPercFormatted);
-				modal.find('.stat4 i').removeClass("color-1 color-2");
-				if (data.MaxPercCat <= 2) modal.find('.stat4 i').addClass("color-" + data.MaxPercCat);
-				modal.find('.stat5 span').html(data.ProfileIdxFormatted);
-				modal.find('.stat5 i').removeClass("color-1 color-2");
-				if (data.ProfileIdxCat <= 2) modal.find('.stat5 i').addClass("color-" + data.ProfileIdxCat);
-				
-				modal.find('.modal-footer').attr("id",data.FileName);
-				
-				getTopStats(null,data.FileName);
-			}
-		});
-	})
-})
-
-/*var formatStat = function(stattypeid, value) {
-	switch(stattypeid) {
-		case 1://distance
-			return (value/10) + 'km';
-			break;
-		case 2://altitude gain
-			return value + 'm';
-			break;			
-		case 3://avg slope
-			return (value/10) + '%';
-			break;			
-		case 4://max slope
-			return (value/10) + '%';
-			break;			
-		case 5://profile index
-			return value;
-			break;
-		default:
-			return value;
-	}
-}*/	
-
 var getTopStats = function(colIDString,profileFileName) {
 	var url = null;
 	if (profileFileName){
-		url = "/col/profile/top/" + profileFileName;
+		url = "/service/col/profile/top/" + profileFileName;
 	} else if (colIDString){
-		url = "/col/top/" + colIDString;
+		url = "/service/col/top/" + colIDString;
 	}
 	
 	if (!url) return;
@@ -559,27 +277,5 @@ var getTopStats = function(colIDString,profileFileName) {
 			}
 		}
 	})
-}
+}	
 
-var printContent = function (el, title){
-	var divContents = $(el).html();
-	var printWindow = window.open('', '', 'height=400,width=800');
-	printWindow.document.write('<html><head><title>' + title + '</title>');
-	printWindow.document.write('<link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">');
-	printWindow.document.write('<link rel="stylesheet" href="/css/main.css" type="text/css">');
-	printWindow.document.write('</head><body>');
-	//printWindow.document.write('<div>');
-	printWindow.document.write(divContents);
-	//printWindow.document.write('</div>');
-	printWindow.document.write('</body></html>');
-	//printWindow.document.write('<script>');
-	//printWindow.document.write('$(document).ready(function() { window.print(); });');
-	//printWindow.document.write('</script>');
-	printWindow.document.close();
-	printWindow.focus();
-	
-	setTimeout(function() { 
-		printWindow.print(); 
-		printWindow.close();
-	}, 300)
-}

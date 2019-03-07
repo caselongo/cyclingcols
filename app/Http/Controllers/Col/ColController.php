@@ -17,8 +17,33 @@ use Illuminate\Support\Facades\DB;
 
 class ColController extends Controller
 {
+	/*  views */
+	public function col(Request $request, $colIDString)
+	{
+		$col = \App\Col::where('ColIDString',$colIDString)->first();
+		
+		if (is_null($col))
+		{
+			return Redirect::to('/');
+		}
 
-    public function rating(Request $request, $colIDString)
+		$profiles = \App\Profile::where('ColID',$col->ColID)->get();
+		
+		$user = Auth::user();
+		$usercol = null;
+		if($user != null)
+		{
+			$usercol = $user->cols()->where('cols.ColID','=',$col->ColID)->first();
+		}
+		
+		return view('pages.col')
+			->with('col',$col)
+			->with('profiles',$profiles)
+			->with('usercol',$usercol);
+	}	
+	
+	/*  service */
+    public function _rating(Request $request, $colIDString)
     {
 		$user = Auth::user();
         $col = Col::where('ColIDString', $colIDString)->first();
@@ -46,7 +71,7 @@ class ColController extends Controller
 		return response()->json($ratings);
     }
 	
-    public function nearby(Request $request, $colIDString)
+    public function _nearby(Request $request, $colIDString)
     {
 		$col = Col::where('ColIDString', $colIDString)->first();
 
@@ -63,7 +88,7 @@ class ColController extends Controller
 		return response()->json($colsnearby);
     }
 	
-    public function first(Request $request, $colIDString)
+    public function _first(Request $request, $colIDString)
     {
 		$col = Col::where('ColIDString', $colIDString)->first();
 
@@ -79,7 +104,7 @@ class ColController extends Controller
 		return response()->json($first);
     }
 	
-	private function top($top){
+	private function _top($top){
 		/* get urls*/
 		$stattypes = StatType::get();
 		$countries = Country::get();
@@ -107,7 +132,7 @@ class ColController extends Controller
 		return response()->json($top);		
 	}
 	
-    public function topprofile(Request $request, $fileName)
+    public function _topprofile(Request $request, $fileName)
     {
 		$profile = Profile::where('FileName', $fileName)->first();
 
@@ -122,10 +147,10 @@ class ColController extends Controller
 					 ->orderBy('Rank', 'ASC')
                      ->get();	
 					 
-		return $this->top($top);	
+		return $this->_top($top);	
 	}
 	
-    public function topcol(Request $request, $colIDString)
+    public function _topcol(Request $request, $colIDString)
     {
 		$col = Col::where('ColIDString', $colIDString)->first();
 
@@ -140,10 +165,10 @@ class ColController extends Controller
 					 ->orderBy('Rank', 'ASC')
                      ->get();
 		
-		return $this->top($top);
+		return $this->_top($top);
     }
 	
-    public function profile(Request $request, $fileName)
+    public function _profile(Request $request, $fileName)
     {
 		$profile = Profile::where('FileName', $fileName)->first();
 

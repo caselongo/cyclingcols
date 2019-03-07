@@ -33,7 +33,7 @@ var years = [];
 getRides = function() {
 	$.ajax({
 		type: "GET",
-		url : "/rides/all",
+		url : "/service/rides",
 		dataType : 'json',
 		success : function(data) {
 			rides = data;

@@ -72,7 +72,7 @@ foreach($stats as $stat){
 	var getTopStats = function(){
 		$.ajax({
 			type: "GET",
-			url : "/stats_/top/{{$country->URL}}",
+			url : "/service/stats/top/{{$country->URL}}",
 			dataType : 'json',
 			success : function(data) {
 				var top = $("#top");

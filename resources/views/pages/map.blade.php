@@ -95,7 +95,18 @@ CyclingCols - Search On Map
 		//console.log("tryShowMarkers ready");
 	}
 	
-	window.onload = function() {
+	var calculatemapheight = function() {
+		var height = $(window).height() - $('.footer').height() - $('#canvas').offset().top;
+	
+		$('#canvas').height(height);
+		$('#map-canvas').height(height);
+	}
+	
+	$(window).on('resize', function() {
+		calculatemapheight();
+	});
+	
+	$(window).on('load', function() {
 		var mapOptions = {
 			attributionControl: false
 		};
@@ -132,7 +143,9 @@ CyclingCols - Search On Map
 				results.addLayer(L.marker(data.results[i].latlng));
 			}
 		});
-	}
+		
+		calculatemapheight();
+	});
 	
 	var showMarkers = function(){
 		var showCount = 0;
@@ -188,7 +201,7 @@ CyclingCols - Search On Map
 		
 		$.ajax({
 			type: "GET",
-			url : "/cols/all",
+			url : "/service/cols",
 			dataType : 'json',
 			success : function(data) {
 			
@@ -264,7 +277,7 @@ CyclingCols - Search On Map
 		//load countries
 		$.ajax({
 			type: "GET",
-			url : "/countries",
+			url : "/service/countries",
 			dataType : 'json',
 			success : function(data) {
 				for(var j = 0; j < data.length; j++)
@@ -350,7 +363,7 @@ CyclingCols - Search On Map
 		//load regions
 		$.ajax({
 			type: "GET",
-			url : "/regions",
+			url : "/service/regions",
 			dataType : 'json',
 			success : function(data) {
 				for(var j = 0; j < data.length; j++)
@@ -442,7 +455,7 @@ CyclingCols - Search On Map
 		//load subregions
 		$.ajax({
 			type: "GET",
-			url : "/subregions",
+			url : "/service/subregions",
 			dataType : 'json',
 			success : function(data) {
 				for(var j = 0; j < data.length; j++)

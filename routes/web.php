@@ -1,6 +1,5 @@
 <?php
 
-use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -11,252 +10,6 @@ use Carbon\Carbon;
 | and give it the Closure to execute when that URI is requested.
 |
 */
-
-/* Homepage */
-Route::get('/', function()
-{
-	return View::make('pages.mainsearch')
-	->with('pagetype','home');
-});
-
-/* New page*/
-Route::get('new', function()
-{
-	$newitems = \App\NewItem::orderBy('DateSort','DESC')->orderBy('ColIDString','ASC')->orderBy('IsNew','DESC')->get();
-	
-	$datesort = 0;
-	$colidstring = "";
-	
-	$cols = array();
-	$col;
-	
-	foreach($newitems as $newitem){
-		if ($newitem->DateSort != $datesort || $newitem->ColIDString != $colidstring){
-			
-			$col = new stdClass;
-			$col->DateSort = $newitem->DateSort;
-			$col->DateString = Carbon::createFromFormat('Ymd',$newitem->DateSort)->format('j M Y');
-			$col->DiffForHumans = Carbon::createFromFormat('Ymd',$newitem->DateSort)->diffForHumans();
-			$col->ColIDString = $newitem->ColIDString;
-			$col->Col = $newitem->Col;
-			$col->Country1 = $newitem->Country1;
-			$col->Country2 = $newitem->Country2;
-			$col->Height = $newitem->Height;
-			$col->IsNew = false;
-			$col->Profiles = array();
-			
-			array_push($cols,$col);
-			
-			$datesort = $newitem->DateSort;
-			$colidstring = $newitem->ColIDString;
-			
-			$col_ = \App\Col::where("ColID",$newitem->ColID)->first();
-			
-			if ($col_){
-				$col->CoverPhotoPosition = $col_->CoverPhotoPosition;
-			}
-		}
-		
-		if ($newitem->IsNewCol){
-			$col->IsNew = true;
-		}
-		
-		$profile = new stdClass;
-		$profile->ProfileID = $newitem->ProfileID;
-		$profile->Side = $newitem->Side;
-		$profile->Category = $newitem->Category;
-		$profile->FileName = $newitem->FileName;
-		$profile->IsNew = $newitem->IsNew;
-		
-		$start = \App\Profile::where("ProfileID",$newitem->ProfileID)->get();
-		if ($start){
-			$profile->Start = $start[0]->Start;
-		}
-		
-		array_push($col->Profiles,$profile);
-	}
-	
-	return View::make('pages.new')
-		->with('newitems',$cols);
-});
-
-/* About page*/
-Route::get('about', function()
-{
-	return View::make('pages.about', array('pagetype'=>'abouttemplate'));
-});
-
-/* Help page */
-Route::get('help', function()
-{
-    return View::make('pages.help', array('pagetype'=>'helptemplate'));
-});
-
-/*Col page*/
-Route::get('col/{colIDString}', function($colIDString)
-{
-	$col = \App\Col::where('ColIDString',$colIDString)->first();
-	
-	if (is_null($col))
-	{
-		return Redirect::to('/');
-	}
-
-	$profiles = \App\Profile::where('ColID',$col->ColID)->get();
-	
-	$user = Auth::user();
-	$usercol = null;
-	if($user != null)
-	{
-		$usercol = $user->cols()->where('cols.ColID','=',$col->ColID)->first();
-	}
-	
-	return View::make('pages.col')
-		->with('col',$col)
-		->with('profiles',$profiles)
-		->with('usercol',$usercol);
-});
-
-/* googlemaps pages*/
-Route::get('map', function()
-{   
-	return View::make('pages.map')
-		->with('pagetype','mappage');
-});
-
-Route::get('map/country/{country}', function($country)
-{   
-	$country = \App\Country::where('CountryIDString',$country)->first();
-	
-	if (is_null($country))
-	{
-		return Redirect::to('/map');
-	}
-	
-    return View::make('pages.map')
-		->with('country',$country)
-		->with('pagetype','mappage');
-});
-
-/*col page*/
-
-Route::get('map/col/{col}', function($col)
-{   
-	$col = \App\Col::where('ColIDString',$col)->first();
-	
-	if (is_null($col))
-	{
-		return Redirect::to('/map');
-	}
-	
-    return View::make('pages.map')
-		->with('col',$col)
-		->with('pagetype','mappage');
-});
-
-
-/*rides page*/
-
-Route::get('rides', function()
-{   
-	return View::make('pages.rides')
-		->with('pagetype','ridestemplate');
-});
-
-/*stats page*/
-
-Route::get('stats', function()
-{   
-	return Redirect::to('stats/distance/all');
-});
-
-Route::get('stats/{stattypeurl}/{countryurl}', function($stattypeurl,$countryurl)
-{   
-	/* stattype */	
-	$stattypes = \App\StatType::get();
-	
-	$stattype_current = null;
-	foreach($stattypes as $stattype){
-		if ($stattype->URL == $stattypeurl){
-			$stattype_current = $stattype;
-			break;
-		}
-	}
-	
-	/* country */	
-	$countries = \App\Country::get();
-	
-	$country_all = new stdClass;
-	$country_all->CountryID = 0;
-	$country_all->Country = "Europe"; 
-	$country_all->URL = "eur"; 
-	$country_all->Flag = "europe"; 		
-	$countries->prepend($country_all);	
-	
-	$country_current = null;
-	foreach($countries as $country){
-		if ($country->CountryID > 0){
-			$country->URL = strtolower($country->CountryAbbr);
-			$country->Flag = strtolower($country->Country);
-		}
-		
-		if ($country->URL == $countryurl){
-			$country_current = $country;
-		}
-	}
-	
-	if (is_null($stattype_current) && is_null($country_current)){
-		return Redirect::to('stats/distance/eur');
-	} else if (is_null($stattype_current)){
-		return Redirect::to('stats/distance/' . $countryurl);
-	} else if (is_null($country_current)){
-		return Redirect::to('stats/' . $stattypeurl . "/eur");		
-	}
-
-	if ($stattype_current->StatTypeID > 0) {
-		$stats = \App\Stat::where('StatTypeID', $stattype_current->StatTypeID)->where('GeoID', $country_current->CountryID)->orderBy('Rank','ASC')->get();
-	} else {
-		$stats = \App\Stat::where('GeoID', $country_current->CountryID)->where('Rank','<=', 5)->orderBy('StatTypeID','ASC')->orderBy('Rank','ASC')->get();
-	}
-	
-	if (is_null($stats))
-	{
-		return Redirect::to('stats/distance/eur');
-	}
-	
-	$user = Auth::user();
-	
-	foreach($stats as $stat){
-		$col = \App\Col::where('ColID',$stat->ColID)->first();
-		
-		$done = 0;
-		$rating = 0;
-		if($user != null){
-			$usercol = \App\UserCol::where('ColID',$col->ColID)->first();
-			
-			if ($usercol){
-				$done = $usercol->Done;
-				$rating = $usercol->Rating;
-			}
-		}
-		
-		if ($col != null){
-			$stat->Height = $col->Height;
-			$stat->CoverPhotoPosition = $col->CoverPhotoPosition;
-			$stat->Latitude = $col->Latitude;
-			$stat->Longitude = $col->Longitude;
-			$stat->Done = $done;
-			$stat->Rating = $rating;
-		}
-	}
-	
-    return View::make('pages.stats')
-		->with('stattypes',$stattypes)
-		->with('stattype',$stattype_current)
-		->with('country',$country_current)
-		->with('stats',$stats)
-		->with('countries',$countries);
-});
 
 // Login Routes...
 Route::get('login', ['as' => 'login', 'uses' => 'Auth\LoginController@showLoginForm']);
@@ -273,32 +26,66 @@ Route::post('password/email', ['as' => 'password.email', 'uses' => 'Auth\ForgotP
 Route::get('password/reset/{token}', ['as' => 'password.reset.token', 'uses' => 'Auth\ResetPasswordController@showResetForm']);
 Route::post('password/reset', ['as' => 'password.reset.post', 'uses' => 'Auth\ResetPasswordController@reset']);
 
-Route::get('welcome', 'WelcomeController@index')->name('welcome');
+// Col
+Route::get('col/{colIDString}','Col\ColController@col');
+
+// Map
+Route::get('map','Map\MapController@map');
+Route::get('map/country/{countryIDString}','Map\MapController@country');
+Route::get('map/region/{regionIDString}','Map\MapController@region');
+Route::get('map/subregion/{subregionIDString}','Map\MapController@subregion');
+Route::get('map/col/{colIDString}','Map\MapController@col');
+
+// Stats
+Route::get('stats/{stattypeurl}/{countryurl}','Stats\StatsController@index');
+Route::get('stats','Stats\StatsController@index_default');
+
+// Home
+Route::get('/','General\GeneralController@home');
+
+// New
+Route::get('new','General\GeneralController@new');
+
+// Help
+Route::get('help','General\GeneralController@help');
+
+// About
+Route::get('about','General\GeneralController@about');
+
+// Rides
+Route::get('rides','General\GeneralController@rides');
+
+// User
+Route::get('user/welcome', 'User\UserController@welcome');
+Route::get('user','User\UserController@index');
 
 Route::middleware(['ajax'])->group(function () {
 	/* col */
-	Route::get('col/rating/{colIDString}','Col\ColController@rating')->name('col.col.rating');
-	Route::get('col/nearby/{colIDString}','Col\ColController@nearby')->name('col.col.nearby');
-	Route::get('col/first/{colIDString}','Col\ColController@first')->name('col.col.first');
-	Route::get('col/top/{colIDString}','Col\ColController@topcol')->name('col.col.topcol');
-	Route::get('col/profile/top/{profileFileName}','Col\ColController@topprofile')->name('col.col.topprofile');
-	Route::get('col/profile/{fileName}','Col\ColController@profile')->name('col.col.profile');
+	Route::get('service/col/rating/{colIDString}','Col\ColController@_rating');
+	Route::get('service/col/nearby/{colIDString}','Col\ColController@_nearby');
+	Route::get('service/col/first/{colIDString}','Col\ColController@_first');
+	Route::get('service/col/top/{colIDString}','Col\ColController@_topcol');
+	Route::get('service/col/profile/top/{profileFileName}','Col\ColController@_topprofile');
+	Route::get('service/col/profile/{fileName}','Col\ColController@_profile');
 
 	/* cols */
-	Route::get('cols/all','Cols\ColsController@all')->name('cols.cols.all');
-	Route::get('cols/search','Cols\ColsController@search')->name('cols.cols.search');
-	Route::get('cols/photos','Cols\ColsController@photos')->name('cols.cols.photos');
+	Route::get('service/cols','Cols\ColsController@_cols');
+	Route::get('service/cols/search','Cols\ColsController@_search');
+	Route::get('service/cols/photos','Cols\ColsController@_photos');
 
 	/* stat */
-	Route::get('stats_/top/{country_url}','Stats\StatsController@top')->name('stat.stats.top');	
+	Route::get('service/stats/top/{country_url}','Stats\StatsController@_top');	
 	
 	/* general */
-	Route::get('countries','General\GeneralController@countries')->name('general.general.countries');
-	Route::get('regions','General\GeneralController@regions')->name('general.general.regions');		
-	Route::get('subregions','General\GeneralController@subregions')->name('general.general.subregions');
-	Route::get('rides/all','General\GeneralController@rides')->name('general.general.rides');
-	Route::get('banners','General\GeneralController@banners_all')->name('general.general.banners_all');	
-	Route::get('banners/{colIDString}','General\GeneralController@banners')->name('general.general.banners');			
+	Route::get('service/countries','General\GeneralController@_countries');
+	Route::get('service/regions','General\GeneralController@_regions');		
+	Route::get('service/subregions','General\GeneralController@_subregions');
+	Route::get('service/rides','General\GeneralController@_rides');
+	Route::get('service/banners','General\GeneralController@_banners_all');	
+	Route::get('service/banners/{colIDString}','General\GeneralController@_banners');	
+
+	/* user */
+	Route::get('service/user/col','User\UserController@_store');
 });
 
 	

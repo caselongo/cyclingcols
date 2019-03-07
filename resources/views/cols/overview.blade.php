@@ -1,89 +1,78 @@
 @extends('layouts.master')
 
 @section('title')
-
+CyclingCols - My CyclingCols
 @stop
 
 @section('content')
 <main role="main" class="bd-content">
-	<div class="header px-4 py-3">
-		<h4 class="font-weight-light">My CyclingCols</h4>
+    <div class="header px-4 py-3">
+        <h4 class="font-weight-light">My CyclingCols</h4>
 	</div>
-	<div id="stats" class="container-fluid font-weight-light">
-        <div class="content">
-            <!--<div class="table_header">Stat:</div>-->
-            <div class="table_header clearfix" style="text-align:center; padding-bottom:30px;">
-
-                    <a href="/user/cols"><img id="flag0" class="flag_header" src="/images/flags/Europe.gif" title="Europe" /></a>
-                    <a href="/user/cols?country=2"><img id="flag2" class="flag_header" src="/images/flags/Andorra.gif" title="Andorra" /></a>
-                    <a href="/user/cols?country=3"><img id="flag3" class="flag_header" src="/images/flags/Austria.gif" title="Austria" /></a>
-                    <a href="/user/cols?country=4"><img id="flag4" class="flag_header" src="/images/flags/France.gif" title="France" /></a>
-                    <a href="/user/cols?country=5833"><img id="flag5833" class="flag_header" src="/images/flags/Great-Britain.gif" title="Great-Britain" /></a>
-                    <a href="/user/cols?country=5"><img id="flag5" class="flag_header" src="/images/flags/Italy.gif" title="Italy" /></a>
-                    <a href="/user/cols?country=6383"><img id="flag6383" class="flag_header" src="/images/flags/Norway.gif" title="Norway" /></a>
-                    <a href="/user/cols?country=6"><img id="flag6" class="flag_header" src="/images/flags/Slovenia.gif" title="Slovenia" /></a>
-                    <a href="/user/cols?country=7"><img id="flag7" class="flag_header" src="/images/flags/Spain.gif" title="Spain" /></a>
-                    <a href="/user/cols?country=8"><img id="flag8" class="flag_header" src="/images/flags/Switzerland.gif" title="Switzerland" /></a>
-                </div>
-        </div>
-
-        <div class="content">
-
-            <style type="text/css">
-                .kpi_div{
-                    text-align:center;
-
-                }
-
-                .kpi{
-                    font-size:30px;
-
-
-                }
-
-                .kpi_text{
-                    font-size:20px;
-
-                }
-
-            </style>
-            <div style="padding-bottom:50px;">
-            @include('cols.kpi',['kpi'=>$done->count(),'text'=>'Overall','imgUrl'=>'/images/stat_all.png'])
-
-            @include('cols.kpi',['kpi'=>round($done->count()/$total*100,1).'%','text'=>'Percentage of total ('.$total.')'])
-            @include('cols.kpi',['kpi'=>$done->sum('Height').'m','text'=>'Overall', 'imgUrl'=>"/images/altgain.png"])
-
-                {{--@include('cols.kpi',['kpi'=>$doneThisYear->sum('Height').'m','text'=>'This year','imgUrl'=>"/images/altgain.png"])--}}
-                {{--@include('cols.kpi',['kpi'=>$doneThisYear->count(),'text'=>'This year','imgUrl'=>'/images/stat_all.png'])--}}
-
-            </div>
-
-            <div class="table_table clearfix" style="margin-top:50px;">
-            @include('cols.rating_overview',['cols'=>$ratings])
-            @include('cols.done_overview', ['cols'=>$done])
-            </div>
-
-            <div class="table_table clearfix">
-
-                @include('cols.todo_overview', ['cols'=>$todo])
-            </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="text/javascript">
-        function goToColl(colID)
-        {
-
-            return window.location.href = '/col/'+colID;
-        }
-
-        $(document).ready(function(){
-
-           $('#flag'+'{{$countryID ?? 0}}').addClass('flag_selected');
-
-        });
-
-
-    </script>
+	<div class="container-fluid">
+		<div class="card-deck w-100">
+			<div class="card mb-3">
+				<div class="card-header p-2">
+					Cols Claimed Per Country
+				</div>
+				<div class="card-body p-2 font-weight-light text-small-90">
+@foreach($countries as $country)
+					<div class="align-items-end d-flex">
+						<div class="text-truncate">
+							<img src="/images/flags/{{$country->Country}}.gif" title="{{$country->Country}}" class="flag mr-1">
+							{{$country->Country}}
+						</div>
+						<div class="ml-auto text-small-90 text-right" style="flex: 0 0 30px;">
+							{{$country->col_count_user}}
+						</div>
+						<div class="text-small-90 text-right" style="flex: 0 0 80px;">
+	@if ($country->width > 0)
+							<div class="bar" style="width: {{$country->width * 70}}px;"></div>
+	@endif
+						</div>
+						<div class="text-small-75 text-right" style="flex: 0 0 60px;">
+							of {{$country->col_count}}
+						</div>
+					</div>
+@endforeach
+				</div>
+			</div>	
+			<div class="card mb-3">
+				<div class="card-header p-2">
+					<span>Last Cols Claimed</span>
+				</div>
+				<div class="card-body p-2 font-weight-light text-small-90">
+@foreach($done as $done_)
+					<div class="align-items-end d-flex">
+						<div class="text-truncate">
+							<img src="/images/flags/{{$done_->Country1}}.gif" title="{{$done_->Country1}}" class="flag mr-1">
+	@if ($done_->Country2)
+							<img src="/images/flags/{{$done_->Country2}}.gif" title="{{$done_->Country2}}" class="flag mr-1">
+	@endif
+							<a href="col/{{$done_->ColIDString}}">{{$done_->Col}}</a>
+						</div>
+						<div class="ml-auto text-small-75 text-right" style="flex: 0 0 65px;">{{Carbon\Carbon::parse($done_->pivot->CreatedAt)->format('d M Y')}}</div>
+					</div>
+@endforeach
+				</div>
+				<div class="card-footer text-muted d-flex align-items-center">
+					<span class="text-small-75">{{$done_count}} cols claimed</span>
+					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
+						<a href="/user/claimed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="card mb-3">
+				<div class="card-header p-2">
+					Cols Done This Year
+				</div>
+				<div class="card-body p-2 font-weight-light text-small-90">
+					Total: 234
+					Last Year: 13
+					Rank: 45
+				</div>
+			</div>		
+		</div>
+	</div>
+</main>
 @stop

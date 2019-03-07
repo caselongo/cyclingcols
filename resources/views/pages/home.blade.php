@@ -33,7 +33,7 @@ CyclingCols - Main
 			
 				$.ajax({
 					type: "GET",
-					url : "/banners",
+					url : "/service/banners",
 					dataType : 'json',
 					success : function(data) {
 						for(var i = 0; i < count; i++){
@@ -93,7 +93,7 @@ CyclingCols - Main
 				}
 
 				$.ajax({
-					url : "/cols/photos",
+					url : "/service/cols/photos",
 					data : "",
 					dataType : 'json',
 					success : function(data) {

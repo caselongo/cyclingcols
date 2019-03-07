@@ -155,10 +155,10 @@ footer{
 
 /* flags */
 .flag{
-	height: 1em;
+	height: 0.8em;
 	border-radius: 0.1em;
 	/*margin: 0.2em;*/
-	margin-bottom: 0.1em;
+	margin-bottom: 0.2em;
 }
 .flag2{
 	margin-left: -0.1em;
@@ -451,6 +451,14 @@ footer{
 img.ad {
 	/*max-width: 200px;*/
 	max-height: 150px;
+}
+
+/*  user */
+.bar{
+	height: 0.8em;
+    margin: 4px 5px;
+	background-color: #ff8800;	
+	border-radius: 0.2em;
 }
 
 /* rides */

@@ -11,4 +11,9 @@ class Country extends Model
 		'NrRegions','NrCols','NrProfiles',
 		'Latitude','Longitude'	
 	);
+
+    public function col_count()
+	{
+        return $this->hasMany('App\Col','Country1ID','CountryID')->count() + $this->hasMany('App\Col','Country2ID','CountryID')->count();
+    }
 }
