@@ -19,4 +19,10 @@ class Col extends Model
 		'URL','Number','Aliases',
 		'HasImages'
 	);
+
+    public function users()
+	{
+        return $this->belongsToMany(User::class,'usercol','ColID','UserID','ColID',null)
+            ->withPivot(['Done','CreatedAt','UpdatedAt','Rating','ToDo']);
+    }
 }

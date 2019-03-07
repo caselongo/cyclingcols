@@ -31,6 +31,12 @@ class UserController extends Controller
 		
 		$_done = clone $_query;
         $_done = $_done->wherePivot('Done', 1);
+		
+		$_done_year = clone $_done;
+		$_done_year->wherePivot('CreatedAt','>=',Carbon::now()->startOfYear());
+		
+		$_done_lastyear = clone $_done;
+		$_done_lastyear->wherePivot('CreatedAt','<',Carbon::now()->startOfYear())->wherePivot('CreatedAt','>=',Carbon::now()->addYear(-1)->startOfYear());
 
         /*$countryID = 0;
         $total = null;
@@ -54,16 +60,28 @@ class UserController extends Controller
         }*/
 
 
-        $todo = clone $_query;
-        $todo = $todo->wherePivot('ToDo',1)->orderBy('pivot_CreatedAt','desc')->get();
+        //$todo = clone $_query;
+        //$todo = $todo->wherePivot('ToDo',1)->orderBy('pivot_CreatedAt','desc')->get();
 
+		/* rated */
         $ratings = clone $_query;
-        $ratings = $ratings->wherePivot('Rating','<>',null)->orderBy('pivot_Rating', 'Desc')->get();
+        $ratings = $ratings->wherePivot('Rating','>',0);
+		
+		$rating_count = $ratings->count();
+		
+		$ratings = $ratings->orderBy('pivot_Rating', 'Desc')->limit(10)->get();
 
 		/* claimed */	
+        $done_count = $_done->count();
+		
 		$done = clone $_done;
-        $done_count = $done->count();
 		$done = $done->orderBy('pivot_CreatedAt', 'desc')->limit(10)->get();
+
+		/* claimed this year */	
+		$done_year_count = $_done_year->count();
+
+		/* claimed last year */	
+		$done_lastyear_count = $_done_lastyear->count();
 		
 		/* countries */
 		$countries = Country::get();
@@ -72,9 +90,12 @@ class UserController extends Controller
 			
 		foreach($countries as $country){
 			$d = clone $_done;
+			$dy = clone $_done_year;
+			$dy = $dy->wherePivot('CreatedAt','>=',Carbon::now()->startOfYear());
+			
 			$country->col_count = $country->col_count();
-			$country->col_count_user = $d->where('Country1ID', $country->CountryID)->count();
-			$country->col_count_perc = round(($country->col_count_user * 100) / $country->col_count);
+			$country->col_count_user = $d->where('Country1ID', $country->CountryID)->count() + $d->where('Country2ID', $country->CountryID)->count();
+			$country->col_count_user_year = $dy->where('Country1ID', $country->CountryID)->count() + $dy->where('Country2ID', $country->CountryID)->count();
 			
 			if ($country->col_count_user > $col_count_user_max){
 				$col_count_user_max = $country->col_count_user;
@@ -83,14 +104,20 @@ class UserController extends Controller
 		
 		foreach($countries as $country){
 			if ($country->col_count_user > 0){
-				$country->width = 0.1 + round($country->col_count_user/$col_count_user_max,1) * 0.9;
+				if ($country->col_count_user_year > 0){
+					$country->width_year = 0.1 + round($country->col_count_user_year/$col_count_user_max,1) * 0.9;
+				} else {
+					$country->width_year = 0;
+				}
+				$country->width = 0.1 + round($country->col_count_user/$col_count_user_max,1) * 0.9 - $country->width_year;
 			} else {
+				$country->width_year = 0;
 				$country->width = 0;
 			}
 			
-			if ($country->col_count_user > 0 && $country->col_count_perc == 0){
-				$country->col_count_perc = "<1";
-			}
+			//if ($country->col_count_user > 0 && $country->col_count_perc == 0){
+			//	$country->col_count_perc = "<1";
+			//}
 		}
 		
 		$countries = $countries->sortByDesc('col_count_user');
@@ -98,7 +125,7 @@ class UserController extends Controller
         //$doneThisYear = clone $query;
         //$doneThisYear = $doneThisYear->wherePivot('Done', 1)->wherePivot('CreatedAt','>=',Carbon::now()->startOfYear())->get();
 
-        return view('cols.overview', compact('user', 'done', 'done_count', 'countries'));
+        return view('cols.overview', compact('user', 'done', 'done_count', 'done_year_count', 'done_lastyear_count', 'countries', 'ratings', 'rating_count'));
     }
 
 	/* service */
@@ -132,8 +159,8 @@ class UserController extends Controller
             $user->cols()->updateExistingPivot($col->ColID, $array, false);
         } else {
 
-            $array['UpdatedAt'] = Carbon::now();
-            $array['CreatedAt'] = Carbon::now();
+            $array['UpdatedAt'] = Carbon::now('Europe/Amsterdam');
+            $array['CreatedAt'] = Carbon::now('Europe/Amsterdam');
             $user->cols()->attach($col->ColID, $array);
         }
 

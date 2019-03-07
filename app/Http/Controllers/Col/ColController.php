@@ -43,7 +43,7 @@ class ColController extends Controller
 	}	
 	
 	/*  service */
-    public function _rating(Request $request, $colIDString)
+    public function _user(Request $request, $colIDString)
     {
 		$user = Auth::user();
         $col = Col::where('ColIDString', $colIDString)->first();
@@ -69,6 +69,24 @@ class ColController extends Controller
                      ->get();
 
 		return response()->json($ratings);
+    }
+	
+    public function _users(Request $request, $colIDString)
+    {
+		$col = Col::where('ColIDString', $colIDString)->first();
+
+        if ($col == null) {
+            return response(['success' => false], 404);
+        }
+		
+		$users = $col->users();
+		
+		$users = $users->orderBy('pivot_CreatedAt', 'Desc')->limit(10)->get();
+
+
+		$returnHTML = view('sub.colusers')->with('users', $users)->render();
+		return response()->json(array('success' => true, 'html'=>$returnHTML));		
+		//return response()->json($users);
     }
 	
     public function _nearby(Request $request, $colIDString)

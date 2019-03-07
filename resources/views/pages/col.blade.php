@@ -36,12 +36,12 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		initMap();
 		
 		showCovers("{{$col->ColIDString}}",{{$col->CoverPhotoPosition}});
+		getUser();
 		getColsNearby();
 		getFirst();
 		getTopStats("{{$col->ColIDString}}",null);
 		getBanners({{$col->ColID}});
-		
-		getRating();
+		getUsers();	
 			
 		$('#modal-first').on('show.bs.modal', function (event) {
 			var button = $(event.relatedTarget);
@@ -95,7 +95,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	
 	var _rating_ = null;
 	
-	var showRating = function(){
+	var showUser = function(){
 		/* nr of users */
 		$("#col-rating-count").html(_rating_.done_count + " users climbed this col");
 		
@@ -108,9 +108,9 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			
 			for (var i = 0; i < el_i.length; i++){
 				if (Math.round(_rating_.rating_avg) >= i + 1){
-					$(el_i[i]).addClass("col-rating-avg-yes").removeClass("col-rating-avg-no");
+					$(el_i[i]).addClass("col-rating-yes").removeClass("col-rating-avg-no");
 				} else {
-					$(el_i[i]).addClass("col-rating-avg-no").removeClass("col-rating-avg-yes");
+					$(el_i[i]).addClass("col-rating-avg-no").removeClass("col-rating-yes");
 				}
 			}
 		}	
@@ -131,9 +131,9 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			
 			if (el_i.length == 1){
 				if (_rating_.done == 1){
-					$(el_i).addClass("col-done-yes").removeClass("col-done-no");
+					$(el_i).addClass("col-done-yes-edit").removeClass("col-done-no");
 				} else {
-					$(el_i).addClass("col-done-no").removeClass("col-done-yes");
+					$(el_i).addClass("col-done-no").removeClass("col-done-yes-edit");
 				}		
 			}
 				
@@ -157,9 +157,9 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			
 			for (var i = 0; i < el_i.length; i++){
 				if (_rating_.rating >= i + 1){
-					$(el_i[i]).addClass("col-rating-yes").removeClass("col-rating-no");
+					$(el_i[i]).addClass("col-rating-yes-edit").removeClass("col-rating-no");
 				} else {
-					$(el_i[i]).addClass("col-rating-no").removeClass("col-rating-yes");
+					$(el_i[i]).addClass("col-rating-no").removeClass("col-rating-yes-edit");
 				}
 			}
 		}	
@@ -177,15 +177,15 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 @endif			
 	}
 	
-	var createRatingEventHandlers = function(){
+	var createUserEventHandlers = function(){
 @if (Auth::user())
 		/* event handlers */
 		$(".col-done").on("mouseenter",function(){
-			$(this).addClass("col-done-yes-hover").removeClass("col-done-no");
+			$(this).addClass("col-done-yes-edit-hover").removeClass("col-done-no");
 		});
 		
 		$(".col-done").on("mouseleave",function(){
-			$(this).addClass("col-done-no").removeClass("col-done-yes-hover");
+			$(this).addClass("col-done-no").removeClass("col-done-yes-edit-hover");
 		});
 		
 		$(".col-done").on("click",function(){	
@@ -193,7 +193,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				_rating_.done_count++;
 				_rating_.done = 1;
 				
-				showRating();	
+				showUser();	
 				
 				$.ajax({
 					type: "GET",
@@ -210,14 +210,14 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		});
 
 		$(".col-rating").on("mouseenter",function(){
-			$(this).addClass("col-rating-yes-hover").removeClass("col-rating-no-hover");
-			$(this).prevAll().addClass("col-rating-yes-hover").removeClass("col-rating-no-hover");
-			$(this).nextAll().addClass("col-rating-no-hover").removeClass("col-rating-yes-hover");
+			$(this).addClass("col-rating-yes-edit-hover").removeClass("col-rating-no-hover");
+			$(this).prevAll().addClass("col-rating-yes-edit-hover").removeClass("col-rating-no-hover");
+			$(this).nextAll().addClass("col-rating-no-hover").removeClass("col-rating-yes-edit-hover");
 		});
 		
 		$(".col-rating").on("mouseleave",function(){
-			$(this).removeClass("col-rating-yes-hover col-rating-no-hover");
-			$(this).siblings().removeClass("col-rating-yes-hover col-rating-no-hover");
+			$(this).removeClass("col-rating-yes-edit-hover col-rating-no-hover");
+			$(this).siblings().removeClass("col-rating-yes-edit-hover col-rating-no-hover");
 		});
 		
 		$(".col-rating").on("click",function(){
@@ -243,7 +243,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			_rating_.rating = rating;
 			_rating_.rating_avg = rating_sum/_rating_.rating_count;
 			
-			showRating();
+			showUser();
 			
 			$.ajax({
 				type: "GET",
@@ -261,10 +261,10 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	}
 	
 	
-	var getRating = function(){
+	var getUser = function(){
 		$.ajax({
 			type: "GET",
-			url : "/service/col/rating/{{$col->ColIDString}}",
+			url : "/service/col/user/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {
 				if (data.length > 0){
@@ -275,8 +275,8 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 					_rating_.rating = +_rating_.rating;
 					_rating_.rating_avg = +_rating_.rating_avg;
 					
-					showRating();		
-					createRatingEventHandlers();
+					showUser();		
+					createUserEventHandlers();
 				}
 			},
 			cache: false
@@ -431,6 +431,21 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		});
 	}
 	
+	var _users_ = null;
+		
+	var getUsers = function() {
+		$.ajax({
+			type: "GET",
+			url : "/service/col/users/{{$col->ColIDString}}",
+			dataType : 'json',
+			success : function(result) {
+				if (result.success){
+					$("#col-users").html(result.html);		
+				}
+			}
+		});
+	}
+	
 	var printContent = function (el){
 		var title = $(el).attr("id");
 		var divContents = $(el).html();
@@ -563,7 +578,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	if (Auth::user() && !is_null($usercol)){
 		if ($usercol->pivot->Done == 1){
 			$done = true;
-			$col_done_class = "col-done-yes";
+			$col_done_class = "col-done-yes-edit";
 		}
 	}
 	
@@ -773,6 +788,13 @@ $profile_string = $profile_count . " profile" . $profile_string;
 					</div>
 				</div>
 				<div id="col-first" class="font-weight-light py-1">
+				</div>
+			</div>			
+			<div class="col-box w-100 mb-3">
+				<div class="p-2 border-bottom d-flex align-items-center">
+					<h6 class="font-weight-light m-0">Most Recent Climbed By</h6>
+				</div>
+				<div id="col-users" class="font-weight-light px-2 py-1">
 				</div>
 			</div>
 		</div>

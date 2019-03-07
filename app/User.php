@@ -42,6 +42,4 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->belongsToMany(Col::class,'usercol','UserID','ColID',null,'ColID')
             ->withPivot(['Done','CreatedAt','UpdatedAt','Rating','ToDo']);
     }
-
-
 }

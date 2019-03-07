@@ -61,7 +61,8 @@ Route::get('user','User\UserController@index');
 
 Route::middleware(['ajax'])->group(function () {
 	/* col */
-	Route::get('service/col/rating/{colIDString}','Col\ColController@_rating');
+	Route::get('service/col/user/{colIDString}','Col\ColController@_user');
+	Route::get('service/col/users/{colIDString}','Col\ColController@_users');
 	Route::get('service/col/nearby/{colIDString}','Col\ColController@_nearby');
 	Route::get('service/col/first/{colIDString}','Col\ColController@_first');
 	Route::get('service/col/top/{colIDString}','Col\ColController@_topcol');
