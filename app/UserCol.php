@@ -8,6 +8,6 @@ class UserCol extends Model
 	protected $table = 'usercol';
 	
     protected $fillable = array(
-		'Done', 'Rating', 'Favorite', 'ToDo'
+		'ClimbedAt', 'CreatedAt', 'UpdatedAt'
 	);
 }

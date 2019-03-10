@@ -61,14 +61,16 @@ Route::get('user','User\UserController@index');
 
 Route::middleware(['ajax'])->group(function () {
 	/* col */
+	Route::get('service/col/nearby/{colIDString}','Col\ColController@_nearby');
+	Route::get('service/col/first/{colIDString}','Col\ColController@_first_all');
+	Route::get('service/col/first/{colIDString}/{limit}','Col\ColController@_first');
+	Route::get('service/col/top/{colIDString}','Col\ColController@_col_top');
+	Route::get('service/col/profile/top/{profileFileName}','Col\ColController@_profile_top');
+	Route::get('service/col/profile/{fileName}','Col\ColController@_profile');
 	Route::get('service/col/user/{colIDString}','Col\ColController@_user');
 	Route::get('service/col/users/{colIDString}','Col\ColController@_users');
-	Route::get('service/col/nearby/{colIDString}','Col\ColController@_nearby');
-	Route::get('service/col/first/{colIDString}','Col\ColController@_first');
-	Route::get('service/col/top/{colIDString}','Col\ColController@_topcol');
-	Route::get('service/col/profile/top/{profileFileName}','Col\ColController@_topprofile');
-	Route::get('service/col/profile/{fileName}','Col\ColController@_profile');
-
+	Route::get('service/col/user/save/{colIDString}','Col\ColController@_user_save');
+	
 	/* cols */
 	Route::get('service/cols','Cols\ColsController@_cols');
 	Route::get('service/cols/search','Cols\ColsController@_search');
@@ -84,9 +86,6 @@ Route::middleware(['ajax'])->group(function () {
 	Route::get('service/rides','General\GeneralController@_rides');
 	Route::get('service/banners','General\GeneralController@_banners_all');	
 	Route::get('service/banners/{colIDString}','General\GeneralController@_banners');	
-
-	/* user */
-	Route::get('service/user/col','User\UserController@_store');
 });
 
 	

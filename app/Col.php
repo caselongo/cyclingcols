@@ -23,6 +23,6 @@ class Col extends Model
     public function users()
 	{
         return $this->belongsToMany(User::class,'usercol','ColID','UserID','ColID',null)
-            ->withPivot(['Done','CreatedAt','UpdatedAt','Rating','ToDo']);
+            ->withPivot(['ClimbedAt','CreatedAt','UpdatedAt']);
     }
 }

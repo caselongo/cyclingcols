@@ -36,9 +36,13 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		initMap();
 		
 		showCovers("{{$col->ColIDString}}",{{$col->CoverPhotoPosition}});
+		
+@if (Auth::user())
 		getUser();
+@endif
+
 		getColsNearby();
-		getFirst();
+		getFirst($("#col-first"),5);
 		getTopStats("{{$col->ColIDString}}",null);
 		getBanners({{$col->ColID}});
 		getUsers();	
@@ -48,7 +52,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 
 			var modal = $(this);
 			
-			showFirst($("#modal-first").find(".modal-body"),1000);
+			getFirst($("#modal-first").find(".modal-body"));
 		});
 		
 		
@@ -93,171 +97,63 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		}
 	}
 	
-	var _rating_ = null;
-	
 	var showUser = function(){
-		/* nr of users */
-		$("#col-rating-count").html(_rating_.done_count + " users climbed this col");
-		
-		/* avg rating */
-		var div = $("#col-rating-avg div");
-		if (div.length > 0){
-			div = div[0];
-			
-			var el_i = $(div).find("i");
-			
-			for (var i = 0; i < el_i.length; i++){
-				if (Math.round(_rating_.rating_avg) >= i + 1){
-					$(el_i[i]).addClass("col-rating-yes").removeClass("col-rating-avg-no");
-				} else {
-					$(el_i[i]).addClass("col-rating-avg-no").removeClass("col-rating-yes");
-				}
-			}
-		}	
-		
-		var span = $("#col-rating-avg span");
-		if (span.length > 0){
-			span = span[0];
-			$(span).html("Average rating " + (Math.round(_rating_.rating_avg * 10)/10) +  "/5");
-		}	
-
-@if (Auth::user())
-		/*  user done */
-		var div = $("#col-rating-done");
+		/*  user climbed */
+		var div = $("#col-climbed");
 		if (div.length > 0){
 			div = div[0];
 			
 			var el_i = $(div).find("i");
 			
 			if (el_i.length == 1){
-				if (_rating_.done == 1){
-					$(el_i).addClass("col-done-yes-edit").removeClass("col-done-no");
+				if (_climbed){
+					$(el_i).addClass("col-climbed-yes-edit").removeClass("col-climbed-no");
 				} else {
-					$(el_i).addClass("col-done-no").removeClass("col-done-yes-edit");
+					$(el_i).addClass("col-climbed-no").removeClass("col-climbed-yes-edit");
 				}		
 			}
 				
 			var span = $(div).find("span");
 			
 			if (span.length == 1){	
-				if (_rating_.done == 1){
+				if (_climbed){
 					$(span).html("You climbed this col");
 				} else {
 					$(span).html("You did not climb this col");
 				}
 			}
-		}
-				
-		/* user rating */
-		var div = $("#col-rating-user div");
-		if (div.length > 0){
-			div = div[0];
-			
-			var el_i = $(div).find("i");
-			
-			for (var i = 0; i < el_i.length; i++){
-				if (_rating_.rating >= i + 1){
-					$(el_i[i]).addClass("col-rating-yes-edit").removeClass("col-rating-no");
-				} else {
-					$(el_i[i]).addClass("col-rating-no").removeClass("col-rating-yes-edit");
-				}
-			}
 		}	
-		
-		var span = $("#col-rating-user span");
-		if (span.length > 0){
-			span = span[0];
-			if (_rating_.rating > 0){
-				$(span).html("Your rating " + _rating_.rating +  "/5");
-			} else {
-				$(span).html("Your rating");
-			}
-		}	
-
-@endif			
 	}
 	
 	var createUserEventHandlers = function(){
-@if (Auth::user())
 		/* event handlers */
-		$(".col-done").on("mouseenter",function(){
-			$(this).addClass("col-done-yes-edit-hover").removeClass("col-done-no");
+		$(".col-climbed").on("mouseenter",function(){
+			$(this).addClass("col-climbed-yes-edit-hover").removeClass("col-climbed-no");
 		});
 		
-		$(".col-done").on("mouseleave",function(){
-			$(this).addClass("col-done-no").removeClass("col-done-yes-edit-hover");
+		$(".col-climbed").on("mouseleave",function(){
+			$(this).addClass("col-climbed-no").removeClass("col-climbed-yes-edit-hover");
 		});
 		
-		$(".col-done").on("click",function(){	
-			if (_rating_.done == 0){
-				_rating_.done_count++;
-				_rating_.done = 1;
+		$(".col-climbed").on("click",function(){	
+			if (!_climbed){
+				_climbed = true;
 				
 				showUser();	
 				
 				$.ajax({
 					type: "GET",
-					url : "/service/user/col",
-					data: {
-						"colIDString": "{{$col->ColIDString}}",
-						"done": true
-					},
+					url : "/service/col/user/save/{{$col->ColIDString}}",
 					dataType : 'json',
-					success : function(data) {							
+					success : function(data) {		
+						getUsers();
+					},
+					error: function(err){
+						
 					}
 				});
 			}
-		});
-
-		$(".col-rating").on("mouseenter",function(){
-			$(this).addClass("col-rating-yes-edit-hover").removeClass("col-rating-no-hover");
-			$(this).prevAll().addClass("col-rating-yes-edit-hover").removeClass("col-rating-no-hover");
-			$(this).nextAll().addClass("col-rating-no-hover").removeClass("col-rating-yes-edit-hover");
-		});
-		
-		$(".col-rating").on("mouseleave",function(){
-			$(this).removeClass("col-rating-yes-edit-hover col-rating-no-hover");
-			$(this).siblings().removeClass("col-rating-yes-edit-hover col-rating-no-hover");
-		});
-		
-		$(".col-rating").on("click",function(){
-			var rating = $(this).attr("data-rating");
-			if (!rating) return;
-			
-			rating = +rating;
-			
-			if (rating < 1) return;
-			if (rating > 5) return;
-			
-			
-			var rating_sum = _rating_.rating_count * _rating_.rating_avg;
-			
-			if (_rating_.rating > 0){
-				rating_sum -= _rating_.rating ;
-				rating_sum += rating;
-			} else {
-				rating_sum += rating;
-				_rating_.rating_count++;
-			}
-			
-			_rating_.rating = rating;
-			_rating_.rating_avg = rating_sum/_rating_.rating_count;
-			
-			showUser();
-			
-			$.ajax({
-				type: "GET",
-				url : "/service/user/col",
-				data: {
-					"colIDString": "{{$col->ColIDString}}",
-					"rating": rating
-				},
-				dataType : 'json',
-				success : function(data) {			
-				}
-			});
-		});
-@endif			
+		});	
 	}
 	
 	
@@ -267,13 +163,8 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			url : "/service/col/user/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {
-				if (data.length > 0){
-					_rating_ = data[0];
-					_rating_.done_count = +_rating_.done_count;
-					_rating_.done = +_rating_.done;
-					_rating_.rating_count = +_rating_.rating_count;
-					_rating_.rating = +_rating_.rating;
-					_rating_.rating_avg = +_rating_.rating_avg;
+				if (data){
+					_climbed = data.climbed;
 					
 					showUser();		
 					createUserEventHandlers();
@@ -288,108 +179,34 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			type: "GET",
 			url : "/service/col/nearby/{{$col->ColIDString}}",
 			dataType : 'json',
-			success : function(data) {		
-				for(var i = 0; i < data.length; i++) {	
-					var dis = parseInt(Math.round(parseFloat(data[i].Distance/1000)));
-					var int_dir = parseInt(data[i].Direction); 
-					var dir;
-					
-					if (int_dir <= 22) { dir = "South"; }
-					else if (int_dir <= 67) { dir = "South-West"; }
-					else if (int_dir <= 112) { dir = "West"; }
-					else if (int_dir <= 157) { dir = "North-West"; }
-					else if (int_dir <= 202) { dir = "North"; }
-					else if (int_dir <= 247) { dir = "North-East"; }
-					else if (int_dir <= 292) { dir = "East"; }
-					else if (int_dir <= 337) { dir = "South-East"; }
-					else { dir = "South"; }
-				
-					var html = '<div class="d-flex px-2 text-small-90">';
-					html += '<div class="text-truncate" title="' + data[i].Col + '"><a href="/col/' + data[i].ColIDString + '">' + data[i].Col + '</a></div>';
-					html += '<div class="ml-auto text-small-75 text-right" style="flex: 0 0 60px;">' + dis + ' km<img class="direction ml-1" src="/images/' + dir + '.png"/></div>';	
-					html += '</div>';
-					
-					$("#col-nearby").append(html);
+			success : function(result) {	
+				if (result.success){
+					$("#col-nearby").html(result.html);		
 				}
 			}
 		});		
 	}
 	
-	var showFirst = function(el,limit){
-		if (el == null) return;
+	var getFirst = function(el,limit) {
+		var url = "/service/col/first/{{$col->ColIDString}}";
 		
-		//el = $(el);
-		if (el.length == 0) return;
-		//el = el[0];
+		if (limit){
+			url += "/" + limit;
+		}
 		
-		$(el).empty();	
-		
-		if (_first_.length > 0){
-		
-			for(var i = 0; i < _first_.length; i++){
-				var d = _first_[i];
-				
-				var display = "d-flex";
-				if (i >= limit) {display = "d-none";}
-				
-				var html = '<div class="px-2 text-small-90 align-items-baseline ' + display + '">';
-				html += '<div class="d-flex text-small-75" style="flex: 0 0 80px;">';
-				html += '<div class="">' + d.race_short + '</div>'; 
-				html += '<div class="pl-1">' + d.Edition + '</div>';
-				html += '</div>'; 
-				html += '<div class="d-flex w-100 align-items-center">'; 
-				html += '<div class="px-1 text-truncate">' + d.person + '</div>';
-				if (d.flag == true) {
-					html += "<img class=\"flag ml-auto\" src='/images/flags/small/" + d.NatioAbbr.toLowerCase() + ".gif' title='" + d.Natio + "'/>";
-				}
-				html += '</div></div>'; 
-				
-				$(el).append(html);	
-			}
-		} else {
-			$(el).html("<span class=\"text-small-75 px-2\">Never climbed in Tour, Giro or Vuelta</span>");	
-		}	
-	}
-	
-	var _first_ = null;
-	
-	var getFirst = function() {
 		$.ajax({
 			type: "GET",
-			url : "/service/col/first/{{$col->ColIDString}}",
+			url : url,
 			dataType : 'json',
-			success : function(data) {	
-				if (data.length > 0) {
-				
-					for(var i = 0; i < data.length; i++) {	
-						var d = data[i];
-					
-						d.race = ""; 
-						d.race_short = "";
-					
-						switch(parseInt(data[i].EventID)) {
-							case 1: d.race = "Tour de France"; d.race_short = "Tour"; break;
-							case 2: d.race = "Giro d'Italia"; d.race_short = "Giro"; break;
-							case 3: d.race = "Vuelta a España"; d.race_short = "Vuelta"; break;
-						}
-						
-						d.person = d.Person;
-						d.flag = true;
-						if (d.Neutralized == "1") {d.person = "-neutralized-"; d.flag = false;}
-						else if (d.Cancelled == "1") {d.person = "-cancelled-"; d.flag = false;}
-						else if (d.NatioAbbr == "") {d.person = "-cancelled-"; d.flag = false;}
-						
-						if (d.person == null) {d.person = ""; d.flag = false;}
-					}
-					
+			success : function(result) {	
+				if (result.success){
+					$(el).html(result.html);		
 				}
-							
-				_first_ = data;
 				
-				showFirst($("#col-first"),5);
-						
-				if (data.length <= 5) {
-					$("#col-first-all").hide();
+				if (limit){
+					if (result.count > limit) {
+						$("#col-first-all").parent().removeClass("d-none");
+					}
 				}
 			}
 		})
@@ -403,11 +220,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			success : function(data) {
 				if (data.length > 0){
 					$("#ads").toggleClass("d-block d-none");
-					
-					/*var div = document.createElement("div");
-					$(div).addClass("ads");
-					var firstProfile = $(".leftinfo").children().first();
-					$(firstProfile).after(div);*/
 						
 					for(var i = 0; i < data.length; i++){
 						var a = document.createElement("a");
@@ -571,23 +383,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			}		
 		}	
 	}
-	
-	//done
-	$done = false;
-	$col_done_class = "col_done_no";
-	if (Auth::user() && !is_null($usercol)){
-		if ($usercol->pivot->Done == 1){
-			$done = true;
-			$col_done_class = "col-done-yes-edit";
-		}
-	}
-	
-	//rating
-	$rating = 0;
-	$avg_rating = 3.8;
-	if (Auth::user() && !is_null($usercol)){
-		$rating = $usercol->pivot->Rating;
-	}
 ?>
 
 <main role="main" class="bd-content">
@@ -634,39 +429,35 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			</div>
 		</div>		
 	</div>	
-	<!--rating-->		
-	<div class="w-100 p-2 d-flex bg-dark text-white text-small-75 align-items-center flex-wrap">
-		<div id="col-rating-count" class="w-100 w-sm-50 w-md-25">
-		</div>
-		
-		<div id="col-rating-avg" class="w-100 w-sm-50 w-md-25">
-			<div class="d-inline-block">
-				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
-				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
-				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
-				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
-				<i class="col-rating-avg no-pointer fas fa-star col-rating-avg-no"></i>
-			</div>
-			<span class="col-rating-value"></span>
+	<!--user-->		
+	<div class="w-100 px-3 py-1 d-flex bg-dark text-white text-small-75 align-items-center flex-wrap">
+		<div class="w-100 w-sm-50 w-md-25">
+			<div class="fb-like" 
+				data-href="http://www.cyclingcols.com/col/{{$col->ColIDString}}"
+				data-layout="button" 
+				data-action="like" 
+				data-show-faces="false" 
+				data-share="true"
+			></div>
+			<a href="https://twitter.com/share" class="twitter-share-button" data-url="{{URL::asset('col/')}}/{{$col->ColIDString}}" data-via="cyclingcols">Tweet</a>
+			<form class="donate d-inline-block m-0" align="center" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" title="Show your appreciation and support the continuity of CyclingCols.">
+				<input type="hidden" name="cmd" value="_s-xclick">
+				<input type="hidden" name="hosted_button_id" value="6ME8CQEG33GT4">
+				<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+				<img alt="" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1">
+			</form>
+			<div class="sharethis-inline-share-buttons"></div>
+		</div>			
+		<div class="w-100 w-sm-100 w-md-50">
 		</div>
 	@auth
-		<div id="col-rating-done" class="w-100 w-sm-50 w-md-25">
-			<i class="col-done fas fa-check col-done-no"></i>
-			<span class="col-done-value"></span>
-		</div>
-		<div id="col-rating-user" class="w-100 w-sm-50 w-md-25">
-			<div class="d-inline-block">
-				<i data-rating="1" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-				<i data-rating="2" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-				<i data-rating="3" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-				<i data-rating="4" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-				<i data-rating="5" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-			</div>
-			<span class="col-rating-value"></span>	
+		<div id="col-climbed" class="w-100 w-sm-50 w-md-25">
+			<i class="col-climbed fas fa-check col-climbed-no"></i>
+			<span class="col-climbed-value"></span>
 		</div>
 	@else
-		<div class="w-50">
-			<a href="/login"/>Login</a> to rate this col
+		<div class="w-100 w-sm-50 w-md-25">
+			<a href="/login"/>Login</a> to claim this col
 		</div>
 	@endauth
 	</div>
@@ -774,7 +565,7 @@ $profile_string = $profile_count . " profile" . $profile_string;
 				</div>
 				<div>
 					<h6 class="font-weight-light p-2 m-0 border-bottom">Cols Nearby</h6>
-					<div id="col-nearby" class="font-weight-light py-1">
+					<div id="col-nearby" class="font-weight-light px-2 py-1">
 					</div>
 				</div>				
 			</div>	
@@ -783,16 +574,16 @@ $profile_string = $profile_count . " profile" . $profile_string;
 			<div class="col-box w-100 mb-3">
 				<div class="p-2 border-bottom d-flex align-items-center">
 					<h6 class="font-weight-light m-0">First On Top</h6>
-					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
+					<div class="ml-auto d-none" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
 						<i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i>
 					</div>
 				</div>
-				<div id="col-first" class="font-weight-light py-1">
+				<div id="col-first" class="font-weight-light px-2 py-1">
 				</div>
 			</div>			
 			<div class="col-box w-100 mb-3">
 				<div class="p-2 border-bottom d-flex align-items-center">
-					<h6 class="font-weight-light m-0">Most Recent Climbed By</h6>
+					<h6 class="font-weight-light m-0">Most Recently Climbed By</h6>
 				</div>
 				<div id="col-users" class="font-weight-light px-2 py-1">
 				</div>

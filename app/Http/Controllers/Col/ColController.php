@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Col;
 
 use App\Col;
+use App\ColsNearby;
 use App\Passage;
 use App\Stat;
 use App\StatType;
 use App\Country;
 use App\Profile;
+use App\UserCol;
 
 use App\Http\Controllers\Controller;
+
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,17 +33,9 @@ class ColController extends Controller
 
 		$profiles = \App\Profile::where('ColID',$col->ColID)->get();
 		
-		$user = Auth::user();
-		$usercol = null;
-		if($user != null)
-		{
-			$usercol = $user->cols()->where('cols.ColID','=',$col->ColID)->first();
-		}
-		
 		return view('pages.col')
 			->with('col',$col)
-			->with('profiles',$profiles)
-			->with('usercol',$usercol);
+			->with('profiles',$profiles);
 	}	
 	
 	/*  service */
@@ -52,23 +48,18 @@ class ColController extends Controller
             return response(['success' => false], 404);
         }
 		
+		$usercol = UserCol::where('ColID', $col->ColID);
+		
+		$climbed = false;
+		
 		$userID = 0;
 		if ($user != null){
-			$userID = $user->id;
+			if ($usercol->where('UserID', $user->id)->count() > 0){
+				$climbed = true;
+			}
 		}
 		
-		$select = "SUM(CASE WHEN Done = 1 THEN 1 ELSE 0 END) as done_count,";
-		$select .= "MAX(CASE WHEN UserID = " . $userID . " THEN Done ELSE 0 END) as done,";
-		$select .= "SUM(CASE WHEN Rating > 0 THEN 1 ELSE 0 END) as rating_count,";
-		$select .= "MAX(CASE WHEN UserID = " . $userID . " THEN Rating ELSE 0 END) as rating,";
-		$select .= "AVG(CASE WHEN Rating > 0 THEN Rating ELSE NULL END) as rating_avg";
-		
-		$ratings = DB::table('usercol')
-                     ->select(DB::raw($select))
-                     ->where('ColID', $col->ColID)
-                     ->get();
-
-		return response()->json($ratings);
+		return response()->json(array('climbed' => $climbed));		
     }
 	
     public function _users(Request $request, $colIDString)
@@ -81,12 +72,41 @@ class ColController extends Controller
 		
 		$users = $col->users();
 		
-		$users = $users->orderBy('pivot_CreatedAt', 'Desc')->limit(10)->get();
+		$count = $users->count();
+		
+		$users = $users->orderBy('pivot_ClimbedAt', 'Desc')->limit(5)->get();
 
+		$returnHTML = view('sub.colusers')
+			->with('users', $users)
+			->with('count', $count)
+			->render();
+		
+		return response()->json(array('success' => true, 'html' => $returnHTML));	
+    }
 
-		$returnHTML = view('sub.colusers')->with('users', $users)->render();
-		return response()->json(array('success' => true, 'html'=>$returnHTML));		
-		//return response()->json($users);
+    public function _user_save(Request $request, $colIDString)
+    {
+		$user = Auth::user();
+        $col = Col::where('ColIDString', $colIDString)->first();
+
+        if ($col == null) {
+            return response(['success' => false], 404);
+        }
+
+        $array = [];
+
+        if ($user->cols()->where('cols.ColID', $col->ColID)->first() != null) {
+
+            $array['UpdatedAt'] = Carbon::now();
+            $user->cols()->updateExistingPivot($col->ColID, $array, false);
+        } else {
+
+            $array['UpdatedAt'] = Carbon::now('Europe/Amsterdam');
+            $array['CreatedAt'] = Carbon::now('Europe/Amsterdam');
+            $user->cols()->attach($col->ColID, $array);
+        }
+
+        return response(['success' => true], 200);
     }
 	
     public function _nearby(Request $request, $colIDString)
@@ -97,16 +117,24 @@ class ColController extends Controller
             return response(['success' => false], 404);
         }
 		
-		$colsnearby = DB::table('colsnearby')
-                     ->select(DB::raw('ColIDString, Col, Latitude, Longitude, Distance, Direction'))
-                     ->where('MainColID', $col->ColID)
+		$nearby = ColsNearby::where('MainColID', $col->ColID)
 					 ->orderBy('Distance', 'ASC')
                      ->get();
 
-		return response()->json($colsnearby);
+		$returnHTML = view('sub.colnearby')
+			->with('nearby', $nearby)
+			->render();
+		
+		return response()->json(array('success' => true, 'html'=>$returnHTML));	
     }
 	
-    public function _first(Request $request, $colIDString)
+    public function _first_all(Request $request, $colIDString)
+	{
+		return $this->_first($request, $colIDString, null);
+	}
+	
+	
+    public function _first(Request $request, $colIDString, $limit)
     {
 		$col = Col::where('ColIDString', $colIDString)->first();
 
@@ -114,12 +142,25 @@ class ColController extends Controller
             return response(['success' => false], 404);
         }
 		
-		$first = Passage::where('ColID', $col->ColID)
-					 ->orderBy('Edition', 'DESC')
-					 ->orderBy('EventID', 'DESC')
-                     ->get();
+		$first = Passage::where('ColID', $col->ColID);
+		
+		$count = $first->count();
+		
+		$first = $first->orderBy('Edition', 'DESC')
+					 ->orderBy('EventID', 'DESC');
+					 
+		if ($limit != null){
+			$first = $first->limit($limit);
+		}
+		
+		$first = $first->get();
 
-		return response()->json($first);
+		$returnHTML = view('sub.colfirst')
+			->with('first', $first)
+			->with('count', $count)
+			->render();
+		
+		return response()->json(array('success' => true, 'html'=>$returnHTML, 'count' => $count));	
     }
 	
 	private function _top($top){
@@ -150,7 +191,7 @@ class ColController extends Controller
 		return response()->json($top);		
 	}
 	
-    public function _topprofile(Request $request, $fileName)
+    public function _profile_top(Request $request, $fileName)
     {
 		$profile = Profile::where('FileName', $fileName)->first();
 
@@ -168,7 +209,7 @@ class ColController extends Controller
 		return $this->_top($top);	
 	}
 	
-    public function _topcol(Request $request, $colIDString)
+    public function _col_top(Request $request, $colIDString)
     {
 		$col = Col::where('ColIDString', $colIDString)->first();
 

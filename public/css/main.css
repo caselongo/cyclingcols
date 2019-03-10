@@ -378,21 +378,22 @@ footer{
 	line-height: 1;
 }
 
-/* col done */
-.col-done-no {
+/* col climbed */
+.col-climbed-no {
 	color: #666;
 }
-.col-done-no-light {
+.col-climbed-no-light {
 	color: #ccc;
 }
-.col-done-yes, .col-done-yes-edit-hover {
+.col-climbed-yes, .col-climbed-yes-edit-hover {
 	color: #f80;
 }
-.col-done-yes-edit {
+.col-climbed-yes-edit {
 	color: #f00;
 }
 
 /* col rating */
+/*
 .col-rating-no, .col-rating-no-edit-hover {
 	color: #666!important;
 }
@@ -401,7 +402,7 @@ footer{
 }
 .col-rating-yes-edit {
 	color: #f00;
-}
+}*/
 
 /**/
 
