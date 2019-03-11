@@ -114,6 +114,11 @@ CyclingCols - My CyclingCols
 					<span>Cols Most Recently Claimed</span>
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
+					<div class="align-items-end d-flex justify-content-begin">
+						<div class="ml-auto text-small-75 text-right border-bottom" style="flex: 0 0 65px;">claimed</div>
+						<div class="text-small-75 text-right border-bottom ml-1" style="flex: 0 0 65px;">climbed</div>
+					</div>
+
 @foreach($claimed as $claimed_)
 					<div class="align-items-end d-flex">
 						<div class="text-truncate">
@@ -121,9 +126,16 @@ CyclingCols - My CyclingCols
 	@if ($claimed_->Country2)
 							<img src="/images/flags/{{$claimed_->Country2}}.gif" title="{{$claimed_->Country2}}" class="flag mr-1">
 	@endif
-							<a href="col/{{$claimed_->ColIDString}}">{{$claimed_->Col}}</a>
+							<a href="/col/{{$claimed_->ColIDString}}">{{$claimed_->Col}}</a>
 						</div>
 						<div class="ml-auto text-small-75 text-right" style="flex: 0 0 65px;">{{Carbon\Carbon::parse($claimed_->pivot->CreatedAt)->format('d M Y')}}</div>
+						<div class="text-small-75 text-right ml-1" style="flex: 0 0 65px;">
+	@if ($claimed_->pivot->ClimbedAt)
+						{{Carbon\Carbon::parse($claimed_->pivot->ClimbedAt)->format('d M Y')}}
+	@else
+						add date
+	@endif
+						</div>
 					</div>
 @endforeach
 				</div>

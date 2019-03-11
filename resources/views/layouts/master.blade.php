@@ -17,7 +17,8 @@
     <link rel="shortcut icon" href="/images/cyclingcols2014_klein.ico">
 
     <link rel="stylesheet" href="/css/bootstrap.css" type="text/css">
-    <link rel="stylesheet" href="/css/jquery-ui.css" type="text/css">
+	<!--<link rel="stylesheet" href="/css/jquery-ui.css" type="text/css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">-->
     <link rel="stylesheet" href="/css/main.css" type="text/css">
 	<link rel="stylesheet" href="/fontawesome/css/all.css" type="text/css">
 	

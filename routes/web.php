@@ -40,6 +40,10 @@ Route::get('map/col/{colIDString}','Map\MapController@col');
 Route::get('stats/{stattypeurl}/{countryurl}','Stats\StatsController@index');
 Route::get('stats','Stats\StatsController@index_default');
 
+// Stats2
+Route::get('stats2/{stattypeurl}/{countryurl}','Stats\Stats2Controller@index');
+Route::get('stats2','Stats\Stats2Controller@index_default');
+
 // Home
 Route::get('/','General\GeneralController@home');
 
@@ -59,6 +63,7 @@ Route::get('rides','General\GeneralController@rides');
 Route::get('user/welcome', 'User\UserController@welcome');
 Route::get('user','User\UserController@index');
 
+	Route::get('service/col/user/save/{colIDString}','Col\ColController@_user_save');
 Route::middleware(['ajax'])->group(function () {
 	/* col */
 	Route::get('service/col/nearby/{colIDString}','Col\ColController@_nearby');
@@ -69,7 +74,6 @@ Route::middleware(['ajax'])->group(function () {
 	Route::get('service/col/profile/{fileName}','Col\ColController@_profile');
 	Route::get('service/col/user/{colIDString}','Col\ColController@_user');
 	Route::get('service/col/users/{colIDString}','Col\ColController@_users');
-	Route::get('service/col/user/save/{colIDString}','Col\ColController@_user_save');
 	
 	/* cols */
 	Route::get('service/cols','Cols\ColsController@_cols');
@@ -78,6 +82,7 @@ Route::middleware(['ajax'])->group(function () {
 
 	/* stat */
 	Route::get('service/stats/top/{country_url}','Stats\StatsController@_top');	
+	Route::get('service/stats2/top/{country_url}','Stats\Stats2Controller@_top');	
 	
 	/* general */
 	Route::get('service/countries','General\GeneralController@_countries');

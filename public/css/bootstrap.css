@@ -5347,10 +5347,11 @@ a.badge-dark:hover, a.badge-dark:focus {
   position: relative;
   display: block;
   padding: 0.75rem 1.25rem;
-  margin-bottom: -1px;
+  /*margin-bottom: -1px;*/
   background-color: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
   font-size: 0.9rem; /**/
+  cursor: pointer; /**/
 }
 
 .list-group-item:first-child {

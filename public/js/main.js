@@ -244,36 +244,38 @@ var getTopStats = function(colIDString,profileFileName) {
 			var el_ = null;
 		
 			for(var i = 0; i < data.length; i++) {
-				if (profileid != data[i].ProfileID){
-					el_ = $("#" + data[i].FileName);
-					el_.find(".topstat").remove();
-				}
-				
-				if (profileid != data[i].ProfileID || stattypeid != data[i].StatTypeID || (rank > 1 && data[i].Rank < rank)) {
-					rank = data[i].Rank;
-					var rankAdd = 'th';
-					if (rank == 1) rankAdd = 'st';
-					if (rank == 2) rankAdd = 'nd';
-					if (rank == 3) rankAdd = 'rd';
-					
-					var geo = "Europe";
-					if (data[i].GeoID > 0) {
-						if (data[i].GeoID == data[i].Country1ID) geo = data[i].Country1;
-						else if (data[i].GeoID == data[i].Country2ID) geo = data[i].Country2;
+				if (data[i].FileName){
+					if (profileid != data[i].ProfileID){
+						el_ = $("#" + data[i].FileName);
+						el_.find(".topstat").remove();
 					}
-					geo = geo.toLowerCase();
-					var geo_img = "<img src='/images/flags/" + geo + ".gif' class='flag pr-1' title='" + geo + "'/>";
-					var el = el_.find(".stat" + data[i].StatTypeID);
-					var el2 = document.createElement("div");
-					$(el2).addClass("topstat");
-					$(el).append(el2);
-					var html = '<a href="/stats/' + data[i].stat_url + '/' + data[i].country_url + '">' + geo_img + data[i].Rank + rankAdd + '</a>';
-					$(el2).html(html);
-					$(el).show();
-				}		
 					
-				profileid = data[i].ProfileID;	
-				stattypeid = data[i].StatTypeID;
+					if (profileid != data[i].ProfileID || stattypeid != data[i].StatTypeID || (rank > 1 && data[i].Rank < rank)) {
+						rank = data[i].Rank;
+						var rankAdd = 'th';
+						if (rank == 1) rankAdd = 'st';
+						if (rank == 2) rankAdd = 'nd';
+						if (rank == 3) rankAdd = 'rd';
+						
+						var geo = "Europe";
+						if (data[i].GeoID > 0) {
+							if (data[i].GeoID == data[i].Country1ID) geo = data[i].Country1;
+							else if (data[i].GeoID == data[i].Country2ID) geo = data[i].Country2;
+						}
+						geo = geo.toLowerCase();
+						var geo_img = "<img src='/images/flags/" + geo + ".gif' class='flag pr-1' title='" + geo + "'/>";
+						var el = el_.find(".stat" + data[i].StatTypeID);
+						var el2 = document.createElement("div");
+						$(el2).addClass("topstat");
+						$(el).append(el2);
+						var html = '<a href="/stats/' + data[i].stat_url + '/' + data[i].country_url + '">' + geo_img + data[i].Rank + rankAdd + '</a>';
+						$(el2).html(html);
+						$(el).show();
+					}		
+						
+					profileid = data[i].ProfileID;	
+					stattypeid = data[i].StatTypeID;
+				}
 			}
 		}
 	})

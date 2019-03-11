@@ -59,6 +59,32 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		$(".profile-print").click(function() { 
 			printContent($(this).parents(".col-box")[0]); 
 		});
+		
+		var datepickerOptions = {
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: "d M yy",
+			maxDate: "+0d",
+			onSelect: function(dateText, inst){
+				_climbed.climbedAt = new Date(dateText);
+				_climbed.climbedAtText = dateText;
+				
+				saveUser(function(){
+					getUsers();
+				});
+			}
+		};
+		
+		$(".col-climbed-date").datepicker(datepickerOptions);
+		
+		$(".col-climbed-date").on("click", function(){
+			$(".ui-datepicker-prev span").hide();
+			$(".ui-datepicker-next span").hide();
+			$(".ui-datepicker-prev span").html("<i class=\"fas fa-chevron-left\"></i>");
+			$(".ui-datepicker-next span").html("<i class=\"fas fa-chevron-right\"></i>");
+			$(this).datepicker( "show" );
+		});
+
 
 	});
 	
@@ -103,23 +129,32 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		if (div.length > 0){
 			div = div[0];
 			
-			var el_i = $(div).find("i");
+			var el_i = $(div).find(".col-climbed");
 			
 			if (el_i.length == 1){
-				if (_climbed){
+				if (_climbed.climbed){
 					$(el_i).addClass("col-climbed-yes-edit").removeClass("col-climbed-no");
 				} else {
 					$(el_i).addClass("col-climbed-no").removeClass("col-climbed-yes-edit");
 				}		
 			}
 				
-			var span = $(div).find("span");
+			var span_value = $(div).find(".col-climbed-value");
+			var span_date = $(div).find(".col-climbed-date");
 			
-			if (span.length == 1){	
-				if (_climbed){
-					$(span).html("You climbed this col");
+			if (span_value.length == 1 && span_date.length == 1){	
+				if (_climbed.climbed){
+					$(span_value).html("You climbed this col on");
+					if (_climbed.climbedAt){
+						$(".col-climbed-date").datepicker("option", "defaultDate", _climbed.climbedAt);				
+						$(".col-climbed-date").datepicker("setDate", _climbed.climbedAt);
+					} else {
+						$(span_date).val("");
+					}
+					$(span_date).show();
 				} else {
-					$(span).html("You did not climb this col");
+					$(span_value).html("You did not climb this col");
+					$(span_date).hide();
 				}
 			}
 		}	
@@ -136,26 +171,34 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		});
 		
 		$(".col-climbed").on("click",function(){	
-			if (!_climbed){
-				_climbed = true;
+			if (!_climbed.climbed){
+				_climbed.climbed = true;
 				
 				showUser();	
 				
-				$.ajax({
-					type: "GET",
-					url : "/service/col/user/save/{{$col->ColIDString}}",
-					dataType : 'json',
-					success : function(data) {		
-						getUsers();
-					},
-					error: function(err){
-						
-					}
+				saveUser(function(){
+					getUsers();
 				});
 			}
 		});	
 	}
 	
+	var saveUser = function(callback){
+		$.ajax({
+			type: "GET",
+			url : "/service/col/user/save/{{$col->ColIDString}}",
+			data: {
+				climbedAt: _climbed.climbedAtText
+			},
+			dataType : 'json',
+			success : function(data) {		
+				if (callback) callback();
+			},
+			error: function(err){
+				
+			}
+		});
+	}
 	
 	var getUser = function(){
 		$.ajax({
@@ -164,7 +207,9 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			dataType : 'json',
 			success : function(data) {
 				if (data){
-					_climbed = data.climbed;
+					_climbed = data;
+					_climbed.climbedAtText = _climbed.climbedAt;
+					if (_climbed.climbedAt) _climbed.climbedAt = new Date(_climbed.climbedAt);
 					
 					showUser();		
 					createUserEventHandlers();
@@ -454,6 +499,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		<div id="col-climbed" class="w-100 w-sm-50 w-md-25">
 			<i class="col-climbed fas fa-check col-climbed-no"></i>
 			<span class="col-climbed-value"></span>
+			<input type="text" readonly placeholder="add date" class="col-climbed-date"></input>
 		</div>
 	@else
 		<div class="w-100 w-sm-50 w-md-25">

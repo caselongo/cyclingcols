@@ -56,6 +56,17 @@
 			</a>
 		  </li>
 		  <li class="nav-item font-weight-light
+			@if ($stats2)
+				active
+			@endif	  
+			">
+			<a class="nav-link" href="/stats2">Stats2
+			@if ($stats2)
+				<span class="sr-only">(current)</span>
+			@endif
+			</a>
+		  </li>
+		  <li class="nav-item font-weight-light
 			@if ($help)
 				active
 			@endif	  

@@ -15,7 +15,7 @@ CyclingCols - Main
 			<div id="search" class="ui-front">
 				<input class="form-control font-weight-light px-2 py-1" id="search-box" type="search" placeholder="Search a col in Europe...">
 			</div>
-			<div id="phototext" class="phototext"><a href=""></a></div>
+			<div id="phototext" class="phototext font-weight-light"><a href=""></a></div>
         </div>
 
         <script type="text/javascript" charset="utf-8">

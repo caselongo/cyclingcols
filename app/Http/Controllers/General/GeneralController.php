@@ -131,7 +131,7 @@ class GeneralController extends Controller
     }
 
     public function _banners_all(Request $request){
-		return $this->banners($request, null);
+		return $this->_banners($request, null);
 	}
 	
     public function _banners(Request $request, $colIDString)

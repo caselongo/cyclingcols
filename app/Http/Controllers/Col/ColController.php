@@ -17,7 +17,7 @@ use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 
 class ColController extends Controller
 {
@@ -48,18 +48,18 @@ class ColController extends Controller
             return response(['success' => false], 404);
         }
 		
-		$usercol = UserCol::where('ColID', $col->ColID);
-		
 		$climbed = false;
+		$climbedAt = null;
 		
-		$userID = 0;
 		if ($user != null){
-			if ($usercol->where('UserID', $user->id)->count() > 0){
+			$usercol = UserCol::where('ColID', $col->ColID)->where('UserID', $user->id)->first();
+			if ($usercol){
 				$climbed = true;
+				$climbedAt = $usercol->ClimbedAt;
 			}
 		}
 		
-		return response()->json(array('climbed' => $climbed));		
+		return response()->json(array('climbed' => $climbed, 'climbedAt' => $climbedAt));		
     }
 	
     public function _users(Request $request, $colIDString)
@@ -87,22 +87,34 @@ class ColController extends Controller
     public function _user_save(Request $request, $colIDString)
     {
 		$user = Auth::user();
+
+        if ($user == null) {
+            return response(['success' => false], 404);
+        }
+		
         $col = Col::where('ColIDString', $colIDString)->first();
 
         if ($col == null) {
             return response(['success' => false], 404);
         }
+		
+		$climbedAt = Input::get('climbedAt');
+		$c = null;
+		if ($climbedAt){
+			$c = Carbon::parse($climbedAt);
+		}
 
         $array = [];
 
         if ($user->cols()->where('cols.ColID', $col->ColID)->first() != null) {
-
             $array['UpdatedAt'] = Carbon::now();
+			$array['ClimbedAt'] = $c;
             $user->cols()->updateExistingPivot($col->ColID, $array, false);
         } else {
 
             $array['UpdatedAt'] = Carbon::now('Europe/Amsterdam');
             $array['CreatedAt'] = Carbon::now('Europe/Amsterdam');
+			$array['ClimbedAt'] = $c;
             $user->cols()->attach($col->ColID, $array);
         }
 
