@@ -63,19 +63,17 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		var datepickerOptions = {
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: "d M yy",
+			dateFormat: "dd M yy",
 			maxDate: "+0d",
 			onSelect: function(dateText, inst){
 				_climbed.climbedAt = new Date(dateText);
 				_climbed.climbedAtText = dateText;
 				
-				saveUser(function(){
+				saveUser("{{$col->ColIDString}}", _climbed.climbedAtText, function(){
 					getUsers();
 				});
 			}
 		};
-		
-		$(".col-climbed-date").datepicker(datepickerOptions);
 		
 		$(".col-climbed-date").on("click", function(){
 			$(".ui-datepicker-prev span").hide();
@@ -146,10 +144,9 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				if (_climbed.climbed){
 					$(span_value).html("You climbed this col on");
 					if (_climbed.climbedAt){
-						$(".col-climbed-date").datepicker("option", "defaultDate", _climbed.climbedAt);				
-						$(".col-climbed-date").datepicker("setDate", _climbed.climbedAt);
+						$(".col-climbed-date").html(_climbed.climbedAtText);
 					} else {
-						$(span_date).val("");
+						$(".col-climbed-date").html("[add date]");
 					}
 					$(span_date).show();
 				} else {
@@ -176,28 +173,11 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				
 				showUser();	
 				
-				saveUser(function(){
+				saveUser("{{$col->ColIDString}}", _climbed.climbedAtText, function(){
 					getUsers();
 				});
 			}
 		});	
-	}
-	
-	var saveUser = function(callback){
-		$.ajax({
-			type: "GET",
-			url : "/service/col/user/save/{{$col->ColIDString}}",
-			data: {
-				climbedAt: _climbed.climbedAtText
-			},
-			dataType : 'json',
-			success : function(data) {		
-				if (callback) callback();
-			},
-			error: function(err){
-				
-			}
-		});
 	}
 	
 	var getUser = function(){
@@ -208,7 +188,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			success : function(data) {
 				if (data){
 					_climbed = data;
-					_climbed.climbedAtText = _climbed.climbedAt;
 					if (_climbed.climbedAt) _climbed.climbedAt = new Date(_climbed.climbedAt);
 					
 					showUser();		
@@ -497,9 +476,9 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		</div>
 	@auth
 		<div id="col-climbed" class="w-100 w-sm-50 w-md-25">
-			<i class="col-climbed fas fa-check col-climbed-no"></i>
+			<i class="col-climbed fas fa-check col-climbed-no"></i>						
 			<span class="col-climbed-value"></span>
-			<input type="text" readonly placeholder="add date" class="col-climbed-date"></input>
+			<span class="col-climbed-date ml-auto text-small-75 text-right" data-colidstring="{{$col->ColIDString}}"></span>
 		</div>
 	@else
 		<div class="w-100 w-sm-50 w-md-25">

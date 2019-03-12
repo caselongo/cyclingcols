@@ -50,16 +50,19 @@ class ColController extends Controller
 		
 		$climbed = false;
 		$climbedAt = null;
+		$climbedAtText = null;
 		
 		if ($user != null){
 			$usercol = UserCol::where('ColID', $col->ColID)->where('UserID', $user->id)->first();
 			if ($usercol){
 				$climbed = true;
 				$climbedAt = $usercol->ClimbedAt;
+				$climbedAtText = $usercol->ClimbedAtText;
+				//$climbedAtText = Carbon::parse($usercol->ClimbedAt)->format('d M Y');
 			}
 		}
 		
-		return response()->json(array('climbed' => $climbed, 'climbedAt' => $climbedAt));		
+		return response()->json(array('climbed' => $climbed, 'climbedAt' => $climbedAt, 'climbedAtText' => $climbedAtText));		
     }
 	
     public function _users(Request $request, $colIDString)

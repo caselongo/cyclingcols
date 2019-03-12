@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class StatsController extends Controller
 {
-	protected $stattypeurl_default = "distance";
+	protected $stattypeurl_default = "all";
 	protected $countryurl_default = "eur";
 	
 	/* views */
@@ -30,6 +30,14 @@ class StatsController extends Controller
 	{
 		/* stattype */	
 		$stattypes = \App\StatType::get();
+		
+		$stattype_all = new \stdClass();
+		$stattype_all->StatTypeID = 0;
+		$stattype_all->StatType = "All"; 
+		$stattype_all->URL = "all"; 
+		$stattype_all->Icon = ""; 
+		$stattype_all->Description = ""; 				
+		$stattypes->prepend($stattype_all);	
 		
 		$stattype_current = null;
 		foreach($stattypes as $stattype){
@@ -72,46 +80,45 @@ class StatsController extends Controller
 		if ($stattype_current->StatTypeID > 0) {
 			$stats = \App\Stat::where('StatTypeID', $stattype_current->StatTypeID)->where('GeoID', $country_current->CountryID)->orderBy('Rank','ASC')->get();
 		} else {
-			$stats = \App\Stat::where('GeoID', $country_current->CountryID)->where('Rank','<=', 5)->orderBy('StatTypeID','ASC')->orderBy('Rank','ASC')->get();
-		}
-		
-		if (is_null($stats))
-		{
-			return \Redirect::to('stats/' . $this->stattypeurl_default . '/' . $countryurl_default);
+			$stats = \App\Stat::where('GeoID', $country_current->CountryID)->where('Rank','<=', 10)->orderBy('StatTypeID','ASC')->orderBy('Rank','ASC')->get();
 		}
 		
 		$user = Auth::user();
 		
 		foreach($stats as $stat){
 			$col = \App\Col::where('ColID',$stat->ColID)->first();
-			
-			$done = 0;
-			$rating = 0;
-			if($user != null){
-				$usercol = \App\UserCol::where('ColID',$col->ColID)->first();
 				
-				if ($usercol){
-					$done = $usercol->Done;
-					$rating = $usercol->Rating;
-				}
-			}
-			
 			if ($col != null){
 				$stat->Height = $col->Height;
 				$stat->CoverPhotoPosition = $col->CoverPhotoPosition;
 				$stat->Latitude = $col->Latitude;
 				$stat->Longitude = $col->Longitude;
-				$stat->Done = $done;
-				$stat->Rating = $rating;
+				$stat->Climbed = false;
+			}
+			
+			if($user != null){
+				$usercol = \App\UserCol::where('ColID',$col->ColID)->first();
+				
+				if ($usercol){
+					$stat->Climbed = true;
+				}
 			}
 		}	
+		
+		/* other countries */
+		$stats_other = null;
+		
+		if ($stattype_current->StatTypeID > 0){
+			$stats_other = \App\Stat::where('StatTypeID', $stattype_current->StatTypeID)->where('GeoID', '>', 0)->where('Rank', 1)->orderBy('Value','DESC')->get();
+		}
 		
         return view('pages.stats')
 			->with('stattypes',$stattypes)
 			->with('stattype',$stattype_current)
+			->with('countries',$countries)
 			->with('country',$country_current)
 			->with('stats',$stats)
-			->with('countries',$countries);
+			->with('stats_other',$stats_other);
 	}
 	
 	/* service */
@@ -133,7 +140,11 @@ class StatsController extends Controller
 		foreach($top as $t){
 			$t->StatType = $t->stattype;
 		}
-
-		return response()->json($top);
+		
+		$returnHTML = view('sub.statstop')
+			->with('top', $top)
+			->render();
+		
+		return response()->json(array('success' => true, 'html' => $returnHTML));
     }
 }

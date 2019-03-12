@@ -1,6 +1,7 @@
 body{
 	/*background-color: #f5f5fa;*/
 	/*font-weight: 300!important;*/
+	outline: none!important;
 }
 
 /* navbar */
@@ -393,12 +394,25 @@ footer{
 }
 
 .col-climbed-date{
-	color: rgba(255, 255, 255, 0.5)!important;
-	cursor: pointer;
-	border: none;
+    cursor: pointer;
+    border: none;
     background-color: transparent;
     outline: none;
-	width: 70px;
+    width: 70px;
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+.col-marker-not-climbed{
+	opacity: 0.3;
+	z-index: -1000000!important;
+}
+.col-marker-climbed{
+	opacity: 1!important;
+}
+
+.climbed-control-checked{
+	color: red;
 }
 
 /*

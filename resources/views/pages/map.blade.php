@@ -46,17 +46,17 @@ CyclingCols - Search On Map
 ?>	
 
 <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
-    <!-- Load Esri Leaflet from CDN -->
-    <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"
-    integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g=="
-    crossorigin=""></script>
-  <!-- Load Esri Leaflet Geocoder from CDN -->
-  <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css"
-    integrity="sha512-v5YmWLm8KqAAmg5808pETiccEohtt8rPVMGQ1jA6jqkWVydV5Cuz3nJ9fQ7ittSxvuqsvI9RSGfVoKPaAJZ/AQ=="
-    crossorigin="">
-  <script src="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.js"
-    integrity="sha512-zdT4Pc2tIrc6uoYly2Wp8jh6EPEWaveqqD3sT0lf5yei19BC1WulGuh5CesB0ldBKZieKGD7Qyf/G0jdSe016A=="
-    crossorigin=""></script>
+<!-- Load Esri Leaflet from CDN -->
+<script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"
+	integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g=="
+	crossorigin=""></script>
+<!-- Load Esri Leaflet Geocoder from CDN -->
+<link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css"
+	integrity="sha512-v5YmWLm8KqAAmg5808pETiccEohtt8rPVMGQ1jA6jqkWVydV5Cuz3nJ9fQ7ittSxvuqsvI9RSGfVoKPaAJZ/AQ=="
+	crossorigin="">
+<script src="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.js"
+	integrity="sha512-zdT4Pc2tIrc6uoYly2Wp8jh6EPEWaveqqD3sT0lf5yei19BC1WulGuh5CesB0ldBKZieKGD7Qyf/G0jdSe016A=="
+	crossorigin=""></script>
 
 <script type="text/javascript">
 	var map;
@@ -106,11 +106,20 @@ CyclingCols - Search On Map
 		calculatemapheight();
 	});
 	
+	$(document).on("ready", function(){
+		calculatemapheight();
+	});
+	
 	$(window).on('load', function() {
 		var mapOptions = {
 			attributionControl: false
 		};
-		map = L.map('map-canvas', mapOptions).on('load',function(){ mapReady = true; }).setView([lat, lng], zoom);
+		
+		var onMapReady = function(){
+			mapReady = true;
+		}
+		
+		map = L.map('map-canvas', mapOptions).on('load', onMapReady).setView([lat, lng], zoom);
 		
 		map.on('zoomend', function() {
 			showMarkers();
@@ -128,7 +137,29 @@ CyclingCols - Search On Map
 			showMarkers();
 			console.log("focus");
 		});
-		
+	
+@auth	
+
+		setTimeout(function(){
+			var command = L.control({position: 'topleft'});
+
+			command.onAdd = function (map) {
+				var div = L.DomUtil.create('div', 'command');
+
+				div.innerHTML = '<div class="leaflet-bar climbed-control d-flex align-items-center justify-content-around" title="Show only climbed cols"><a><i class="fas fa-check"></i></a></div>'; 
+				
+				L.DomEvent.on(div,"click", function(){
+					showClimbed = !showClimbed;
+					showClimbed_();
+				})
+				
+				return div;		
+			};
+
+			command.addTo(map);	
+		}, 500);
+@endauth
+			
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 		}).addTo(map);
@@ -143,9 +174,21 @@ CyclingCols - Search On Map
 				results.addLayer(L.marker(data.results[i].latlng));
 			}
 		});
-		
-		calculatemapheight();
 	});
+	
+@auth	
+	var showClimbed = true;
+		
+	var showClimbed_ = function(){
+		if (showClimbed){
+			$(".climbed-control").find("i").addClass("climbed-control-checked");
+			$(".col-marker:not(.col-marker-climbed)").addClass("col-marker-not-climbed");
+		} else {
+			$(".climbed-control").find("i").removeClass("climbed-control-checked");
+			$(".col-marker").removeClass("col-marker-not-climbed");
+		}
+	}
+@endauth
 	
 	var showMarkers = function(){
 		var showCount = 0;
@@ -187,9 +230,9 @@ CyclingCols - Search On Map
 			}
 		}
 		
-		//console.log("#markers: " + markers.length);
-		//console.log("latMin: " + latMin + ", latMax: " + latMax + ", lngMin: " + lngMin + ", lngMax: " + lngMax + ", zoom: " + zoom);
-		//console.log(showCount + " markers shown, " + hideCount + " markers hidden");
+@auth			
+		showClimbed_();
+@endauth
 	}
 	
 	var getCols = function() {
@@ -215,6 +258,12 @@ CyclingCols - Search On Map
 					else { img = "/images/ColLightYellow.png"; }
 									
 					var title = data[j].Col + ' (' + data[j].Height + 'm)';	
+@auth
+					if (data[j].ClimbedAt){
+						var date = new Date(data[j].ClimbedAt);
+						title += ", climbed on " + formatDate(date);
+					}
+@endauth
 					
 					var icon = L.icon({
 						iconUrl: img,
@@ -228,6 +277,19 @@ CyclingCols - Search On Map
 					var lat_ = data[j].Latitude/1000000;
 					var lng_ = data[j].Longitude/1000000;
 					var marker = L.marker([lat_, lng_], markerOptions);
+@auth					
+					if (data[j].ClimbedAt){
+						marker.on("add", function(e){
+							var e = $(e.target._icon);		
+							e.addClass("col-marker col-marker-climbed");
+						})
+					} else {				
+						marker.on("add", function(e){
+							var e = $(e.target._icon);		
+							e.addClass("col-marker");
+						});
+					}
+@endauth
 					
 					markers.push({
 						marker: marker,

@@ -13,16 +13,47 @@ CyclingCols - Stats
 		
 <?php
 
+$rankpos_ = 0;
+$rank_ = 0;
+$stattypeid_ = 0;
+$value_ = 0;
+
 foreach($stats as $stat){
+	if ($stattypeid_ != $stat->StatTypeID || $value_ != $stat->Value){
+		$stattypeid_ = $stat->StatTypeID;
+		$value_ = $stat->Value;
+		$rank_ = $stat->Rank;
+	} else {
+		$stat->Rank = $rank_;
+	}
+	
+	if ($stat->Rank == 1 || $stattype->StatTypeID > 0){
+		$icon = "";
+		$title = "";
+		
+		if ($stattype->StatTypeID == 0){
+			foreach($stattypes as $stattype_){
+				if ($stattype_->StatTypeID == $stat->StatTypeID){
+					$icon = $stattype_->Icon;
+					$title = 'Highest ' . $stattype_->StatType . ": ";
+					break;
+				}	
+			}
+		}
+		
 ?>
 	markers.push({
 		lat: {{$stat->Latitude/1000000}},
 		lng: {{$stat->Longitude/1000000}},
 		colIDString: "{{$stat->ColIDString}}",
+		fileName: "{{$stat->FileName}}",
 		col: "{{$stat->Col}}",
-		rank: {{$stat->Rank}}
+		rank: "{{$stat->Rank}}",
+		icon: "{{$icon}}",
+		title: "{{$title}}"
 	});
 <?php
+	}
 }
 ?>
 
@@ -34,7 +65,7 @@ foreach($stats as $stat){
 	var map = L.map('map', mapOptions);//.setView([lat, lng], 4
 	map.fitBounds(markers.map(function(m){
 		return [m.lat, m.lng];
-	}));
+	}),{padding: [20,20]});
 	map.scrollWheelZoom.disable();
 	
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -47,12 +78,15 @@ foreach($stats as $stat){
 	});
 	
 	markers.forEach(function(m){
+		var html = m.rank;
+		
+		if (m.icon) html = "<i class='fas fa-" + m.icon + " m-1'></i>";
 	
 		var numberIcon = L.divIcon({
 			className: "number-icon",
 			iconSize: [32, 37],
 			iconAnchor: [16,35],
-			html: m.rank 
+			html: html				
 		});
 	
 		var markerOptions = {
@@ -62,10 +96,10 @@ foreach($stats as $stat){
 		
 		var marker = L.marker([m.lat, m.lng], markerOptions).addTo(map);
 		
-		$(marker._icon).attr("title",m.col);
+		$(marker._icon).attr("title", m.title + m.col);
 		
 		marker.on("click", function() {
-			parent.document.location.href = "/col/" + m.colIDString;
+			parent.document.location.href = "/col/" + m.colIDString + "#" + m.fileName;
 		});
 	});
 	
@@ -74,42 +108,10 @@ foreach($stats as $stat){
 			type: "GET",
 			url : "/service/stats/top/{{$country->URL}}",
 			dataType : 'json',
-			success : function(data) {
-				var top = $("#top");
-				
-				data.forEach(function(d){
-					var div1 = document.createElement("div");
-					$(div1)
-						.addClass("px-2 pt-1 font-weight-light text-small-75")
-						.html("Highest " + d.StatType.StatType);
-					var div2 = document.createElement("div");
-					$(div2)
-						.addClass("px-2 pb-1 font-weight-light border-bottom");
-					var a = document.createElement("a");
-					$(a).attr("href","/col/" + d.ColIDString);
-					var span = document.createElement("span");
-					$(span)
-						.addClass("pr-1")
-						.html(d.Col);
-					
-					top.append(div1,div2);
-					$(div2).append(a);
-					$(a).append(span);	
-						
-					if (d.Side){
-						var img = document.createElement("img");
-						$(img)
-							.addClass("direction")
-							.attr("src","/images/" + d.Side + ".png");
-						var span1 = document.createElement("span");
-						$(span1)
-							.addClass("pl-1 text-small-75")
-							.html(d.Side);
-									
-						$(div2).append(img,span1);	
-					}
-				});
-				
+			success : function(result) {
+				if (result.success){
+					$("#top").html(result.html);		
+				}	
 			}
 		});
 	}
@@ -197,135 +199,167 @@ $(document).ready(function() {
 	<div class="w-100 d-flex align-items-start flex-wrap">
 		<div class="w-100 w-md-75 mb-3 p-3 pr-md-0"><!-- w-75 -->
 			<div class="card-deck w-100">
-				<div class="card mb-3">
-					<div class="card-header p-2">
-						<i class="fas fas-grey fa-{{$stattype->Icon}} no-pointer"></i>
-						<span>{{$stattype->StatType}}</span>
-					</div>
-					<div class="card-body p-2 font-weight-light text-small-90">
-						<div>{{$stattype->Description}}</div>
-						<div class="mt-2">Here is the top 25 for {{$country->Country}}.</div>
-					</div>
-				</div>
 <?php
-	$count = 0;
+	$card_count = 0;
+	$stattypeid = 0;
+	$rank_prev = 0;
+	//$value_prev = "";
 	
 	foreach ($stats as $stat){
+			
+		if ($stat->StatTypeID != $stattypeid){
+			if ($stattypeid > 0){
+?>
+					</div><!--card-body-->
+				</div><!--card-->
+				
+		@if ($card_count > 0)
+				<div class="w-100 d-block d-lg-none"><!-- wrap each 1 on md--></div>
+		@endif
+		@if ($card_count > 0 && ($card_count % 2) == 0)
+				<div class="w-100 d-none d-lg-block"><!-- wrap each 2 on lg and larger--></div>
+		@endif
+<?php			
+			}		
+				
+			$stattypeid = $stat->StatTypeID;
+			$card_count++;
+			
+			foreach($stattypes as $stattype_){
+			if ($stattype_->StatTypeID == $stattypeid){
+				$stattype_current = $stattype_;
+				break;
+			}
+		}
+?>
+				<div class="card mb-3">
+					<div class="card-header p-2 d-flex justify-content-between align-items-baseline">
+						<div>
+							<i class="fas fas-grey fa-{{$stattype_current->Icon}} no-pointer"></i>
+							<span>{{$stattype_current->StatType}}</span>
+						</div>
+											
+		@if ($stattype->StatTypeID == 0)		
+						<a href="/stats/{{$stattype_current->URL}}/{{$country->URL}}"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i></a>
+		@endif
+					</div>
+					<div class="card-body p-2 font-weight-light text-small-90">
+<?php
+		}
 		
-		$value = formatStat($stattype->StatTypeID, $stat->Value);
+		
+		$value = formatStat($stat->StatTypeID, $stat->Value);
 ?>	
-			<div class="card rounded-top-left mb-3">
-				<div class="card-header rounded-top-left p-0 d-flex justify-content-around align-items-center">
-					<span class="rounded-top-left text-small-90 border-right bg-primary text-light text-center" style='width: 30px'>{{$stat->Rank}}</span>
-					<span class="m-auto">{{$value}}</span>
+						<div class="align-items-end d-flex">
+							<div class="text-small-90 text-right mr-1" style="flex: 0 0 15px;">
+		@if ($rank_prev != $stat->Rank)
+							{{$stat->Rank}}
+		@endif
+							</div>
+							<div class="text-truncate">
+								<img src="/images/flags/{{$stat->Country1}}.gif" title="{{$stat->Country1}}" class="flag mr-1">
+		@if ($stat->Country2)
+								<img src="/images/flags/{{$stat->Country2}}.gif" title="{{$stat->Country2}}" class="flag mr-1">
+		@endif
+								<a href="/col/{{$stat->ColIDString}}{{ $stat->FileName ? '#' . $stat->FileName : '' }}">{{$stat->Col}}
+								</a>
+							</div>
+		@if ($stat->Side)
+							<div class="ml-1 text-small-75" style="flex: 0 0 40px;" title="{{$stat->Side}}">
+								<img class="direction" src="/images/{{$stat->Side}}.png">
+								<!--<span class="pl-1 text-small-75">{{$stat->Side}}</span>-->
+							</div>
+		@endif
+							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 45px;">{{$value}}</div>
+						
 <?php
 		if (Auth::user()){
-			$col_done_class = "col-done-no-light";
-			$col_done_title = "You did not climb this col";
-			if ($stat->Done == 1) {
-				$col_done_class = "col-done-yes";
-				$col_done_title = "You climbed this col";
+			$col_climbed_class = "col-climbed-no-light";
+			$col_climbed_title = "You did not climb this col";
+			if ($stat->Climbed) {
+				$col_climbed_class = "col-climbed-yes";
+				$col_climbed_title = "You climbed this col";
 			}
 ?>
-					<i class="col-done fas fa-check {{$col_done_class}} p-1 text-small-90 no-pointer" title="{{$col_done_title}}"></i>
+							<i class="col-done fas fa-check {{$col_climbed_class}} pl-1 py-1 text-small-90 no-pointer" title="{{$col_climbed_title}}"></i>
 <?php
 		}
 ?>
-				</div>
-@if ($stat->CoverPhotoPosition != null)
-				<div class="card-img-top card-img-background" onclick='goToCol("{{$stat->ColIDString}}")' style='background-position: 50% {{$stat->CoverPhotoPosition}}%; background-image: url("/images/covers/small/{{$stat->ColIDString}}.jpg")'>
-@else
-				<div class="card-img-top card-img-background" onclick='goToCol("{{$stat->ColIDString}}")' style='background-position: 50% 28%; background-image: url("/images/covers/small/_dummy.jpg")'>
-@endif
-@if ($stat->IsNew)
-					<div class="card-img-new">New</div>
-@endif
-					<!--<div class="card-go-to"><small><i class="fas fa-search"></i></small></div>-->
-				</div><!--card-img-top-->
-				<div class="card-body p-0">
-					<h6 class="card-title p-2 m-0 font-weight-light">
-						<img src="/images/flags/{{$stat->Country1}}.gif" title="{{$stat->Country1}}" class="flag">
-@if ($stat->Country2)
-						<img src="/images/flags/{{$stat->Country2}}.gif" title="{{$stat->Country2}}" class="flag flag2">
-@endif
-						<a href="/col/{{$stat->ColIDString}}">{{$stat->Col}}</a>
-						<span class="badge badge-altitude font-weight-light text-small-70">{{$stat->Height}}m</span>
-					</h6>
-					<!--<div class="w-100 p-1 d-flex bg-dark text-white text-small-75 align-items-center flex-wrap">
-					auth
-						<div id="col-rating-done" class="w-100 w-sm-50">
-							<span class="col-done-value"></span>
-							<i class="col-done fas fa-check col-done-no"></i>
 						</div>
-						<div id="col-rating-user" class="w-100 w-sm-50">
-							<span class="col-rating-value"></span>	
-							<div class="d-inline-block">
-								<i data-rating="1" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-								<i data-rating="2" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-								<i data-rating="3" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-								<i data-rating="4" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-								<i data-rating="5" class="col-rating no-pointer fas fa-star col-rating-no"></i>
-							</div>
-						</div>
-					else
-						<div class="w-50">
-							<a href="/login"/>Login</a> to rate this col
-						</div>
-					endauth					
-					</div>-->
-					<div class="card-profile px-2 py-1 text-small-75 border-top d-flex flex-row justify-content-between align-items-baseline">
-						<div>
-							<span class="category category-{{$stat->Category}}">{{$stat->Category}}</span>
-@if ($stat->Side != null)
-							<span>{{$stat->Side}}</span>
-							<img class="direction" src="/images/{{$stat->Side}}.png">
-@endif
-							<small>{{$stat->Start}}</small>
-						</div>	
-						<a tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-profile="{{$stat->FileName}}" data-col="{{$stat->Col}}"><i class="fas fas-grey  fa-search-plus"></i></a>		
-					</div>
-				</div><!--card-body-->
-			</div><!--card-->
-<?php	
-		$count++;
+<?php
+		
+		$rank_prev = $stat->Rank;	
+	}
+				
+	/* close last card */
+	if ($stattypeid > 0){
 ?>
-		<!-- card wrapping, see https://www.codeply.com/go/nIB6oSbv6q -->
-		@if ($count == 1)
-			<div class="w-100 d-none d-sm-block d-lg-none"><!-- wrap first 1 on sm--></div>
+					</div><!--card-body-->
+				</div><!--card-->
+<?php			
+	}	
+	
+	if ($stattype->StatTypeID > 0 && $stats_other){
+		$card_count++;
+?>
+				<div class="card mb-3">
+					<div class="card-header p-2 d-flex justify-content-between align-items-baseline">
+						<div>
+							<i class="fas fas-grey fa-{{$stattype_current->Icon}} no-pointer"></i>
+							<span>Highest {{$stattype_current->StatType}} For All Countries</span>
+						</div>
+					</div>
+					<div class="card-body p-2 font-weight-light text-small-90">
+<?php
+	
+		foreach ($stats_other as $stat_other){
+			$countryid_ = $stat_other->Country1ID;
+			$country_ = $stat_other->Country1;
+			
+			if ($stat_other->GeoID == $stat_other->Country2ID){
+				$countryid_ = $stat_other->Country2ID;
+				$country_ = $stat_other->Country2;
+			}	
+
+			$value_ = formatStat($stat_other->StatTypeID, $stat_other->Value);			
+?>
+						<div class="align-items-end d-flex">
+							<div class="text-truncate">
+								<img src="/images/flags/{{$country_}}.gif" title="{{$country_}}" class="flag mr-1">
+								<a href="/col/{{$stat_other->ColIDString}}{{ $stat_other->FileName ? '#' . $stat_other->FileName : '' }}">{{$stat_other->Col}}
+								</a>
+							</div>
+		@if ($stat_other->Side)
+							<div class="ml-1 text-small-75" style="flex: 0 0 40px;" title="{{$stat_other->Side}}">
+								<img class="direction" src="/images/{{$stat_other->Side}}.png">
+								<!--<span class="pl-1 text-small-75">{{$stat->Side}}</span>-->
+							</div>
 		@endif
-		@if ($count > 0 && ($count - 1) % 2 == 0)
-			<div class="w-100 d-none d-sm-block d-lg-none"><!-- wrap next 2 on sm--></div>
-		@endif
-		@if ($count == 2)
-			<div class="w-100 d-none d-lg-block"><!-- wrap first 2 on lg or larger--></div>
-		@endif
-		@if ($count > 0 && ($count - 2) % 3 == 0)
-			<div class="w-100 d-none d-lg-block"><!-- wrap next 3 on lg or larger--></div>
-		@endif
+							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 45px;">{{$value_}}</div>
+						</div>
+
+					
+<?php		
+		}
+?>
+					</div><!--card-body-->
+				</div><!--card-->
 <?php
 	}
 	
-	for ($i = 0; $i < 3; $i++){
+	for ($i = 0; $i < 2; $i++){
 ?>
-		<!--add some invisible cards to be sure last cards are of equal size-->
-		<div class="card card-invisible"></div>
+		@if ($card_count > 0)
+				<div class="w-100 d-block d-lg-none"><!-- wrap each 1 on md--></div>
+		@endif
+		@if ($card_count > 0 && ($card_count % 2) == 0)
+				<div class="w-100 d-none d-lg-block"><!-- wrap each 2 on lg and larger--></div>
+		@endif				
+				<!--add some invisible cards to be sure last cards are of equal size-->
+				<div class="card card-invisible"></div>
 			
 <?php
-		$count++;
-?>
-		@if ($count == 1)
-			<div class="w-100 d-none d-sm-block d-lg-none"><!-- wrap first 1 on sm--></div>
-		@endif
-		@if ($count > 0 && ($count - 1) % 2 == 0)
-			<div class="w-100 d-none d-sm-block d-lg-none"><!-- wrap next 2 on sm--></div>
-		@endif
-		@if ($count == 2)
-			<div class="w-100 d-none d-lg-block"><!-- wrap first 2 on lg or larger--></div>
-		@endif
-		@if ($count > 0 && ($count - 2) % 3 == 0)
-			<div class="w-100 d-none d-lg-block"><!-- wrap next 3 on lg or larger--></div>
-		@endif
-<?php
+		$card_count++;
 	}
 ?>
 			</div><!--card-deck-->
@@ -336,13 +370,10 @@ $(document).ready(function() {
 				</div>			
 			</div>			
 			<div class="col-box w-100 mb-3">
-				<div class="profs" id="profs">
-					<div class="p-2 border-bottom d-flex align-items-center">
-						<h6 class="font-weight-light m-0">Top cols in {{$country->Country}}</h6>
-					</div>
-					<div id="top" class="font-weight-light p-0">
-						
-					</div>
+				<div class="p-2 border-bottom d-flex align-items-center">
+					<h6 class="font-weight-light m-0">Top Cols In {{$country->Country}}</h6>
+				</div>
+				<div id="top" class="font-weight-light p-0">	
 				</div>
 			</div>
 		</div>

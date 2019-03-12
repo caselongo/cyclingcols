@@ -45,3 +45,4 @@ public/js/__col.js
 resources/views/cols/OLDoverview.blade - Copy.php
 public/css/__component.css
 public/css/__default.css
+resources/views/__cols/

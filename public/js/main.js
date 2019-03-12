@@ -78,6 +78,29 @@ $(document).ready(function() {
 			}
 		});
 	})
+	
+	$(".col-climbed-date").on("click", function(e){
+		var this_ = $(this);
+		var date = new Date(this_.html());
+		var colIDString = this_.data("colidstring");
+		
+		var onSelect = function(dateText, inst){
+			saveUser(this_.data("colidstring"), dateText);
+			//this_.html(dateText);
+			$(".col-climbed-date[data-colidstring='" + colIDString + "']").html(dateText);
+		};
+		
+		var options = {
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: "dd M yy",
+			maxDate: "+0d"
+		};
+		
+		var pos = e;
+		
+		$(this).datepicker( "dialog", date, onSelect, options, pos );
+	});
 });
 
 var initAutoComplete = function(){
@@ -279,5 +302,40 @@ var getTopStats = function(colIDString,profileFileName) {
 			}
 		}
 	})
-}	
+}
+
+var formatDate = function(d) {
+	if (d == null) return "";
+
+	var day = d.getDate();
+	var monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; 
+	var month = monthNames[d.getMonth()];
+	var year = d.getFullYear();
+	if (day < 10) {
+		day = "0" + day;
+	}
+	
+	var date = day + " " + month + " " + year;
+
+	return date;
+};	
+
+/** user **/
+	
+var saveUser = function(colIDString, climbedAtText, callback){
+	$.ajax({
+		type: "GET",
+		url : "/service/col/user/save/" + colIDString,
+		data: {
+			climbedAt: climbedAtText
+		},
+		dataType : 'json',
+		success : function(data) {		
+			if (callback) callback();
+		},
+		error: function(err){
+			
+		}
+	});
+}
 

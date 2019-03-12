@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Cols;
 
 use App\Col;
+use App\UserCol;
+
 use App\Http\Controllers\Controller;
 /*use Carbon\Carbon;*/
 use Illuminate\Http\Request;
@@ -14,7 +16,20 @@ class ColsController extends Controller
 	/* service */
     public function _cols(Request $request)
     {
-		$all = Col::select('ColID','ColIDString','Col','Latitude','Longitude','Height')->get();
+		$user = Auth::user();
+		
+		if ($user == null){
+			$all = Col::select('ColID','ColIDString','Col','Latitude','Longitude','Height')->get();
+		} else {
+			$climbed = UserCol::select('UserID','ColID','ClimbedAt')
+                   ->where('UserID', $user->id)
+                   ->groupBy('ColID');
+			
+			$all = Col::select('cols.ColID','cols.ColIDString','cols.Col','cols.Latitude','cols.Longitude','cols.Height','climbed.ClimbedAt')
+				->leftJoinSub($climbed, 'climbed', function ($join) {
+					$join->on('cols.ColID', '=', 'climbed.ColID');
+				})->get();			
+		}
 
 		return response()->json($all);
     }
