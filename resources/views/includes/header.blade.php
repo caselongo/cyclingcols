@@ -96,8 +96,10 @@
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 			  <a class="dropdown-item font-weight-light" href="/logout">Logout</a>
 			  <div class="dropdown-divider"></div>
-			  <a class="dropdown-item font-weight-light" href="/user/{{Auth::user()->id}}">Dashboard</a>
-			  <a class="dropdown-item font-weight-light" href="/user/{{Auth::user()->id}}/cols">Cols</a>
+			  <a class="dropdown-item font-weight-light" href="/athlete/{{Auth::user()->id}}">Dashboard</a>
+			  <a class="dropdown-item font-weight-light" href="/athlete/{{Auth::user()->id}}/cols">Cols</a>
+			  <div class="dropdown-divider"></div>
+			  <a class="dropdown-item font-weight-light" href="/athletes">All Athletes</a>
 			</div>
 		  </li>
 		@endauth

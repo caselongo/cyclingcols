@@ -325,7 +325,7 @@ var formatDate = function(d) {
 var saveUser = function(colIDString, climbedAtText, callback){
 	$.ajax({
 		type: "GET",
-		url : "/service/col/user/save/" + colIDString,
+		url : "/service/col/athlete/save/" + colIDString,
 		data: {
 			climbedAt: climbedAtText
 		},

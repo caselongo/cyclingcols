@@ -29,6 +29,13 @@ class UserController extends Controller
         return view('pages.welcome');
     }
 	
+    public function index_default(Request $request)
+    {
+        $user = Auth::user();
+		
+		return \Redirect::to('user/' . $user->id);	
+	}
+	
     public function index(Request $request, $userid)
     {
         $user = User::where('id', $userid)->first();

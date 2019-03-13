@@ -102,7 +102,7 @@ CyclingCols - My CyclingCols
 				<div class="card-header p-2 d-flex align-items-center">
 					<span>Cols Most Recently Climbed</span>
 					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-						<a href="/user/{{$user->id}}/cols/eur/climbed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all"></i></a>
+						<a href="/athlete/{{$user->id}}/cols/eur/climbed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all"></i></a>
 					</div>
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
@@ -144,7 +144,7 @@ CyclingCols - My CyclingCols
 				<div class="card-header p-2 d-flex align-items-center">
 					<span>Cols Most Recently Claimed</span>
 					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-						<a href="/user/{{$user->id}}/cols/eur/claimed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all"></i></a>
+						<a href="/athlete/{{$user->id}}/cols/eur/claimed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all"></i></a>
 					</div>
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
@@ -199,7 +199,7 @@ CyclingCols - My CyclingCols
 				<div class="card-header p-2 d-flex align-items-center">
 					<span>Highest Cols Climbed</span>
 					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-						<a href="/user/{{$user->id}}/cols/eur/elevation"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all"></i></a>
+						<a href="/athlete/{{$user->id}}/cols/eur/elevation"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all"></i></a>
 					</div>
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">

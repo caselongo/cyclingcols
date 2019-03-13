@@ -1,10 +1,10 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="container py-3 font-weight-light">
+<div class="container py-4 font-weight-light">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
                 <div class="card-header bg-dark text-white">{{ __('Register') }}</div>
 
                 <div class="card-body">

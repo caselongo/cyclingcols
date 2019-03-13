@@ -183,7 +183,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var getUser = function(){
 		$.ajax({
 			type: "GET",
-			url : "/service/col/user/{{$col->ColIDString}}",
+			url : "/service/col/athlete/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(data) {
 				if (data){
@@ -272,7 +272,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	var getUsers = function() {
 		$.ajax({
 			type: "GET",
-			url : "/service/col/users/{{$col->ColIDString}}",
+			url : "/service/col/athletes/{{$col->ColIDString}}",
 			dataType : 'json',
 			success : function(result) {
 				if (result.success){

@@ -56,10 +56,14 @@ Route::get('about','General\GeneralController@about');
 Route::get('rides','General\GeneralController@rides');
 
 // User
-Route::get('user/welcome', 'User\UserController@welcome');
-Route::get('user/{userID}','User\UserController@index');
-Route::get('user/{userID}/cols','User\UserController@cols_default');
-Route::get('user/{userID}/cols/{country_url}/{sort}','User\UserController@cols');
+Route::get('athlete/welcome', 'User\UserController@welcome');
+Route::get('athlete','User\UserController@index_default');
+Route::get('athlete/{userID}','User\UserController@index');
+Route::get('athlete/{userID}/cols','User\UserController@cols_default');
+Route::get('athlete/{userID}/cols/{country_url}/{sort}','User\UserController@cols');
+
+// Users
+Route::get('athletes','Users\UsersController@index');
 
 Route::middleware(['ajax'])->group(function () {
 	/* col */
@@ -69,9 +73,9 @@ Route::middleware(['ajax'])->group(function () {
 	Route::get('service/col/top/{colIDString}','Col\ColController@_col_top');
 	Route::get('service/col/profile/top/{profileFileName}','Col\ColController@_profile_top');
 	Route::get('service/col/profile/{fileName}','Col\ColController@_profile');
-	Route::get('service/col/user/{colIDString}','Col\ColController@_user');
-	Route::get('service/col/user/save/{colIDString}','Col\ColController@_user_save');
-	Route::get('service/col/users/{colIDString}','Col\ColController@_users');
+	Route::get('service/col/athlete/{colIDString}','Col\ColController@_user');
+	Route::get('service/col/athlete/save/{colIDString}','Col\ColController@_user_save');
+	Route::get('service/col/athletes/{colIDString}','Col\ColController@_users');
 	
 	/* cols */
 	Route::get('service/cols','Cols\ColsController@_cols');

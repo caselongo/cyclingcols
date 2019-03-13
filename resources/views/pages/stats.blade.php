@@ -306,7 +306,7 @@ $(document).ready(function() {
 					<div class="card-header p-2 d-flex justify-content-between align-items-baseline">
 						<div>
 							<i class="fas fas-grey fa-{{$stattype_current->Icon}} no-pointer"></i>
-							<span>Highest {{$stattype_current->StatType}} For All Countries</span>
+							<span>Highest {{$stattype_current->StatType}} Per Country</span>
 						</div>
 					</div>
 					<div class="card-body p-2 font-weight-light text-small-90">
