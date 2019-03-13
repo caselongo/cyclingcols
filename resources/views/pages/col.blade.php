@@ -439,7 +439,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			<div class="line-height-1 px-1 pb-1"><small class="text-secondary">({{$aliases_str}})</small></div>
 			@endif		
 			<div class="d-flex align-items-baseline flex-wrap p-1">
-				<div class="badge badge-altitude mr-2 font-weight-light">{{$col->Height}}m</div>	
+				<div class="badge badge-elevation mr-2 font-weight-light">{{$col->Height}}m</div>	
 				<div class="mr-2 font-weight-light">
 					<img src="/images/flags/{{$col->Country1}}.gif" class="flag"/> 
 					{{$country1}}
@@ -557,11 +557,11 @@ $profile_string = $profile_count . " profile" . $profile_string;
 						<i class="fas fas-grey fa-arrows-alt-h no-pointer {{$class_dist}} pr-1"></i>
 						<span>{{formatStat(1,$profile->Distance)}}</span>
 					</div>
-					<div class="stat2 px-2 py-1 border m-2" title="Altitude Gain">
+					<div class="stat2 px-2 py-1 border m-2" title="Elevation Gain">
 						<i class="fas fas-grey fa-arrows-alt-v no-pointer {{$class_gain}} pr-1"></i>
 						<span>{{formatStat(2,$profile->HeightDiff)}}</span>
 					</div>
-					<div class="stat3 px-2 py-1 border m-2" title="Average Slope">
+					<div class="stat3 px-2 py-1 border m-2" title="Elevation Slope">
 						<i class="fas fas-grey fa-location-arrow no-pointer {{$class_avg}} pr-1"></i>
 						<span>{{formatStat(3,$profile->AvgPerc)}}</span>
 					</div>

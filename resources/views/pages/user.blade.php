@@ -6,9 +6,20 @@ CyclingCols - My CyclingCols
 
 @section('content')
 
+<?php
+	$isOwner = false;
+	
+	$user_ = Auth::user();
+	
+	if ($user_){
+		$isOwner = ($user->id == $user_->id);	
+	}
+?>
+
 <main role="main" class="bd-content">
     <div class="header px-4 py-3">
-        <h4 class="font-weight-light">My CyclingCols</h4>
+        <h4 class="font-weight-light d-inline">Dashboard</h4>
+		<span class="border rounded bg-light ml-1 px-2 py-1 font-weight-light">{{$user->name}}</span>
 	</div>
 	<div class="container-fluid">
 		<div class="card-deck w-100">
@@ -33,6 +44,7 @@ CyclingCols - My CyclingCols
 			</div>
 			<!-- -->
 			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>
+			<!-- -->
 			<div class="card mb-3">
 				<div class="card-header p-2 d-flex align-items-end">
 					<div class="">Cols Climbed Per Country</div>
@@ -85,9 +97,13 @@ CyclingCols - My CyclingCols
 			<!-- -->
 			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>
 			<div class="w-100 d-none d-sm-none d-md-block d-lg-none"><!-- wrap every 2 on md--></div>
+			<!-- -->
 			<div class="card mb-3">
-				<div class="card-header p-2">
+				<div class="card-header p-2 d-flex align-items-center">
 					<span>Cols Most Recently Climbed</span>
+					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
+						<a href="/user/{{$user->id}}/cols/eur/climbed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all"></i></a>
+					</div>
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
 @if (count($climbed) == 0)
@@ -100,41 +116,41 @@ CyclingCols - My CyclingCols
 		@if ($climbed_->Country2)
 							<img src="/images/flags/{{$climbed_->Country2}}.gif" title="{{$climbed_->Country2}}" class="flag mr-1">
 		@endif
-							<a href="col/{{$climbed_->ColIDString}}">{{$climbed_->Col}}</a>
+							<a href="/col/{{$climbed_->ColIDString}}">{{$climbed_->Col}}</a>
 						</div>
+		@if ($isOwner)
 						<div class="col-climbed-date ml-auto text-small-75 text-right" style="flex: 0 0 75px;" data-colidstring="{{$climbed_->ColIDString}}">
+		@else
+						<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
+		@endif
 		@if ($climbed_->pivot->ClimbedAt)
 							{{Carbon\Carbon::parse($climbed_->pivot->ClimbedAt)->format('d M Y')}}
-		@else
+		@elseif ($isOwner)
 							add date
+		@else
+							unknown
 		@endif
 						</div>
 					</div>
 	@endforeach
 @endif
 				</div>
-				<div class="card-footer text-muted d-flex align-items-center">
-					<span class="text-small-75">{{$climbed_count}} cols climbed</span>
-					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-						<a href="/user/cols/eur/climbed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i></a>
-					</div>
-				</div>
 			</div>
 			<!-- -->
 			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>
 			<div class="w-100 d-none d-lg-block"><!-- wrap every 3 on lg or larger--></div>
+			<!-- -->
 			<div class="card mb-3">
-				<div class="card-header p-2">
+				<div class="card-header p-2 d-flex align-items-center">
 					<span>Cols Most Recently Claimed</span>
+					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
+						<a href="/user/{{$user->id}}/cols/eur/claimed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all"></i></a>
+					</div>
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
 @if (count($claimed) == 0)
 					<span class="text-small-75">No cols claimed yet.</span>
 @else
-					<div class="align-items-end d-flex justify-content-begin">
-						<div class="ml-auto text-small-75 text-right border-bottom" style="flex: 0 0 65px;">claimed</div>
-						<div class="text-small-75 text-right border-bottom ml-1" style="flex: 0 0 65px;">climbed</div>
-					</div>
 	@foreach($claimed as $claimed_)
 					<div class="align-items-end d-flex">
 						<div class="text-truncate">
@@ -144,28 +160,18 @@ CyclingCols - My CyclingCols
 		@endif
 							<a href="/col/{{$claimed_->ColIDString}}">{{$claimed_->Col}}</a>
 						</div>
-						<div class="ml-auto text-small-75 text-right" style="flex: 0 0 65px;">{{Carbon\Carbon::parse($claimed_->pivot->CreatedAt)->format('d M Y')}}</div>
-						<div class="col-climbed-date text-small-75 text-right ml-1" style="flex: 0 0 75px;" data-colidstring="{{$claimed_->ColIDString}}">
-		@if ($claimed_->pivot->ClimbedAt)
-							{{Carbon\Carbon::parse($claimed_->pivot->ClimbedAt)->format('d M Y')}}
-		@else
-							add date
-		@endif
+						<div class="ml-auto text-small-75 text-right" style="flex: 0 0 70px;">
+							{{Carbon\Carbon::parse($claimed_->pivot->CreatedAt)->format('d M Y')}}
 						</div>
 					</div>
 	@endforeach
 @endif
 				</div>
-				<div class="card-footer text-muted d-flex align-items-center">
-					<span class="text-small-75">{{$climbed_count}} cols claimed</span>
-					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-						<a href="/user/cols/eur/claimed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i></a>
-					</div>
-				</div>
 			</div>
 			<!-- -->
 			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>
 			<div class="w-100 d-none d-sm-none d-md-block d-lg-none"><!-- wrap every 2 on md--></div>
+			<!-- -->
 			<div class="card mb-3 text-center">
 				<div class="card-body p-0 font-weight-light text-small-90">
 					<div class="p-2 border-bottom">
@@ -186,7 +192,44 @@ CyclingCols - My CyclingCols
 					</div>
 				</div>
 			</div>
+			<!-- -->
+			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>
+			<div class="card mb-3">
+			<!-- -->
+				<div class="card-header p-2 d-flex align-items-center">
+					<span>Highest Cols Climbed</span>
+					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
+						<a href="/user/{{$user->id}}/cols/eur/elevation"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all"></i></a>
+					</div>
+				</div>
+				<div class="card-body p-2 font-weight-light text-small-90">
+@if (count($highest) == 0)
+					<span class="text-small-75">No cols claimed yet.</span>
+@else
+	@foreach($highest as $highest_)
+					<div class="align-items-end d-flex">
+						<div class="text-truncate">
+							<img src="/images/flags/{{$highest_->Country1}}.gif" title="{{$highest_->Country1}}" class="flag mr-1">
+		@if ($highest_->Country2)
+							<img src="/images/flags/{{$highest_->Country2}}.gif" title="{{$highest_->Country2}}" class="flag mr-1">
+		@endif
+							<a href="/col/{{$highest_->ColIDString}}">{{$highest_->Col}}</a>
+						</div>
+						<div class="ml-auto text-small-75 text-centre badge badge-elevation font-weight-light" style="flex: 0 0 45px;">
+							{{$highest_->Height}}m
+						</div>
+					</div>
+	@endforeach
+@endif
+				</div>
+			</div>			
+			<!-- -->
+			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>
+			<div class="w-100 d-none d-sm-none d-md-block d-lg-none"><!-- wrap every 2 on md--></div>
+			<div class="w-100 d-none d-lg-block"><!-- wrap every 3 on lg or larger--></div>
+			<!-- -->
 			<!--add some invisible cards to be sure last cards are of equal size-->
+			<div class="card card-invisible"></div>
 			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>
 			<div class="card card-invisible"></div>
 			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>

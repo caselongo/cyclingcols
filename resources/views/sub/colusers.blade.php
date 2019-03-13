@@ -4,7 +4,7 @@
 	@foreach ($users as $user)
 		<div class="text-small-90 align-items-end d-flex">
 			<div class="text-truncate">
-				<a href="user/{{$user->id}}">{{$user->name}}</a>
+				<a href="/user/{{$user->id}}">{{$user->name}}</a>
 			</div>
 			<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
 		@if ($user->pivot->ClimbedAt != null)

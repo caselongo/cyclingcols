@@ -7,7 +7,7 @@ CyclingCols - New
 @section('content')
 <main role="main" class="bd-content">
     <div class="header px-4 py-3">
-        <h4 class="font-weight-light">New and updated cols and profiles</h4>
+        <h4 class="font-weight-light">New & Updated Cols</h4>
 	</div>	
 	<div class="container-fluid">
 		<div class="card-deck">

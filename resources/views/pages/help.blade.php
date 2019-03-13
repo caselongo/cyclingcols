@@ -8,7 +8,7 @@ CyclingCols - Help
 
 <main role="main" class="bd-content">
 	<div class="header px-4 py-3">
-		<h4 class="font-weight-light">CyclingCols Help</h4>
+		<h4 class="font-weight-light">Help</h4>
 	</div>
 	<div class="font-weight-light px-4 pb-3">
 		Some details that can appear in a CyclingCols elevation profile explained:

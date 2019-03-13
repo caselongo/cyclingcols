@@ -96,7 +96,8 @@
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 			  <a class="dropdown-item font-weight-light" href="/logout">Logout</a>
 			  <div class="dropdown-divider"></div>
-			  <a class="dropdown-item font-weight-light" href="/user">My CyclingCols</a>
+			  <a class="dropdown-item font-weight-light" href="/user/{{Auth::user()->id}}">Dashboard</a>
+			  <a class="dropdown-item font-weight-light" href="/user/{{Auth::user()->id}}/cols">Cols</a>
 			</div>
 		  </li>
 		@endauth

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Col;
 use App\Country;
+use App\User;
 
 use App\Http\Controllers\Controller;
 
@@ -28,9 +29,13 @@ class UserController extends Controller
         return view('pages.welcome');
     }
 	
-    public function index(Request $request)
+    public function index(Request $request, $userid)
     {
-        $user = Auth::user();
+        $user = User::where('id', $userid)->first();
+		
+		if ($user == null){
+            return response(['success' => false], 404);
+		}
 
         $_climbed = $user->cols();
 		
@@ -49,6 +54,10 @@ class UserController extends Controller
 		/* claimed recently */	
         $claimed = clone $_climbed;
 		$claimed = $claimed->orderBy('pivot_CreatedAt', 'desc')->limit(10)->get();
+
+		/* highest */	
+        $highest = clone $_climbed;
+		$highest = $highest->orderBy('Height', 'desc')->limit(10)->get();
 
 		/* climbed this year */	
 		$climbed_year_count = $_climbed_year->count();
@@ -91,26 +100,51 @@ class UserController extends Controller
 		
 		$countries = $countries->sortByDesc('col_count_user');
 
-        return view('pages.user', compact('user', 'climbed', 'climbed_count', 'climbed_year_count', 'climbed_lastyear_count', 'claimed', 'countries'));
+        return view('pages.user', compact('user', 'climbed', 'climbed_count', 'climbed_year_count', 'climbed_lastyear_count', 'claimed', 'countries', 'highest'));
     }
 	
-    public function cols(Request $request, $countryurl, $sorttypeurl)
+    public function cols_default(Request $request, $userid)
+	{
+		return \Redirect::to('user/' . $userid . '/cols/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
+	}
+	
+    public function cols(Request $request, $userid, $countryurl, $sorttypeurl)
     {		
         /* sorttype */	
+			
+		$sorttype_climbed = new \stdClass();
+		$sorttype_climbed->SortType = "Most Recently Climbed"; 
+		$sorttype_climbed->URL = "climbed"; 
+		//$sorttype_climbed->DateField = "ClimbedAt";	
+		$sorttype_climbed->NameField = "Col";	
+		$sorttype_climbed->SortField = "pivot_ClimbedAt";	
+		$sorttype_climbed->SortDirection = "DESC";	
 		
 		$sorttype_claimed = new \stdClass();
-		$sorttype_claimed->SortType = "Claimed"; 
+		$sorttype_claimed->SortType = "Most Recently Claimed"; 
 		$sorttype_claimed->URL = "claimed";
-		$sorttype_claimed->Field = "CreatedAt";
-		$sorttype_claimed->PivotField = "pivot_CreatedAt";
+		//$sorttype_claimed->DateField = "CreatedAt";
+		$sorttype_claimed->NameField = "Col";	
+		$sorttype_claimed->SortField = "pivot_CreatedAt";
+		$sorttype_claimed->SortDirection = "DESC";	
 		
-		$sorttype_climbed = new \stdClass();
-		$sorttype_climbed->SortType = "Climbed"; 
-		$sorttype_climbed->URL = "climbed"; 
-		$sorttype_climbed->Field = "ClimbedAt";	
-		$sorttype_climbed->PivotField = "pivot_ClimbedAt";	
+		$sorttype_alphabetical = new \stdClass();
+		$sorttype_alphabetical->SortType = "Alphabetically"; 
+		$sorttype_alphabetical->URL = "alphabetical";
+		//$sorttype_alphabetical->DateField = "ClimbedAt";
+		$sorttype_alphabetical->NameField = "ColSort";	
+		$sorttype_alphabetical->SortField = "ColSort";
+		$sorttype_alphabetical->SortDirection = "ASC";	
 		
-		$sorttypes = array($sorttype_claimed, $sorttype_climbed);
+		$sorttype_elevation = new \stdClass();
+		$sorttype_elevation->SortType = "Elevation"; 
+		$sorttype_elevation->URL = "elevation";
+		//$sorttype_alphabetical->DateField = "ClimbedAt";
+		$sorttype_elevation->NameField = "Col";	
+		$sorttype_elevation->SortField = "Height";
+		$sorttype_elevation->SortDirection = "DESC";	
+		
+		$sorttypes = array($sorttype_climbed, $sorttype_claimed, $sorttype_alphabetical, $sorttype_elevation);
 				
 		$sorttype_current = null;
 		foreach($sorttypes as $sorttype){
@@ -143,16 +177,16 @@ class UserController extends Controller
 		}
 		
 		if (is_null($sorttype_current) && is_null($country_current)){
-			return \Redirect::to('user/cols/' . $this->sorttypeurl_default . '/' . $countryurl_default);
+			return \Redirect::to('user/cols/' . $userid . '/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
 		} else if (is_null($sorttype_current)){
-			return \Redirect::to('user/cols/' . $this->sorttypeurl_default . '/' . $countryurl);
+			return \Redirect::to('user/cols/' . $userid . '/' . $countryurl . '/' . $this->sorttypeurl_default);
 		} else if (is_null($country_current)){
-			return \Redirect::to('user/cols/' . $sorttypeurl . '/' . $countryurl_default);		
+			return \Redirect::to('user/cols/' . $userid . '/' . $countryurl_default . '/' . $sorttypeurl);		
 		}
 
-        $user = Auth::user();
+        $user = User::where('id', $userid)->first();
 				
-		$cols = $user->cols()->select("cols.ColIDString", "cols.Col", "cols.Country1ID", "cols.Country1", "cols.Country2ID", "cols.Country2");
+		$cols = $user->cols()->select("cols.ColIDString", "cols.Col", "cols.ColSort", "cols.Country1ID", "cols.Country1", "cols.Country2ID", "cols.Country2", "cols.Height");
 		
 		if ($country_current->CountryID > 0) {
 			$this->CountryID = $country_current->CountryID;
@@ -162,9 +196,10 @@ class UserController extends Controller
 			});
 		} 
 
-		$cols = $cols->orderBy($sorttype_current->PivotField, 'desc')->get();
+		$cols = $cols->orderBy($sorttype_current->SortField, $sorttype_current->SortDirection)->get();
 		
         return view('pages.usercols')
+			->with('user',$user)
 			->with('sorttypes',$sorttypes)
 			->with('sorttype',$sorttype_current)
 			->with('countries',$countries)

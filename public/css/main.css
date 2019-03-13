@@ -175,8 +175,8 @@ footer{
 	max-width: 100%;
 }
 
-/* altitude */
-.badge-altitude{
+/* elevation */
+.badge-elevation{
 	border: 0.05em solid #bbb;
     background: #ededed;
     color: #333;

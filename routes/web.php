@@ -57,8 +57,9 @@ Route::get('rides','General\GeneralController@rides');
 
 // User
 Route::get('user/welcome', 'User\UserController@welcome');
-Route::get('user','User\UserController@index');
-Route::get('user/cols/{country_url}/{sort}','User\UserController@cols');
+Route::get('user/{userID}','User\UserController@index');
+Route::get('user/{userID}/cols','User\UserController@cols_default');
+Route::get('user/{userID}/cols/{country_url}/{sort}','User\UserController@cols');
 
 Route::middleware(['ajax'])->group(function () {
 	/* col */
