@@ -57,8 +57,8 @@ class ColController extends Controller
 			if ($usercol){
 				$climbed = true;
 				$climbedAt = $usercol->ClimbedAt;
-				$climbedAtText = $usercol->ClimbedAtText;
-				//$climbedAtText = Carbon::parse($usercol->ClimbedAt)->format('d M Y');
+				//$climbedAtText = $usercol->ClimbedAtText;
+				$climbedAtText = Carbon::parse($usercol->ClimbedAt)->format('d M Y');
 			}
 		}
 		
@@ -114,7 +114,6 @@ class ColController extends Controller
 			$array['ClimbedAt'] = $c;
             $user->cols()->updateExistingPivot($col->ColID, $array, false);
         } else {
-
             $array['UpdatedAt'] = Carbon::now('Europe/Amsterdam');
             $array['CreatedAt'] = Carbon::now('Europe/Amsterdam');
 			$array['ClimbedAt'] = $c;

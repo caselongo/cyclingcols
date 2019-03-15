@@ -120,12 +120,12 @@ CyclingCols - My CyclingCols
 							<a href="/col/{{$climbed_->ColIDString}}">{{$climbed_->Col}}</a>
 						</div>
 		@if ($isOwner)
-						<div class="col-climbed-date ml-auto text-small-75 text-right" style="flex: 0 0 75px;" data-colidstring="{{$climbed_->ColIDString}}">
+						<div class="col-climbed-date ml-auto text-small-75 text-right" style="flex: 0 0 75px;" data-colidstring="{{$climbed_->ColIDString}}" data-date="{{getDate_dMY($climbed_->pivot->ClimbedAt)}}">
 		@else
 						<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
 		@endif
 		@if ($climbed_->pivot->ClimbedAt)
-							{{Carbon\Carbon::parse($climbed_->pivot->ClimbedAt)->format('d M Y')}}
+							{{getHumanDate($climbed_->pivot->ClimbedAt)}}
 		@elseif ($isOwner)
 							add date
 		@else
@@ -162,7 +162,7 @@ CyclingCols - My CyclingCols
 							<a href="/col/{{$claimed_->ColIDString}}">{{$claimed_->Col}}</a>
 						</div>
 						<div class="ml-auto text-small-75 text-right" style="flex: 0 0 70px;">
-							{{Carbon\Carbon::parse($claimed_->pivot->CreatedAt)->format('d M Y')}}
+							{{getHumanDate($claimed_->pivot->CreatedAt)}}
 						</div>
 					</div>
 	@endforeach
@@ -200,7 +200,7 @@ CyclingCols - My CyclingCols
 	@if (!$user->strava_last_updated_at)
 							(not done yet)
 	@else
-							(last time done: {{Carbon\Carbon::parse($user->strava_last_updated_at)->format('d M Y h:m:s')}})
+							(last time done: {{Carbon\Carbon::parse($user->strava_last_updated_at)->format('d M Y H:i:s')}})
 	@endif
 						</span>
 					</div>

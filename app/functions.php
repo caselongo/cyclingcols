@@ -1,4 +1,7 @@
 <?php
+
+use Carbon\Carbon;
+
 function formatStat($stattypeid, $value) {
 	switch($stattypeid) {
 		case 1://distance
@@ -146,5 +149,26 @@ function distanceToLongitude($distance, $lat){
 	return $distance / ( 111.320 * cos((($lat/360)*2*pi())) );
 }
 
+function getHumanDate($date){
+	if (!$date) return null;
+	
+	if (is_string($date)){
+		$date = Carbon::parse($date);
+	}	
+	
+	if ($date->isToday()) return "today";
+	elseif ($date->isYesterday()) return "yesterday";
+	else return $date->format('d M Y');
+}
+
+function getDate_dMY($date){
+	if (!$date) return null;
+	
+	if (is_string($date)){
+		$date = Carbon::parse($date);
+	}	
+	
+	return $date->format('d M Y');
+}
 
 ?>

@@ -67,6 +67,7 @@ Route::get('athletes','Users\UsersController@index');
 
 // Strava
 Route::get('strava/connect','Strava\StravaController@connect');
+Route::get('strava/process','Strava\StravaController@process');
 Route::get('strava/cols','Strava\StravaController@cols');
 Route::get('strava/error','Strava\StravaController@error');
 

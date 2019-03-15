@@ -1,6 +1,8 @@
 var searchCount;
 var firstColIDString;
 
+var dateSelectCallback = null;
+
 $(document).ready(function() {
 	
     /*on keyboard enter press*/
@@ -81,13 +83,20 @@ $(document).ready(function() {
 	
 	$(".col-climbed-date").on("click", function(e){
 		var this_ = $(this);
-		var date = new Date(this_.html());
+		//var date = new Date(this_.html());
+		var date = $(this).data("date");
 		var colIDString = this_.data("colidstring");
 		
 		var onSelect = function(dateText, inst){
 			saveUser(this_.data("colidstring"), dateText);
+			
+			var dd = isToday(dateText);
+			var dd1 = isYesterday(dateText);
 			//this_.html(dateText);
-			$(".col-climbed-date[data-colidstring='" + colIDString + "']").html(dateText);
+			$(".col-climbed-date[data-colidstring='" + colIDString + "']").data("date",dateText);
+			$(".col-climbed-date[data-colidstring='" + colIDString + "']").html(getHumanDate(dateText));
+			
+			if (dateSelectCallback) dateSelectCallback();
 		};
 		
 		var options = {
@@ -319,6 +328,37 @@ var formatDate = function(d) {
 
 	return date;
 };	
+
+var isToday = function(date){
+	if (typeof date === 'string'){
+		date = new Date(date);
+	}
+	
+	var today = new Date();
+	
+    return date.getFullYear() == today.getFullYear()
+        && date.getMonth() == today.getMonth()
+        && date.getDate() == today.getDate();
+}
+
+var isYesterday = function(date){
+	if (typeof date === 'string'){
+		date = new Date(date);
+	}
+	
+	var yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);
+	
+    return date.getFullYear() == yesterday.getFullYear()
+        && date.getMonth() == yesterday.getMonth()
+        && date.getDate() == yesterday.getDate();
+}
+
+var getHumanDate = function(dateText){	
+	if (isToday(dateText)) return "today";
+	else if (isYesterday(dateText)) return "yesterday";
+	else return dateText;
+}
 
 /** user **/
 	

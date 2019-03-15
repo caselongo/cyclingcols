@@ -60,7 +60,11 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			printContent($(this).parents(".col-box")[0]); 
 		});
 		
-		var datepickerOptions = {
+		dateSelectCallback = function(){
+			getUsers();
+		};
+		
+		/*var datepickerOptions = {
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: "dd M yy",
@@ -81,7 +85,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			$(".ui-datepicker-prev span").html("<i class=\"fas fa-chevron-left\"></i>");
 			$(".ui-datepicker-next span").html("<i class=\"fas fa-chevron-right\"></i>");
 			$(this).datepicker( "show" );
-		});
+		});*/
 
 
 	});
@@ -144,8 +148,10 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				if (_climbed.climbed){
 					$(span_value).html("You climbed this col on");
 					if (_climbed.climbedAt){
-						$(".col-climbed-date").html(_climbed.climbedAtText);
+						$(".col-climbed-date").data("date",_climbed.climbedAtText);
+						$(".col-climbed-date").html(getHumanDate(_climbed.climbedAtText));
 					} else {
+						$(".col-climbed-date").data("date", null);
 						$(".col-climbed-date").html("[add date]");
 					}
 					$(span_date).show();

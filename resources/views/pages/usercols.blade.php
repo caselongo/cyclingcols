@@ -74,15 +74,15 @@ CyclingCols - My CyclingCols
 							{{$col->Height}}m
 						</div>
 						<div class="ml-1 text-small-75 text-right" style="flex: 0 0 70px;">
-							{{Carbon\Carbon::parse($col->pivot->CreatedAt)->format('d M Y')}}
+							{{getHumanDate($col->pivot->CreatedAt)}}
 						</div>
 	@if ($isOwner)
-						<div class="col-climbed-date ml-1 text-small-75 text-right" style="flex: 0 0 75px;" data-colidstring="{{$col->ColIDString}}">
+						<div class="col-climbed-date ml-1 text-small-75 text-right" style="flex: 0 0 75px;" data-colidstring="{{$col->ColIDString}}" data-date="{{getDate_dMY($col->pivot->ClimbedAt)}}">
 	@else
 						<div class="ml-1 text-small-75 text-right" style="flex: 0 0 75px;">
 	@endif
 	@if ($col->pivot->ClimbedAt)
-							{{Carbon\Carbon::parse($col->pivot->ClimbedAt)->format('d M Y')}}
+							{{getHumanDate($col->pivot->ClimbedAt)}}
 	@elseif ($isOwner)
 							add date
 	@else

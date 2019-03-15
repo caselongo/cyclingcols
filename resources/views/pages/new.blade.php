@@ -75,7 +75,7 @@ CyclingCols - New
 @else
 			Updated
 @endif
-			{{$newitem->DiffForHumans}} - {{$newitem->DateString}}</span>
+			{{$newitem->DateString}}</span>
 				</div><!--card-footer-->
 			</div><!--card-->
 <?php	

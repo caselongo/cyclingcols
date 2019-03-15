@@ -56,8 +56,8 @@ class GeneralController extends Controller
 				
 				$col = new \stdClass();
 				$col->DateSort = $newitem->DateSort;
-				$col->DateString = Carbon::createFromFormat('Ymd',$newitem->DateSort)->format('j M Y');
-				$col->DiffForHumans = Carbon::createFromFormat('Ymd',$newitem->DateSort)->diffForHumans();
+				$col->DateString = getHumanDate(Carbon::createFromFormat('Ymd',$newitem->DateSort));
+				//$col->DiffForHumans = Carbon::createFromFormat('Ymd',$newitem->DateSort)->diffForHumans();
 				$col->ColIDString = $newitem->ColIDString;
 				$col->Col = $newitem->Col;
 				$col->Country1 = $newitem->Country1;

@@ -8,7 +8,7 @@
 			</div>
 			<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
 		@if ($user->pivot->ClimbedAt != null)
-			{{Carbon\Carbon::parse($user->pivot->ClimbedAt)->format('d M Y')}}
+			{{getHumanDate($user->pivot->ClimbedAt)}}
 		@else 
 			date unknown
 		@endif

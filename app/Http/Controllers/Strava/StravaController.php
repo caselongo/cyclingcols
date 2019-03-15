@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Strava;
 
 use App\Col;
+use App\UserCol;
 //use App\Country;
 //use App\User;
 
@@ -28,15 +29,17 @@ class StravaController extends Controller
 	/* views */	
     public function connect(Request $request)
     {
-		$uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=https://www.cyclingcols.com/strava/cols/#/&approval_prompt=force";
+		$uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=https://www.cyclingcols.com/strava/process/#/&approval_prompt=force";
 		if (request()->getHost() == "localhost"){
-			$uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=http://localhost:8000/strava/cols/#/&approval_prompt=force";
+			$uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=http://localhost:8000/strava/process/#/&approval_prompt=force";
 		}
 		
         return \Redirect::to($uri);	
     }
 	
-	public function cols(Request $request){
+	public function process(Request $request){
+		set_time_limit(600);
+		
 		$code = isset($_GET['code']) ? $_GET['code'] : null; 
 		
 		if (!$code){
@@ -82,6 +85,7 @@ class StravaController extends Controller
 		foreach($activities as $activity){
 			if ($activity->id > $maxActivityID){ //new activity
 				$date = new Carbon($activity->start_date_local);
+				$date->setTime(0,0,0);
 				
 				/* get maximum latlng window of activity */
 				$distance = $activity->distance;
@@ -111,11 +115,48 @@ class StravaController extends Controller
 			}
 		}
 		
+		/* unflag previous strava cols */		
+		UserCol::where('UserID', $user->id)
+          ->where('NewFromStrava', true)
+          ->update(['NewFromStrava' => false]);
+		
+		foreach($cols as $col){
+			
+			$array = [];
+			$col_ = $user->cols()->where('cols.ColID', $col->ColID)->first();
+
+			if ($col_ != null) {
+				$date = Carbon::today();
+				if ($col_->pivot->ClimbedAt){
+					$date = Carbon::parse($col_->pivot->ClimbedAt);
+				}
+				
+				if ($col->Date < $date){
+					$array['ClimbedAt'] = $col->Date;
+					$user->cols()->updateExistingPivot($col->ColID, $array, false);
+				}
+			} else {
+				$array['UpdatedAt'] = Carbon::now('Europe/Amsterdam');
+				$array['CreatedAt'] = Carbon::now('Europe/Amsterdam');
+				$array['ClimbedAt'] =  $col->Date;
+				$array['NewFromStrava'] = true;
+				$user->cols()->attach($col->ColID, $array);
+			}
+		}
+		
 		if ($id > $maxActivityID){
 			$user->strava_max_activity_id = $id;
 		}
 		$user->strava_last_updated_at = Carbon::now('Europe/Amsterdam');
 		$user->save();
+		
+		return \Redirect::to('strava/cols');
+	}
+		
+	public function cols(Request $request){
+		$user = Auth::user();
+		
+		$cols = $user->cols()->where("NewFromStrava", true)->orderBy("pivot_ClimbedAt", "DESC")->get();
 		
 		return view('pages.stravacols')
 			->with('cols',$cols);
@@ -172,7 +213,7 @@ class StravaController extends Controller
 					if (!$col_found){		
 						$col__ = new \stdClass();
 						$col__->ColID = $col_->ColID;
-						$col__->col = $col_;
+						//$col__->col = $col_;
 						$col__->Date = $date;
 
 						$cols[] = $col__;
@@ -196,11 +237,12 @@ class StravaController extends Controller
 		$response = $client->request('GET', 'https://www.strava.com/api/v3/athlete/activities', [
 			'query' => [
 				'page' => 1,
-				'after' => 1536786664,
-				'before' => 1538169064,
+				'after' => 1538169064,
+				//'before' => 1538169064,
 				'per_page' => 30
-				//1538169064
-				//1536932064
+				//before 1538169064
+				//before 1536932064
+				//after 1536786664
 				
 			],
 			'headers' => $headers,

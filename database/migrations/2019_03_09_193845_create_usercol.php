@@ -25,6 +25,7 @@ class CreateUsercol extends Migration
             $table->timestamp('ClimbedAt')->nullable();
             $table->timestamp('CreatedAt')->nullable();
             $table->timestamp('UpdatedAt')->nullable();
+            $table->boolean('NewFromStrava')->default(false);
 
         });
 		
