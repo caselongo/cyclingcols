@@ -110,7 +110,7 @@ class ColController extends Controller
         $array = [];
 
         if ($user->cols()->where('cols.ColID', $col->ColID)->first() != null) {
-            $array['UpdatedAt'] = Carbon::now();
+            $array['UpdatedAt'] = Carbon::now('Europe/Amsterdam');
 			$array['ClimbedAt'] = $c;
             $user->cols()->updateExistingPivot($col->ColID, $array, false);
         } else {

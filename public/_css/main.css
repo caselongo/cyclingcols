@@ -1,0 +1,109 @@
+body{
+	font-family: Arial;
+	margin: 0;
+}
+
+.container-right {
+	float: right;
+	direction: rtl;
+
+	* {
+		direction: ltr;
+	}
+}
+
+#connected_wrapper{
+	line-height: 32px;
+	padding-right: 10px;
+	text-align: right;
+	display: inline-block;
+    font-size: 16px;
+}
+
+#connected_wrapper div{
+	display: inline-block;
+}
+
+#connected{
+	font-weight: bold;
+}
+
+#disconnect{
+    cursor: pointer;
+    color: #aaa;
+    font-weight: 700;
+}
+
+#calendar{
+	height: 220px;
+}
+
+#map-wrapper{
+	padding: 0;
+	height: 200px;
+}
+#map {
+	/*width: 100%;*/
+	height: 600px;
+}
+
+.gm-style-iw {
+   width: 200px !important;
+}
+
+#header{
+	color: #fc4c02;
+	padding: 0;
+	line-height: 32px;
+	border-bottom: 1px solid #aaa;
+}
+#title{
+	font-size: 24px;
+    font-weight: 700;
+}
+#subtitle{
+	font-size: 16px;
+	color: #aaa;
+}
+#content{
+	padding: 10px;
+}
+#menu{
+	padding: 10px;
+}
+#authorize{
+	text-align: center;
+}
+#ride-title{
+	border-top: 1px solid #aaa;
+	padding: 5px;
+}
+#ride-title-date{
+	color: #fc4c02;
+	font-weight: 700;
+}
+.year{
+	display: inline-block;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #ccc;
+    color: #fff;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.year-selected{
+	background-color: #fc4c02;
+}
+.year-prev{
+	background-color: #ccc;
+	color: #fff;
+}
+.tooltip-header{
+	min-width: 200px;
+	color: #fc4c02;
+	border-bottom: 1px solid #aaa;
+	padding: 2px;
+}
+.tooltip-name{
+	padding: 2px;
+}

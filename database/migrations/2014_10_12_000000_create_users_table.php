@@ -21,6 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->timestamp('strava_last_updated_at')->nullable();
+            $table->unsignedBigInteger('strava_max_activity_id')->nullable();
         });
     }
 

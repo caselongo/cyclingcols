@@ -65,6 +65,12 @@ Route::get('athlete/{userID}/cols/{country_url}/{sort}','User\UserController@col
 // Users
 Route::get('athletes','Users\UsersController@index');
 
+// Strava
+Route::get('strava/connect','Strava\StravaController@connect');
+Route::get('strava/cols','Strava\StravaController@cols');
+Route::get('strava/error','Strava\StravaController@error');
+
+
 Route::middleware(['ajax'])->group(function () {
 	/* col */
 	Route::get('service/col/nearby/{colIDString}','Col\ColController@_nearby');

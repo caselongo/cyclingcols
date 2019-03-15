@@ -14,6 +14,7 @@ CyclingCols - My CyclingCols
 	if ($user_){
 		$isOwner = ($user->id == $user_->id);	
 	}
+	
 ?>
 
 <main role="main" class="bd-content">
@@ -35,11 +36,11 @@ CyclingCols - My CyclingCols
 					<div class="kpi kpi-2">
 						<span class="">{{$climbed_year_count}}</span>
 					</div>
-					<div class="mb-3">This Year</div>
+					<div class="mb-3">In {{date("Y")}}</div>
 					<div class="kpi kpi-3">
 						<span class="">{{$climbed_lastyear_count}}</span>
 					</div>
-					<div class="mb-1">Last Year</div>
+					<div class="mb-1">In {{date("Y") - 1}}</div>
 				</div>
 			</div>
 			<!-- -->
@@ -184,12 +185,26 @@ CyclingCols - My CyclingCols
 							<div class="command leaflet-control"><div class="leaflet-bar climbed-control d-flex align-items-center justify-content-around" title="Show only climbed cols"><a style="outline: none;"><i class="fas fa-check climbed-control-checked"></i></a></div></div>
 						</div>
 					</div>
+@if ($isOwner)
 					<div class="p-2 border-top border-bottom">
 						<h6 class="font-weight-light m-0">Strava</h6>
 					</div>
 					<div class="p-2 text-center">
 						<div>Initialize or update your cols list with Strava</div>
+						<div class="p-1">
+							<a class="btn btn-primary" href="/strava/connect">
+								Connect with Strava
+                            </a>
+						</div>
+						<span class="text-small-75">
+	@if (!$user->strava_last_updated_at)
+							(not done yet)
+	@else
+							(last time done: {{Carbon\Carbon::parse($user->strava_last_updated_at)->format('d M Y h:m:s')}})
+	@endif
+						</span>
 					</div>
+@endif
 				</div>
 			</div>
 			<!-- -->

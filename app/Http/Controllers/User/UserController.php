@@ -33,7 +33,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
 		
-		return \Redirect::to('user/' . $user->id);	
+		return \Redirect::to('athlete/' . $user->id);	
 	}
 	
     public function index(Request $request, $userid)
@@ -112,7 +112,7 @@ class UserController extends Controller
 	
     public function cols_default(Request $request, $userid)
 	{
-		return \Redirect::to('user/' . $userid . '/cols/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
+		return \Redirect::to('athlete/' . $userid . '/cols/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
 	}
 	
     public function cols(Request $request, $userid, $countryurl, $sorttypeurl)
@@ -184,11 +184,11 @@ class UserController extends Controller
 		}
 		
 		if (is_null($sorttype_current) && is_null($country_current)){
-			return \Redirect::to('user/cols/' . $userid . '/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
+			return \Redirect::to('athlete/cols/' . $userid . '/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
 		} else if (is_null($sorttype_current)){
-			return \Redirect::to('user/cols/' . $userid . '/' . $countryurl . '/' . $this->sorttypeurl_default);
+			return \Redirect::to('athlete/cols/' . $userid . '/' . $countryurl . '/' . $this->sorttypeurl_default);
 		} else if (is_null($country_current)){
-			return \Redirect::to('user/cols/' . $userid . '/' . $countryurl_default . '/' . $sorttypeurl);		
+			return \Redirect::to('athlete/cols/' . $userid . '/' . $countryurl_default . '/' . $sorttypeurl);		
 		}
 
         $user = User::where('id', $userid)->first();

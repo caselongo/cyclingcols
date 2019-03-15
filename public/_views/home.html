@@ -1,0 +1,28 @@
+<div>
+	<div id="years">
+		<div data-ng-repeat="y in ctrl.years" class="year" data-ng-class="{'year-selected': y.selected}" data-ng-click="ctrl.drawCalendar(y.year)">{{y.year}}</div>
+		<div class="year year-prev" data-ng-click="ctrl.getPrevYear()" data-ng-show="ctrl.years.length > 0">previous year</div>
+	</div>
+	<div id="menu" class="col-xs-12">
+		<span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-calendar"></span>
+		<!--Enter Strava ActivityID:
+		<input id="activityid" type="number" data-ng-model="ctrl.activityid"/>-->
+		<!--Select activity:
+		<select ng-model="ctrl.selectedActivity" ng-options="a.name for a in ctrl.activities"></select>
+		<input id="go" type="button" value="Go" data-ng-click="ctrl.showActivity()" data-ng-disabled="!ctrl.selectedActivity"/>-->
+		<div id="calendar"></div>
+	</div>
+	<!--<div class="col-xs-4">
+		<div data-ng-repeat="a in ctrl.activities" class="col-xs-12">
+			{{a.name}}
+		</div>
+	</div>-->
+	<div id="ride-title" data-ng-show="ctrl.selectedActivity" class="col-xs-12">
+		<span id="ride-title-date">{{ctrl.selectedActivity.day}} {{ctrl.selectedActivity.monthname}} {{ctrl.selectedActivity.year}}</span>
+		{{ctrl.selectedActivity.name}} ({{ctrl.selectedActivity.dist}} km)
+	</div>
+	<div id="map-wrapper" class="col-xs-12">
+		<span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-map"></span>
+		<div id="map" class="col-xs-12"></div>
+	</div>
+</div>
