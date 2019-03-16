@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 
 class LoginController extends Controller
 {
@@ -37,7 +38,10 @@ class LoginController extends Controller
     public function showLoginForm(Request $request)
     {
 
-        Session::put('redirectTo', $request->redirectTo ?? $this->redirectTo);
+        if(Url::previous() != url('login') ) {
+            Session::put('redirectTo', Url::previous() ?? $this->redirectTo);
+        }
+
         return view('auth.login');
     }
 

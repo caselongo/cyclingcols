@@ -488,7 +488,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		</div>
 	@else
 		<div class="w-100 w-sm-50 w-md-25">
-			<a href="/login?redirectTo='/col/{{$col->ColIDString}}"/>Login</a> to claim this col
+			<a href="/login">Login</a> to claim this col
 		</div>
 	@endauth
 	</div>
