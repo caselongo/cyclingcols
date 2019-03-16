@@ -4,6 +4,12 @@ var firstColIDString;
 var dateSelectCallback = null;
 
 $(document).ready(function() {
+
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
 	
     /*on keyboard enter press*/
     $(document).keypress(function(e) {
@@ -364,10 +370,11 @@ var getHumanDate = function(dateText){
 	
 var saveUser = function(colIDString, climbedAtText, callback){
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url : "/service/col/athlete/save/" + colIDString,
 		data: {
-			climbedAt: climbedAtText
+			climbedAt: climbedAtText,
+
 		},
 		dataType : 'json',
 		success : function(data) {		

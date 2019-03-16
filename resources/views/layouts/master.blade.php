@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <meta http-equiv="Expires" content="Mon, 25 Jun 2012 21:31:12 GMT" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 	<title>@yield('title')</title>
     <meta property="og:title" content="@yield('og_title')"/>
