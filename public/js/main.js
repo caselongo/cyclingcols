@@ -10,6 +10,10 @@ $(document).ready(function() {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	});
+
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
 	
     /*on keyboard enter press*/
     $(document).keypress(function(e) {
