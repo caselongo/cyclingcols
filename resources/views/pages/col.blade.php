@@ -470,7 +470,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				data-share="true"
 			></div>
 			<a href="https://twitter.com/share" class="twitter-share-button" data-url="{{URL::asset('col/')}}/{{$col->ColIDString}}" data-via="cyclingcols">Tweet</a>
-			<form class="donate d-inline-block m-0" align="center" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" title="Show your appreciation and support the continuity of CyclingCols.">
+			<form class="donate d-inline-block m-0" align="center" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" title="Show your appreciation and support the continuity of CyclingCols." data-toggle="tooltip">
 				<input type="hidden" name="cmd" value="_s-xclick">
 				<input type="hidden" name="hosted_button_id" value="6ME8CQEG33GT4">
 				<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
@@ -543,7 +543,7 @@ $profile_string = $profile_count . " profile" . $profile_string;
 		else if ($cat_index == 1) $class_index = "color-1";
 ?>
 			<div id="{{$profile->FileName}}" class="col-box w-100 mb-3">
-				<div class="profile-header border-bottom p-2 d-flex align-items-baseline flex-wrap">
+				<div class="border-bottom p-2 d-flex align-items-baseline flex-wrap">
 					<div class="d-flex align-items-baseline flex-wrap">
 						<span class="category category-{{$profile->Category}}">{{$profile->Category}}</span>
 						<h6 class="font-weight-light mx-1">{{$col->Col}}</h6>
@@ -558,32 +558,32 @@ $profile_string = $profile_count . " profile" . $profile_string;
 				<div>
 					<img class="profile-img" src="/profiles/{{$profile->FileName}}.gif"/>
 				</div>
-				<div class="profile-footer p-0 text-small-75 d-flex">
-					<div class="stat1 px-2 py-1 border m-2" title="Distance">
+				<div class="p-0 text-small-75 d-flex">
+					<div class="stat1 px-2 py-1 border m-2" title="Distance" data-toggle="tooltip">
 						<i class="fas fas-grey fa-arrows-alt-h no-pointer {{$class_dist}} pr-1"></i>
 						<span>{{formatStat(1,$profile->Distance)}}</span>
 					</div>
-					<div class="stat2 px-2 py-1 border m-2" title="Elevation Gain">
+					<div class="stat2 px-2 py-1 border m-2" title="Elevation Gain" data-toggle="tooltip">
 						<i class="fas fas-grey fa-arrows-alt-v no-pointer {{$class_gain}} pr-1"></i>
 						<span>{{formatStat(2,$profile->HeightDiff)}}</span>
 					</div>
-					<div class="stat3 px-2 py-1 border m-2" title="Elevation Slope">
+					<div class="stat3 px-2 py-1 border m-2" title="Elevation Slope" data-toggle="tooltip">
 						<i class="fas fas-grey fa-location-arrow no-pointer {{$class_avg}} pr-1"></i>
 						<span>{{formatStat(3,$profile->AvgPerc)}}</span>
 					</div>
-					<div class="stat4 px-2 py-1 border m-2" title="Maximum Slope">
+					<div class="stat4 px-2 py-1 border m-2" title="Maximum Slope" data-toggle="tooltip">
 						<i class="fas fas-grey fa-bomb no-pointer {{$class_max}} pr-1"></i>
 						<span>{{formatStat(4,$profile->MaxPerc)}}</span>
 					</div>
-					<div class="stat5 px-2 py-1 border m-2" title="Profile Index">
+					<div class="stat5 px-2 py-1 border m-2" title="Profile Index" data-toggle="tooltip">
 						<i class="fas fas-grey fa-signal no-pointer {{$class_index}} pr-1"></i>
 						<span>{{formatStat(5,$profile->ProfileIdx)}}</span>
 					</div>
 					<div class="px-2 py-1 ml-auto d-none d-lg-inline-block">
-						<i class="profile-print fas fas-grey fa-print" title="Print"></i>
+						<i class="profile-print fas fas-grey fa-print" title="Print" data-toggle="tooltip"></i>
 					</div>
 				</div>
-			
+                @include('sub.profilesimilar', ['fileName' => $profile->FileName])
 			</div>
 		
 <?php				
@@ -606,7 +606,7 @@ $profile_string = $profile_count . " profile" . $profile_string;
 				<div class="p-2 border-bottom d-flex align-items-center">
 					<h6 class="font-weight-light m-0">First On Top</h6>
 					<div class="ml-auto d-none" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-						<i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i>
+						<i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all" data-toggle="tooltip"></i>
 					</div>
 				</div>
 				<div id="col-first" class="font-weight-light px-2 py-1">

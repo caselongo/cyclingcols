@@ -11,9 +11,9 @@ $(document).ready(function() {
 		}
 	});
 
-	$(function () {
-		$('[data-toggle="tooltip"]').tooltip()
-	})
+	setTimeout(function(){
+		initToolTip($('[data-toggle="tooltip"]'));
+	}, 1000);
 	
     /*on keyboard enter press*/
     $(document).keypress(function(e) {
@@ -42,6 +42,10 @@ $(document).ready(function() {
 		modal.find('.date').text(date);				
 		modal.find('.ride-img').attr("src","/tours/" + fileName + ".gif");	
 	});
+	
+	$('#modalProfile').draggable({
+		handle: ".modal-dialog"
+	}); 
 	
 	/* init modal profile */
 	$('#modalProfile').on('show.bs.modal', function (event) {
@@ -321,6 +325,13 @@ var getTopStats = function(colIDString,profileFileName) {
 			}
 		}
 	})
+}
+	
+var initToolTip = function(el){
+	$(el).tooltip({
+		html: true,
+		template: '<div class="tooltip" role="tooltip"><div class="arrow shadow"></div><div class="tooltip-inner font-weight-light text-small-75 shadow"></div></div>'
+	});		
 }
 
 var formatDate = function(d) {

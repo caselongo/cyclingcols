@@ -96,7 +96,8 @@ foreach($stats as $stat){
 		
 		var marker = L.marker([m.lat, m.lng], markerOptions).addTo(map);
 		
-		$(marker._icon).attr("title", m.title + m.col);
+		$(marker._icon).attr("title", m.title + "<br/>" + m.col);
+		initToolTip($(marker._icon));
 		
 		marker.on("click", function() {
 			parent.document.location.href = "/col/" + m.colIDString + "#" + m.fileName;
@@ -240,7 +241,7 @@ $(document).ready(function() {
 						</div>
 											
 		@if ($stattype->StatTypeID == 0)		
-						<a href="/stats/{{$stattype_current->URL}}/{{$country->URL}}"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="show all"></i></a>
+						<a href="/stats/{{$stattype_current->URL}}/{{$country->URL}}"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
 		@endif
 					</div>
 					<div class="card-body p-2 font-weight-light text-small-90">
@@ -257,15 +258,15 @@ $(document).ready(function() {
 		@endif
 							</div>
 							<div class="text-truncate">
-								<img src="/images/flags/{{$stat->Country1}}.gif" title="{{$stat->Country1}}" class="flag mr-1">
+								<img src="/images/flags/{{$stat->Country1}}.gif" title="{{$stat->Country1}}" data-toggle="tooltip" class="flag mr-1">
 		@if ($stat->Country2)
-								<img src="/images/flags/{{$stat->Country2}}.gif" title="{{$stat->Country2}}" class="flag mr-1">
+								<img src="/images/flags/{{$stat->Country2}}.gif" title="{{$stat->Country2}}" data-toggle="tooltip" class="flag mr-1">
 		@endif
 								<a href="/col/{{$stat->ColIDString}}{{ $stat->FileName ? '#' . $stat->FileName : '' }}">{{$stat->Col}}
 								</a>
 							</div>
 		@if ($stat->Side)
-							<div class="ml-1 text-small-75" style="flex: 0 0 40px;" title="{{$stat->Side}}">
+							<div class="ml-1 text-small-75" style="flex: 0 0 40px;" title="{{$stat->Side}}" data-toggle="tooltip">
 								<img class="direction" src="/images/{{$stat->Side}}.png">
 								<!--<span class="pl-1 text-small-75">{{$stat->Side}}</span>-->
 							</div>
@@ -281,7 +282,7 @@ $(document).ready(function() {
 				$col_climbed_title = "You climbed this col";
 			}
 ?>
-							<i class="col-done fas fa-check {{$col_climbed_class}} pl-1 py-1 text-small-90 no-pointer" title="{{$col_climbed_title}}"></i>
+							<i class="col-done fas fa-check {{$col_climbed_class}} pl-1 py-1 text-small-90 no-pointer" title="{{$col_climbed_title}}" data-toggle="tooltip"></i>
 <?php
 		}
 ?>

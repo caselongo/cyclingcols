@@ -5,7 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Col extends Model
 {
-    protected $fillable = array(
+    public $timestamps = false;
+	
+	protected $fillable = array(
 		'ColID','ColIDString',
 		'Country1ID','Country1','Country2ID','Country2',
 		'Region1ID','Region1','Region2ID','Region2',

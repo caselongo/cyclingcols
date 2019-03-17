@@ -7,8 +7,8 @@
                 <div class="card shadow-sm">
 
                     <div class="card-body">
-                        <div style="text-align: center; margin-bottom:20px;">
-                            <h4>Register</h4>
+                        <div class="text-center mb-3">
+                            <h4 class="font-weight-light">Register</h4>
                         </div>
 
                         <form method="POST" action="{{ route('register') }}">
@@ -17,8 +17,8 @@
                             <div class="form-group row">
                                 <label for="name"
                                        class="col-md-4 col-form-label text-md-right">{{ __('User name') }}
-                                    <i class="fa fa-info-circle"
-                                       title="The username will be displayed in the application and can be visible to other users"
+                                    <i class="fas fas-grey fa-info-circle"
+                                       title="The username will be displayed in the application and can be visible to other users."
                                        data-toggle="tooltip"></i>
                                 </label>
 

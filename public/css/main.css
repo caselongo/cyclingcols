@@ -169,6 +169,10 @@ footer{
 	margin-left: -0.1em;
 }
 
+.flag-big{
+	height: 1.6em!important;
+}
+
 /* panels */
 .panel{
 	border-radius: 0.2em;
@@ -448,10 +452,10 @@ footer{
 	max-width: 100%;
 	max-height: 400px;
 }
-
+/*
 .profile-footer > * {
 	display: inline-block;
-}
+}*/
 
 /* color category */
 
@@ -494,6 +498,10 @@ img.ad {
 	line-height: 1;
 	color: #fff;
     border: 0.03rem solid #ff8800;
+}
+
+.bar-big{
+	height: 1.2em!important;	
 }
 
 .bar-total{

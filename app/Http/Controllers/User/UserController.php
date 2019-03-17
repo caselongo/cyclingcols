@@ -56,15 +56,15 @@ class UserController extends Controller
         $climbed_count = $_climbed->count();
 		
 		$climbed = clone $_climbed;
-		$climbed = $climbed->orderBy('pivot_ClimbedAt', 'desc')->limit(10)->get();
+		$climbed = $climbed->orderBy('pivot_ClimbedAt', 'desc')->limit(5)->get();
 
 		/* claimed recently */	
         $claimed = clone $_climbed;
-		$claimed = $claimed->orderBy('pivot_CreatedAt', 'desc')->limit(10)->get();
+		$claimed = $claimed->orderBy('pivot_CreatedAt', 'desc')->limit(5)->get();
 
 		/* highest */	
         $highest = clone $_climbed;
-		$highest = $highest->orderBy('Height', 'desc')->limit(10)->get();
+		$highest = $highest->orderBy('Height', 'desc')->limit(5)->get();
 
 		/* climbed this year */	
 		$climbed_year_count = $_climbed_year->count();
@@ -82,6 +82,7 @@ class UserController extends Controller
 			$cy = clone $_climbed_year;
 			$cy = $cy->wherePivot('ClimbedAt','>=',Carbon::now()->startOfYear());
 			
+			$country->URL = strtolower($country->CountryAbbr);
 			$country->col_count = $country->col_count();
 			$country->col_count_user = $c->where('Country1ID', $country->CountryID)->count() + $c->where('Country2ID', $country->CountryID)->count();
 			$country->col_count_user_year = $cy->where('Country1ID', $country->CountryID)->count() + $cy->where('Country2ID', $country->CountryID)->count();
@@ -105,9 +106,27 @@ class UserController extends Controller
 			}
 		}
 		
+		$total_count = Col::count();
+		
+		if ($climbed_count == $total_count){
+			$width_climbed = 1;
+			$perc_climbed = "100";
+		} else if ($climbed_count > 0){
+			$width_climbed = 0.1 + round($climbed_count/$total_count,1) * 0.9;
+			$perc_climbed = round(($climbed_count/$total_count) * 100,1);
+			if (floor($perc_climbed) > 0 && ceil($perc_climbed) < 100){
+				$perc_climbed = round(($climbed_count/$total_count) * 100,0);
+			}
+			$perc_climbed = strval($perc_climbed);
+		} else {
+			$width_climbed = 0;
+			$perc_climbed = "0";
+		}
+		$width_total = 1 - $width_climbed;
+		
 		$countries = $countries->sortByDesc('col_count_user');
 
-        return view('pages.user', compact('user', 'climbed', 'climbed_count', 'climbed_year_count', 'climbed_lastyear_count', 'claimed', 'countries', 'highest'));
+        return view('pages.user', compact('user', 'climbed', 'climbed_count', 'climbed_year_count', 'climbed_lastyear_count', 'claimed', 'countries', 'highest', 'width_total', 'width_climbed', 'perc_climbed'));
     }
 	
     public function cols_default(Request $request, $userid)

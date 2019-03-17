@@ -26,7 +26,7 @@ class Profile extends Model
      */
     public function col()
     {
-        return $this->hasOne('App\Col');
+        return $this->belongsTo('App\Col','ColID','ColID');
     }
 }
 ?>

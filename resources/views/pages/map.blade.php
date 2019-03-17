@@ -117,6 +117,11 @@ CyclingCols - Search On Map
 		
 		var onMapReady = function(){
 			mapReady = true;
+			
+			setTimeout(function(){
+				initToolTip($(".leaflet-bar"));
+				initToolTip($(".leaflet-bar a"));
+			}, 1000);
 		}
 		
 		map = L.map('map-canvas', mapOptions).on('load', onMapReady).setView([lat, lng], zoom);
@@ -147,6 +152,8 @@ CyclingCols - Search On Map
 				var div = L.DomUtil.create('div', 'command');
 
 				div.innerHTML = '<div class="leaflet-bar climbed-control d-flex align-items-center justify-content-around" title="Show only climbed cols"><a><i class="fas fa-check"></i></a></div>'; 
+				
+				initToolTip($(div).find(".leaflet-bar"));
 				
 				L.DomEvent.on(div,"click", function(){
 					showClimbed = !showClimbed;
@@ -261,7 +268,7 @@ CyclingCols - Search On Map
 @auth
 					if (data[j].ClimbedAt){
 						var date = new Date(data[j].ClimbedAt);
-						title += ", climbed on " + formatDate(date);
+						title += "<br/>[climbed on " + formatDate(date) + "]";
 					}
 @endauth
 					
@@ -282,11 +289,13 @@ CyclingCols - Search On Map
 						marker.on("add", function(e){
 							var e = $(e.target._icon);		
 							e.addClass("col-marker col-marker-climbed");
+							initToolTip(e);
 						})
 					} else {				
 						marker.on("add", function(e){
 							var e = $(e.target._icon);		
 							e.addClass("col-marker");
+							initToolTip(e);
 						});
 					}
 @endauth

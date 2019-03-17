@@ -8,15 +8,15 @@
                 <div class="card shadow-sm">
 
                     <div class="card-body">
-                        <div style="text-align: center; margin-bottom:20px;">
-                            <h4>Login</h4>
+                        <div class="text-center mb-3">
+                            <h4 class="font-weight-light">Login</h4>
                         </div>
 
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
 
                             <div class="row">
-                                <div class="col-md-8 offset-md-2">
+                                <div class="col-md-8 offset-md-2 mb-2">
                                     <input id="email" type="email"
                                            class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}"
                                            name="email" value="{{ old('email') }}" required autofocus placeholder="E-mail">
@@ -44,7 +44,7 @@
                             </div>
 
                             <div class=" row">
-                                <div class="col-md-8 offset-md-2" style="margin-bottom:10px;">
+                                <div class="col-md-8 offset-md-2 mb-2">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="remember"
                                                id="remember" {{ old('remember') ? 'checked' : '' }}>

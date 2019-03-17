@@ -7,7 +7,7 @@ CyclingCols - New
 @section('content')
 <main role="main" class="bd-content">
     <div class="header px-4 py-3">
-        <h4 class="font-weight-light">New & Updated Cols</h4>
+        <h4 class="font-weight-light">New & Updated Cols & Climbs</h4>
 	</div>	
 	<div class="container-fluid">
 		<div class="card-deck">
@@ -44,9 +44,9 @@ CyclingCols - New
 				</div><!--card-img-top-->
 				<div class="card-body p-0">
 					<h6 class="card-title p-2 m-0 font-weight-light">
-						<img src="/images/flags/{{$newitem->Country1}}.gif" title="{{$newitem->Country1}}" class="flag">
+						<img src="/images/flags/{{$newitem->Country1}}.gif" title="{{$newitem->Country1}}" data-toggle="tooltip" class="flag">
 @if ($newitem->Country2)
-						<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" class="flag flag2">
+						<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" data-toggle="tooltip" class="flag flag2">
 @endif
 						<a href="/col/{{$newitem->ColIDString}}">{{$newitem->Col}}</a>
 						<span class="badge badge-altitude font-weight-light text-small-70">{{$newitem->Height}}m</span>

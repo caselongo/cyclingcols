@@ -14,7 +14,7 @@
 	else $dir_ = "South";
 ?>
 	<div class="text-small-90 d-flex">
-		<div class="text-truncate" title="{{$nearby_->Col}}">
+		<div class="text-truncate" title="{{$nearby_->Col}}" data-toggle="tooltip">
 			<a href="/col/{{$nearby_->ColIDString}}">{{$nearby_->Col}}</a>
 		</div>
 		<div class="ml-auto text-small-75 text-right" style="flex: 0 0 60px;">
