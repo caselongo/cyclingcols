@@ -6,6 +6,8 @@ use App\Col;
 use App\Activity;
 use App\User;
 
+use App\Jobs\ProcessActivity;
+
 use Carbon\Carbon;
 
 use Illuminate\Bus\Queueable;
@@ -57,12 +59,22 @@ class ProcessActivity implements ShouldQueue
 		//echo $this->activity->ActivityID;
 		
 		$count = "-";
+			
+		//echo "\r\n0\r\n";
+		//echo Carbon::now();
 		
 		/* check if cols exists in maximum latlng window */
 		$first = $this->getColsQuery($this->activity->LatitudeMin, $this->activity->LongitudeMin, $this->activity->LatitudeMax, $this->activity->LongitudeMax)->first();
 
+		//echo "\r\n00\r\n";
+		//echo Carbon::now();
+		
 		if ($first != null) {
 			$coords = $this->getLatLngStream($this->activity->ActivityID, $this->access_token);
+			
+			
+			//echo "\r\n5\r\n";
+			//echo Carbon::now();
 			
 			if(property_exists($coords,'latlng')) {
 				//echo "yes";
@@ -71,7 +83,13 @@ class ProcessActivity implements ShouldQueue
 
 				$cols = $this->getCols($coords, $this->activity->ActivityID);
 				
+				//echo "\r\n6\r\n";
+				//echo Carbon::now();
+				
 				$this->saveCols($cols);
+					
+				//echo "\r\n7\r\n";
+				//echo Carbon::now();
 				
 				$count = count($cols);
 			} else {
@@ -98,6 +116,8 @@ class ProcessActivity implements ShouldQueue
 		//echo $lat_min;
 		//echo "lat_max";
 		//echo $lat_max;
+		//echo "\r\n1\r\n";
+		//echo Carbon::now();
 
         foreach ($coords as $coord) {
             $lat = $coord[0];
@@ -108,8 +128,14 @@ class ProcessActivity implements ShouldQueue
             if ($lng < $lng_min) $lng_min = $lng;
             else if ($lng > $lng_max) $lng_max = $lng;
         }
+		
+		//echo "\r\n2\r\n";
+		//echo Carbon::now();
 
-        $cols_ = $this->getColsQuery($lat_min * 1000000, $lng_min * 1000000, $lat_max * 1000000, $lng_max * 1000000)->get();
+        $cols_ = $this->getColsQuery($lat_min * 1000000, $lng_min * 1000000, $lat_max * 1000000, $lng_max * 1000000)->get();		
+		
+		//echo "\r\n3\r\n";
+		//echo Carbon::now();
 		
 		//echo("cols");
 		//echo count($cols_);
@@ -134,6 +160,9 @@ class ProcessActivity implements ShouldQueue
         }
 		
 		//echo count($cols);
+		
+		//echo "\r\n4\r\n";
+		//echo Carbon::now();
 
         return $cols;
     }
@@ -154,11 +183,14 @@ class ProcessActivity implements ShouldQueue
                 }
 				
 				$stravaActivityIDs = $col_->pivot->StravaActivityIDs;
+				//echo "\r\nold:" . $stravaActivityIDs . "\r\n";
+				
 				if ($stravaActivityIDs == null){
 					$stravaActivityIDs = $col->ActivityID;
 				} else if (strrpos(";" . $stravaActivityIDs . ";", ";" . $col->ActivityID . ";") === false){
-					$stravaActivityIDs += ";" + $col->ActivityID;
+					$stravaActivityIDs .= ";" . $col->ActivityID;
 				}
+				//echo "\r\nnew:" . $stravaActivityIDs . "\r\n";
 				
 				$array['UpdatedAt'] = $now;
                 $array['StravaActivityIDs'] = $stravaActivityIDs;

@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers\Strava;
 
+use App\Http\Controllers\Controller;
+
 use App\Col;
 use App\UserCol;
 use App\Activity;
 
-//use App\Country;
-//use App\User;
-
-use App\Http\Controllers\Controller;
+use App\Jobs\ProcessAthlete;
 
 use Carbon\Carbon;
-
-use App\Jobs\ProcessActivity;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 
-use Polyline;
+//use Polyline;
 
 class StravaController extends Controller
 {
@@ -80,62 +77,10 @@ class StravaController extends Controller
         if (!$access_token || !$athlete) {
 			return $this->stravaError();
         }
-
+		
         $user = Auth::user();
 		
-        $activities = $this->getActivities($access_token);
-
-        $cols = array();
-		$activities_done = array();
-
-        foreach ($activities as $activity) {
-			$activity_existing = $user->activities->where('ActivityID', $activity->id)->first();
-			
-            if ($activity_existing == null && $activity->type == "Ride") { //new activity
-			    $date = new Carbon($activity->start_date_local);
-                $date->setTime(0, 0, 0);
-
-				/* get maximum latlng window of activity */
-                $distance = $activity->distance;
-                $distance_direct = distance($activity->start_latlng[0], $activity->start_latlng[1], $activity->end_latlng[0], $activity->end_latlng[1], "K");
-                $d_distance = ($distance / 1000 - $distance_direct) / 2;
-
-                $lat_min = min($activity->start_latlng[0], $activity->end_latlng[0]);
-                $lat_max = max($activity->start_latlng[0], $activity->end_latlng[0]);
-                $lng_min = min($activity->start_latlng[1], $activity->end_latlng[1]);
-                $lng_max = max($activity->start_latlng[1], $activity->end_latlng[1]);
-
-                $lat_min -= distanceToLatitude($d_distance);
-                $lat_max += distanceToLatitude($d_distance);
-
-                $lng_min -= distanceToLongitude($d_distance, ($lat_min + $lat_max) / 2);
-                $lng_max += distanceToLongitude($d_distance, ($lat_min + $lat_max) / 2);
-				
-				//DB::enableQueryLog();
-			
-				$activity = $user->activities()->create([
-					//'CreatedAt' => Carbon::now('Europe/Amsterdam'),
-					//'UpdatedAt' => Carbon::now('Europe/Amsterdam'),
-					'AthleteID' => $athlete->id,
-					'ActivityID' => $activity->id,
-					'LatitudeMin' => $lat_min * 1000000,
-					'LatitudeMax' => $lat_max * 1000000,
-					'LongitudeMin' => $lng_min * 1000000,
-					'LongitudeMax' => $lng_max * 1000000
-				]);
-				
-				ProcessActivity::dispatch($user, $activity, $date, $access_token)->delay(10);
-            }
-        }
-
-        /* unflag previous strava cols */
-		$user->cols()->where('StravaNew', true)
-            ->update(['StravaNew' => false]);
-
-		/* update user */
-		$user->strava_athlete_id = $athlete->id;
-		$user->strava_last_updated_at = Carbon::now('Europe/Amsterdam');
-        $user->save();
+ 		ProcessAthlete::dispatch($user, $athlete, $access_token)->onQueue('athlete')->delay(10);
 
         return \Redirect::to('/athlete');
     }
@@ -153,32 +98,6 @@ class StravaController extends Controller
 
         return view('pages.stravacols')
             ->with('cols', $cols);
-    }
-
-    private function getActivities($access_token)
-    {
-        $client = new \GuzzleHttp\Client();
-
-        $headers = [
-            'Authorization' => 'Bearer ' . $access_token
-        ];
-
-        $response = $client->request('GET', 'https://www.strava.com/api/v3/athlete/activities', [
-            'query' => [
-                'page' => 1,
-                'after' => 1536786664,
-                //'before' => 1538169064,
-                'per_page' => 100
-                //before 1538169064
-                //before 1536932064
-                //after 1536786664
-
-            ],
-            'headers' => $headers,
-            'verify' => false
-        ]);
-
-        return json_decode($response->getBody()->getContents());
     }
 	
 	public function error(Request $request){

@@ -49,7 +49,7 @@ CyclingCols - New
 						<img src="/images/flags/{{$newitem->Country2}}.gif" title="{{$newitem->Country2}}" data-toggle="tooltip" class="flag flag2">
 @endif
 						<a href="/col/{{$newitem->ColIDString}}">{{$newitem->Col}}</a>
-						<span class="badge badge-altitude font-weight-light text-small-70">{{$newitem->Height}}m</span>
+						<span class="badge badge-elevation font-weight-light text-small-70">{{$newitem->Height}}m</span>
 					</h6>
 @foreach ($newitem->Profiles as $profile)
 					<div class="card-profile px-2 py-1 border-top text-small-75 d-flex flex-row justify-content-between align-items-baseline">
