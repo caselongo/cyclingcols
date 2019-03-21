@@ -15,6 +15,40 @@ CyclingCols - My CyclingCols
 		$isOwner = ($user->id == $user_->id);	
 	}
 	
+	if ($isOwner){
+?>
+<script type="text/javascript">	
+
+	var processed = false;
+		
+	$(document).ready(function() {
+		refreshStravaStatus();
+	});
+
+	var refreshStravaStatus = function(){
+		$.ajax({
+			type: "GET",
+			url : "/service/strava/status/" + processed,
+			dataType : 'json',
+			success : function(result) {	
+				if (result.success){
+					if (result.strava_processing){
+						processed = true;
+					}
+					
+					$("#stravastatus").html(result.html);	
+		
+					setTimeout(function(){
+						refreshStravaStatus();
+					}, 10000);
+				}
+			}
+		});
+	}
+</script>
+
+<?php			
+	}	
 ?>
 
 <main role="main" class="bd-content">
@@ -95,20 +129,16 @@ CyclingCols - My CyclingCols
 					<div class="p-2 border-bottom">
 						<h6 class="font-weight-light m-0">Strava</h6>
 					</div>
-					<div class="p-2 text-center">
+					<div class="p-2 text-center" id="stravastatus">
 						<div>Initialize or update your cols list with Strava</div>
 						<div class="p-1">
-							<a class="btn btn-primary" href="/strava/connect">
+							<a class="btn btn-primary disabled" href="/strava/connect">
 								Connect with Strava
                             </a>
 						</div>
-						<span class="text-small-75">
-	@if (!$user->strava_last_updated_at)
-							(not done yet)
-	@else
-							(last time done: {{Carbon\Carbon::parse($user->strava_last_updated_at)->format('d M Y H:i:s')}})
-	@endif
-						</span>
+						<div id="stravastatus">
+							&nbsp;
+						</div>
 					</div>
 @endif
 					<div class="p-2 border-bottom

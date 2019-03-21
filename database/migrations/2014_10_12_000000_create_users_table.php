@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->timestamps();
             $table->timestamp('strava_last_updated_at')->nullable();
             $table->unsignedBigInteger('strava_athlete_id')->nullable();
+            $table->boolean('strava_processing')->default(false);
         });
     }
 

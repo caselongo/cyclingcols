@@ -40,6 +40,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function cols()
 	{
         return $this->belongsToMany(Col::class,'usercol','UserID','ColID',null,'ColID')
+			->wherePivot('StravaNew', false)
+            ->withPivot(['ClimbedAt','CreatedAt','UpdatedAt','StravaNew','StravaActivityIDs']);
+    }
+
+    public function colsNew()
+	{
+        return $this->belongsToMany(Col::class,'usercol','UserID','ColID',null,'ColID')
+			->wherePivot('StravaNew', true)
             ->withPivot(['ClimbedAt','CreatedAt','UpdatedAt','StravaNew','StravaActivityIDs']);
     }
 

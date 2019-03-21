@@ -21,6 +21,7 @@ class ProcessAthlete implements ShouldQueue
 	
 	protected $user;
 	protected $athlete;
+	protected $page;
 	protected $access_token;
 
     /**
@@ -28,10 +29,11 @@ class ProcessAthlete implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user, $athlete, $access_token)
+    public function __construct(User $user, $athlete, $page, $access_token)
     {
         $this->user = $user;
 		$this->athlete = $athlete;
+		$this->page = $page;
 		$this->access_token = $access_token;
     }
 
@@ -42,10 +44,21 @@ class ProcessAthlete implements ShouldQueue
      */
     public function handle()
     {
+		//echo $this->page;
+		
 		$activities = $this->getActivities();
+		
+		echo "UserID: " . $this->user->id . "\r\n";
+		echo "Page: " . $this->page . "\r\n";
+		echo "#Activities: " . count($activities) . "\r\n";
+
+		if (count($activities) == 0) {		
+			$this->finishAthlete();
+			return;
+		};
 
         $cols = array();
-
+		
         foreach ($activities as $activity) {
 			$activity_existing = $this->user->activities->where('ActivityID', $activity->id)->first();
 			
@@ -85,18 +98,30 @@ class ProcessAthlete implements ShouldQueue
 				ProcessActivity::dispatch($this->user, $activity, $date, $this->access_token)->onQueue('activity')->delay(10);
             }
         }
+		
+		//if ($page == 1){
 
-        /* unflag previous strava cols */
-		$this->user->cols()->where('StravaNew', true)
-            ->update(['StravaNew' => false]);
+			/* unflag previous strava cols */
+			//$this->user->cols()->where('StravaNew', true)
+			//	->update(['StravaNew' => false]);
 
-		/* update user */
-		$this->user->strava_athlete_id = $this->athlete->id;
-		$this->user->strava_last_updated_at = Carbon::now('Europe/Amsterdam');
-        $this->user->save();
-
-        //
+			/* update user */
+			//$this->user->strava_athlete_id = $this->athlete->id;
+			///$this->user->strava_last_updated_at = Carbon::now('Europe/Amsterdam');
+			//$this->user->save();
+		//}
+		
+		if ($this->page < 10){
+			ProcessAthlete::dispatch($this->user, $this->athlete, $this->page + 1, $this->access_token)->onQueue('athlete');
+		} else {			
+			$this->finishAthlete();
+			return;
+		}
     }
+	
+	private function finishAthlete(){
+		FinishAthlete::dispatch($this->user)->onQueue('activity');
+	}
 
     private function getActivities()
     {
@@ -108,6 +133,10 @@ class ProcessAthlete implements ShouldQueue
 
         $response = $client->request('GET', 'https://www.strava.com/api/v3/athlete/activities', [
             'query' => [
+                'page' => $this->page,
+                'per_page' => 50
+            ],
+            /*'query' => [
                 'page' => 1,
                 'after' => 1523752202,
                 'before' => 1523838602,
@@ -116,8 +145,8 @@ class ProcessAthlete implements ShouldQueue
                 //before 1536932064
                 //after 1536786664
 
-            ],
-            'headers' => $headers,
+            ],*/
+			'headers' => $headers,
             'verify' => false
         ]);
 

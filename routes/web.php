@@ -100,6 +100,9 @@ Route::middleware(['ajax'])->group(function () {
 	Route::get('service/rides','General\GeneralController@_rides');
 	Route::get('service/banners','General\GeneralController@_banners_all');	
 	Route::get('service/banners/{colIDString}','General\GeneralController@_banners');	
+
+	/* strava */
+	Route::get('service/strava/status/{processed}','Strava\StravaController@_status');
 });
 
 	

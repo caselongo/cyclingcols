@@ -35,8 +35,10 @@ class StravaController extends Controller
     {
 //		$uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=https://www.cyclingcols.com/strava/process/#/&approval_prompt=force";
 //		if (request()->getHost() == "localhost"){
-        $uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=http://localhost:8000/strava/process/#/&approval_prompt=force";
+//       $uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=http://localhost:8000/strava/process/#/&approval_prompt=force";
 //		}
+
+		$uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=" . $request->getSchemeAndHttpHost() . "/strava/process&scope=activity:read_all";
 
         return \Redirect::to($uri);
     }
@@ -80,7 +82,20 @@ class StravaController extends Controller
 		
         $user = Auth::user();
 		
- 		ProcessAthlete::dispatch($user, $athlete, $access_token)->onQueue('athlete')->delay(10);
+		$page = 1;
+ 		ProcessAthlete::dispatch($user, $athlete, $page, $access_token)->onQueue('athlete')->delay(10);
+		
+		/* unflag previous strava cols */
+		$user->cols()->where('StravaNew', true)
+			->update(['StravaNew' => false]);
+
+		/* update user */
+		$user->strava_athlete_id = $athlete->id;
+		$user->strava_last_updated_at = Carbon::now('Europe/Amsterdam');
+		$user->strava_processing = true;
+		$user->save();
+		
+		$request->offsetUnset('scope');
 
         return \Redirect::to('/athlete');
     }
@@ -94,7 +109,7 @@ class StravaController extends Controller
     {
         $user = Auth::user();
 
-        $cols = $user->cols()->where("StravaNew", true)->orderBy("pivot_ClimbedAt", "DESC")->get();
+        $cols = $user->colsNew()->where("StravaNew", true)->orderBy("pivot_ClimbedAt", "DESC")->get();
 
         return view('pages.stravacols')
             ->with('cols', $cols);
@@ -110,4 +125,27 @@ class StravaController extends Controller
 		
 		return view('pages.stravaerror');
 	}
+	   
+	public function _status(Request $request, $processed)
+    {
+		$user = Auth::user();
+		
+		if ($user == null){		
+            return response(['success' => false], 404);
+		}
+		
+		$count = $user->colsNew()->count();
+		
+		if ($processed = "0" || $processed == "false" || !$processed) $processed = false;
+		else $processed = true;		
+
+		$returnHTML = view('sub.stravastatus')
+			->with('strava_last_updated_at', $user->strava_last_updated_at)
+			->with('strava_processing', $user->strava_processing)
+			->with('processed', $processed)
+			->with('count', $count)
+			->render();
+		
+		return response()->json(array('success' => true, 'html' => $returnHTML, 'strava_processing' => $user->strava_processing));	
+    }
 }
