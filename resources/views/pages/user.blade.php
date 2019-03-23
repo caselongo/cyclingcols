@@ -247,14 +247,14 @@ CyclingCols - My CyclingCols
 	}
 	
 	$c = $countries[0];
-	if ($c->col_count > 0){
+	if ($c->col_count_user > 0){
 ?>
 					<div class="mb-1">
 						<img src="/images/flags/{{$c->Country}}.gif" class="flag flag-big mr-1">
 					</div>
 					<div class="d-flex justify-content-center align-items-baseline">
 						<div class="text-truncate">
-							{{$c->col_count}} Cols Climbed In
+							{{$c->col_count_user}} Cols Climbed In
 							<a href="/athlete/{{$user_->id}}/cols/{{$c->URL}}/climbed">{{$c->Country}}</a>
 						</div>
 					</div>

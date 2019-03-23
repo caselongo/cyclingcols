@@ -120,7 +120,13 @@ class UsersController extends Controller
 	/* service */
 	public function _search(Request $request)
     {
-		$users = User::select("id", "name")->orderBy("name")->get();
+		$users = User::selectRaw("users.id, users.name, useruser.id as following")
+			->leftJoin('useruser', function ($join) {
+				$join->on('useruser.UserIDFollowing', '=', 'users.id')
+					->where('useruser.UserID', '=', Auth::user()->id);
+			})
+			->where("users.id", "<>", Auth::user()->id)
+			->orderBy("users.name")->get();
 		
 		return response()->json($users);		
 	}

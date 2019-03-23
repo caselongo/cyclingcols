@@ -77,9 +77,18 @@ CyclingCols - My CyclingCols
 					</div>
 					<div class="p-2">
 @foreach($users_most as $users_most_)
-						<div class="align-items-end d-flex">
+						<div class="align-items-baseline d-flex">
+							<div class="text-primary text-small-75" style="flex: 0 0 15px;">
+	@if ($users_most_->id == Auth::user()->id)
+								<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
+	@elseif ($users_most_->followedByMe())
+								<i class="fas fa-check" title="Following" data-toggle="tooltip"></i> 
+	@endif
+							</div>
 							<div class="text-truncate">
-								<a href="/athlete/{{$users_most_->id}}">{{$users_most_->name}}</a>
+								<a href="/athlete/{{$users_most_->id}}">
+									<span class="">{{$users_most_->name}}</span>
+								</a>
 							</div>
 							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
 								{{$users_most_->cols}}
@@ -92,12 +101,21 @@ CyclingCols - My CyclingCols
 					</div>
 					<div class="p-2">
 @foreach($users_most_year as $users_most_year_)
-						<div class="align-items-end d-flex">
+						<div class="align-items-baseline d-flex">
+							<div class="text-primary text-small-75" style="flex: 0 0 15px;">
+	@if ($users_most_year_->id == Auth::user()->id)
+								<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
+	@elseif ($users_most_year_->followedByMe())
+								<i class="fas fa-check" title="Following" data-toggle="tooltip"></i> 
+	@endif
+							</div>
 							<div class="text-truncate">
-								<a href="/athlete/{{$users_most_year_->id}}">{{$users_most_year_->name}}</a>
+								<a href="/athlete/{{$users_most_year_->id}}">
+									<span class="">{{$users_most_year_->name}}</span>
+								</a>
 							</div>
 							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
-								{{$users_most_year_->cols}}
+								<span class="">{{$users_most_year_->cols}}
 							</div>
 						</div>
 @endforeach
@@ -107,9 +125,18 @@ CyclingCols - My CyclingCols
 					</div>
 					<div class="p-2">
 @foreach($users_most_following as $users_most_following_)
-						<div class="align-items-end d-flex">
+						<div class="align-items-baseline d-flex">
+							<div class="text-primary text-small-75" style="flex: 0 0 15px;">
+	@if ($users_most_following_->id == Auth::user()->id)
+								<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
+	@elseif ($users_most_following_->followedByMe())
+								<i class="fas fa-check" title="Following" data-toggle="tooltip"></i> 
+	@endif
+							</div>
 							<div class="text-truncate">
-								<a href="/athlete/{{$users_most_following_->id}}">{{$users_most_following_->name}}</a>
+								<a href="/athlete/{{$users_most_following_->id}}">
+									<span class="">{{$users_most_following_->name}}</span>
+								</a>
 							</div>
 							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
 								{{$users_most_following_->cols}}

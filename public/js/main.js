@@ -273,7 +273,7 @@ var initColSearch = function(){
 						html += "<img class=\"flag ml-1\" src=\"/images/flags/" + item.Country2 + ".gif\"/>";
 					}
 					html += "<span class=\"px-1\">" + item.label + "</span>";
-					html += "<span class=\"badge badge-altitude font-weight-light\">" + item.Height + "m</span></a>";
+					html += "<span class=\"badge badge-elevation font-weight-light\">" + item.Height + "m</span></a>";
 					return $( "<li>" )
 						.append(html)
 						.addClass("list-group-item list-group-item-action p-1 font-weight-light")
@@ -364,7 +364,12 @@ var initAthleteSearch = function(){
 						.addClass("list-group-item list-group-item-action p-1 font-weight-light disabled")
 						.appendTo( ul );				
 				} else {
-					var html = "<span class=\"px-1\">" + item.name + "</span>";
+					var html = "<span class=\"px-1\">";	
+					if (item.following){
+						html += "<i class=\"fas fas-grey fa-check text-small-75 mr-1\"></i>";
+					}
+					html += item.name + "</span>";
+					
 					return $( "<li>" )
 						.append(html)
 						.addClass("list-group-item list-group-item-action p-1 font-weight-light")

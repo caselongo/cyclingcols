@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -60,5 +62,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 	{
         return $this->belongsToMany(User::class,'useruser','UserID','UserIDFollowing',null,null)
             ->withPivot(['CreatedAt','UpdatedAt']);
+    }
+
+    public function followedByMe()
+	{
+		$user = Auth::user();
+		
+		if ($user == null){
+			return false;
+		} else {
+			return \App\UserUser::where('UserID', '=', $user->id)->where('UserIDFollowing', '=', $this->id)->exists();
+		}
     }
 }
