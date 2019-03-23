@@ -55,4 +55,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 	{
         return $this->hasMany(Activity::class,'UserID','id');
     }
+
+    public function following()
+	{
+        return $this->belongsToMany(User::class,'useruser','UserID','UserIDFollowing',null,null)
+            ->withPivot(['CreatedAt','UpdatedAt']);
+    }
 }

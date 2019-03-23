@@ -43,28 +43,52 @@ class UsersController extends Controller
 		$users_most = User::join('usercol','usercol.UserID', '=', 'users.id')
 			->groupBy('users.id')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
-			->limit(10)
+			->limit(5)
 			->get(['users.id', 'users.name', DB::raw('count(usercol.id) as cols')]);
 			
 		$users_most_year = User::join('usercol','usercol.UserID', '=', 'users.id')
 			->where('ClimbedAt','>=',Carbon::now()->startOfYear())
 			->groupBy('users.id')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
-			->limit(10)
+			->limit(5)
+			->get(['users.id', 'users.name', DB::raw('count(usercol.id) as cols')]);
+			
+		$users_most_following = User::join('usercol','usercol.UserID', '=', 'users.id')
+			->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                      ->from('useruser')
+                      ->whereRaw('useruser.UserIDFollowing = users.id AND useruser.UserID = ' . Auth::user()->id);
+            })
+			->orWhere('users.id', '=', Auth::user()->id)
+			->groupBy('users.id')
+			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
+			->limit(5)
 			->get(['users.id', 'users.name', DB::raw('count(usercol.id) as cols')]);
 			
 		/* cols */
 		$cols_most = Col::join('usercol','usercol.ColID', '=', 'cols.ColID')
 			->groupBy('cols.ColID')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
-			->limit(10)
+			->limit(5)
 			->get(['cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2', DB::raw('count(usercol.id) as users')]);
 			
 		$cols_most_year = Col::join('usercol','usercol.ColID', '=', 'cols.ColID')
 			->where('ClimbedAt','>=',Carbon::now()->startOfYear())
 			->groupBy('cols.ColID')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
-			->limit(10)
+			->limit(5)
+			->get(['cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2', DB::raw('count(usercol.id) as users')]);
+		
+		$cols_most_following = Col::join('usercol','usercol.ColID', '=', 'cols.ColID')
+			->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                      ->from('useruser')
+                      ->whereRaw('useruser.UserIDFollowing = usercol.UserID AND useruser.UserID = ' . Auth::user()->id);
+            })
+			->orWhere('usercol.UserID', '=', Auth::user()->id)
+			->groupBy('cols.ColID')
+			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
+			->limit(5)
 			->get(['cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2', DB::raw('count(usercol.id) as users')]);
 			
 		/* countries */
@@ -90,7 +114,14 @@ class UsersController extends Controller
 		
 		$countries = $countries->sortBy('Users')->reverse();
 
-        return view('pages.users', compact('users_most', 'users_most_year', 'cols_most', 'cols_most_year', 'countries', 'total', 'total_year', 'total_lastyear', 'users', 'cols'));
+        return view('pages.users', compact('users_most', 'users_most_year', 'users_most_following', 'cols_most', 'cols_most_year', 'cols_most_following', 'countries', 'total', 'total_year', 'total_lastyear', 'users', 'cols'));
     }
-
+	
+	/* service */
+	public function _search(Request $request)
+    {
+		$users = User::select("id", "name")->orderBy("name")->get();
+		
+		return response()->json($users);		
+	}
 }

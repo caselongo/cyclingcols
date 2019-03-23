@@ -7,8 +7,8 @@
 			<div class="card mb-3">
 				<div class="card-header p-2 d-flex align-items-center justify-content-between">
 					<span>{{count($cols)}} New Cols Found On Strava</span>
-					<a class="btn btn-primary" href="/athlete">
-						Close
+					<a class="btn btn-primary" href="/strava/claim">
+						Claim All
                     </a>
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">

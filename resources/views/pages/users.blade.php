@@ -7,8 +7,15 @@ CyclingCols - My CyclingCols
 @section('content')
 
 <main role="main" class="bd-content">
-    <div class="header px-4 py-3">
-        <h4 class="font-weight-light d-inline">All Athletes</h4>
+    <div class="header px-4 py-3 row m-0">
+		<div class="col-xs-12 col-md-4 px-0 pt-1">
+			<h4 class="font-weight-light d-inline">All Athletes</h4>
+		</div>
+		<div class="col-xs-12 col-md-4 px-0 pt-1"></div>
+		<div class="col-xs-12 col-md-4 px-0 pr-sm-3 pt-1">
+			<input id="search-athlete" class="search-input form-control mr-sm-2 px-2 py-1 font-weight-light" type="search" placeholder="Search an athlete...">
+			<div id="search-athlete-wrapper" class="search-input-wrapper ui-front"></div>
+		</div>
 	</div>
 	<div class="container-fluid">
 		<div class="card-deck w-100">
@@ -92,7 +99,22 @@ CyclingCols - My CyclingCols
 							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
 								{{$users_most_year_->cols}}
 							</div>
+						</div>
+@endforeach
 					</div>
+					<div class="p-2 border-bottom border-top">
+						<h6 class="font-weight-light m-0">Following</h6>
+					</div>
+					<div class="p-2">
+@foreach($users_most_following as $users_most_following_)
+						<div class="align-items-end d-flex">
+							<div class="text-truncate">
+								<a href="/athlete/{{$users_most_following_->id}}">{{$users_most_following_->name}}</a>
+							</div>
+							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
+								{{$users_most_following_->cols}}
+							</div>
+						</div>
 @endforeach
 					</div>
 				</div>
@@ -170,6 +192,25 @@ CyclingCols - My CyclingCols
 							</div>
 							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
 							{{$cols_most_year_->users}}
+							</div>
+						</div>
+@endforeach
+					</div>
+					<div class="p-2 border-bottom border-top">
+						<h6 class="font-weight-light m-0">Following</h6>
+					</div>
+					<div class="p-2">
+@foreach($cols_most_following as $cols_most_following_)
+						<div class="align-items-end d-flex">
+							<div class="text-truncate">
+								<img src="/images/flags/{{$cols_most_following_->Country1}}.gif" title="{{$cols_most_following_->Country1}}" class="flag mr-1">
+	@if ($cols_most_following_->Country2)
+								<img src="/images/flags/{{$cols_most_following_->Country2}}.gif" title="{{$cols_most_following_->Country2}}" class="flag mr-1">
+	@endif
+								<a href="/col/{{$cols_most_following_->ColIDString}}">{{$cols_most_following_->Col}}</a>
+							</div>
+							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
+							{{$cols_most_following_->users}}
 							</div>
 						</div>
 @endforeach

@@ -23,6 +23,27 @@ CyclingCols - My CyclingCols
 		
 	$(document).ready(function() {
 		refreshStravaStatus();
+@if (!$isOwner)
+		getFollowing();
+@endif
+		
+		$(".follow").hover(function(){
+			if ($(this).hasClass("text-primary")){
+				$(this).addClass("text-secondary").removeClass("text-primary");
+				$(this).find("span").html("stop following");
+			} else {
+				$(this).addClass("text-primary").removeClass("text-secondary");	
+				$(this).find("span").html("start following");
+			}
+		},function(){
+			if ($(this).hasClass("text-primary")){
+				$(this).addClass("text-secondary").removeClass("text-primary");
+				$(this).find("span").html("not following");
+			} else {
+				$(this).addClass("text-primary").removeClass("text-secondary");	
+				$(this).find("span").html("following");
+			}			
+		});
 	});
 
 	var refreshStravaStatus = function(){
@@ -45,16 +66,137 @@ CyclingCols - My CyclingCols
 			}
 		});
 	}
+
+@if (!$isOwner)	
+	var getFollowing = function(){
+		var url = "/service/user/following/{{$user->id}}";
+		
+		$.ajax({
+			type: "GET",
+			url : url,
+			dataType : 'json',
+			success : function(result) {	
+				if (result.success){
+					$("#following").html(result.html);		
+				}
+			}
+		});		
+	}
+@endif
 </script>
 
 <?php			
-	}	
+	} else {
+?>
+<script type="text/javascript">	
+		
+	$(document).ready(function() {
+		getFollowing();
+	});
+	
+	var followMouseout = function(el){
+		if ($(el).hasClass("text-primary")){
+			$(el).addClass("text-secondary").removeClass("text-primary");
+			$(el).find("span").html("not following");
+		} else {
+			$(el).addClass("text-primary").removeClass("text-secondary");	
+			$(el).find("span").html("following");
+		}			
+	}
+	
+	var initFollowing = function(){
+		/*$(".follow").on("mouseenter", function(){
+			if ($(this).hasClass("text-primary")){
+				$(this).addClass("text-secondary").removeClass("text-primary");
+				$(this).find("span").html("stop following");
+			} else {
+				$(this).addClass("text-primary").removeClass("text-secondary");	
+				$(this).find("span").html("start following");
+			}
+		});
+		
+		$(".follow").on("mouseout", function(){
+			followMouseout(this);		
+		});		*/
+		initToolTip($(".follow"));
+		
+		$(".follow").on("click", function(){
+			$(this).addClass("cursor-wait");
+			$(this).tooltip("hide");
+			
+			var url = "/service/user/";
+			
+			if ($(this).hasClass("follow-yes")){
+				url += "unfollow";
+			} else {
+				url += "follow";
+			}
+			
+			url += "/{{$user->id}}";
+			
+			var this_ = this;
+			
+			$.ajax({
+				type: "POST",
+				url : url,
+				dataType : 'json',
+				success : function(result) {	
+					if (result.success){
+						getFollowing(function(){	
+							$(this).removeClass("cursor-wait");
+						});
+						//followMouseout(this_);
+					}
+				},
+				error: function(result) {		
+					$(this).removeClass("cursor-wait");
+				}
+			});
+		});		
+	}
+
+	var getFollowing = function(callback){
+		var url = "/service/user/following/{{$user->id}}";
+		
+		$.ajax({
+			type: "GET",
+			url : url,
+			dataType : 'json',
+			success : function(result) {	
+				if (result.success){
+					$("#following").html(result.html);	
+					initFollowing();
+					if (callback) callback();
+				}
+			}
+		})		
+	}
+</script>
+
+<?php			
+	}
 ?>
 
 <main role="main" class="bd-content">
-    <div class="header px-4 py-3">
-        <h4 class="font-weight-light d-inline">Dashboard</h4>
-		<span class="border rounded bg-light ml-1 px-2 py-1 font-weight-light">{{$user->name}}</span>
+    <div class="header px-4 py-3 row m-0">
+		<div class="col-xs-12 col-md-4 px-0 pt-1 d-flex align-items-baseline">
+			<h4 class="font-weight-light d-inline">Dashboard</h4>
+			<span class="border rounded bg-light ml-2 px-2 py-1 font-weight-light">{{$user->name}}</span>
+			<div id="following"></div>
+			<!--<div class="text-small-75 text-primary ml-2 follow">
+				<i class="fas fa-check"></i> 
+				<span>following</span>
+			</div>
+			<div class="text-small-75 text-secondary ml-2 follow">
+				<i class="fas fa-check"></i>
+				<span>not following</span>
+			</div>-->
+		</div>
+		<div class="col-xs-12 col-md-4 px-0 pt-1"></div>
+		<div class="col-xs-12 col-md-4 px-0 pr-sm-3 pt-1">
+			<input id="search-athlete" class="search-input form-control mr-sm-2 px-2 py-1 font-weight-light" type="search" placeholder="Search an athlete...">
+			<div id="search-athlete-wrapper" class="search-input-wrapper ui-front"></div>
+		</div>	
 	</div>
 	<div class="container-fluid">
 		<div class="card-columns">
@@ -123,9 +265,9 @@ CyclingCols - My CyclingCols
 				</div>
 			</div>
 			<!-- -->
+@if ($isOwner)
 			<div class="card mb-3 text-center">
 				<div class="card-body p-0 font-weight-light text-small-90">
-@if ($isOwner)
 					<div class="p-2 border-bottom">
 						<h6 class="font-weight-light m-0">Strava</h6>
 					</div>
@@ -140,12 +282,7 @@ CyclingCols - My CyclingCols
 							&nbsp;
 						</div>
 					</div>
-@endif
-					<div class="p-2 border-bottom
-@if ($isOwner) 
-	border-top
-@endif
-					">
+					<div class="p-2 border-bottom border-top">
 						<h6 class="font-weight-light m-0">Map</h6>
 					</div>
 					<div class="p-2">
@@ -158,6 +295,7 @@ CyclingCols - My CyclingCols
 				</div>
 			</div>
 			<!-- -->
+@endif
 			<div class="card mb-3">
 				<div class="card-header p-2 d-flex align-items-end">
 					<div class="">Cols Climbed Per Country</div>

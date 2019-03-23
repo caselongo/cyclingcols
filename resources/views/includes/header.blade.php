@@ -121,8 +121,8 @@
 		</ul> 
 		@if (!$home)	
 		<div class="navbar-nav">
-			<input class="form-control mr-sm-2 px-2 py-1 font-weight-light" id="search-box" type="search" placeholder="Search a col in Europe..." aria-label="Search">
-			<div id="search-box-wrapper" class="ui-front"></div>
+			<input id="search-col" class="search-input form-control mr-sm-2 px-2 py-1 font-weight-light" type="search" placeholder="Search a col in Europe..." aria-label="Search">
+			<div id="search-col-wrapper" class="search-input-wrapper ui-front"></div>
 		</div>
 		@endif
 	  </div>

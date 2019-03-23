@@ -1,5 +1,12 @@
-var searchCount;
-var firstColIDString;
+var colSearchCount;
+var colSearchId;
+var colElement = "#search-col";
+var colElementWrapper = "#search-col-wrapper";
+
+var athleteSearchId;
+var athleteSearchCount;
+var athleteElement = "#search-athlete";
+var athleteElementWrapper = "#search-athlete-wrapper";
 
 var dateSelectCallback = null;
 
@@ -19,17 +26,21 @@ $(document).ready(function() {
     $(document).keypress(function(e) {
         if (e.which === 13) {
 			e.preventDefault();
-            if (searchCount == 1 && firstColIDString){	
+            if (colSearchCount == 1 && colSearchId){	
                 if (history.pushState){
 					history.pushState(null, null, window.location.href);
 				}
-				window.location.replace("/col/" + firstColIDString);
+				window.location.replace("/col/" + colSearchId);
 			}
         }
     });
 
 	/* init autocomplete */
-	initAutoComplete();
+	initColSearch();
+	
+	if ($(athleteElement).length > 0){
+		initAthleteSearch();
+	}
 	
 	/* init modal ride */
 	$('#modalRide').on('show.bs.modal', function (event) {
@@ -113,11 +124,16 @@ $(document).ready(function() {
 			if (dateSelectCallback) dateSelectCallback();
 		};
 		
+		var beforeShow = function(input, inst){
+			$(input).hide();
+		};
+		
 		var options = {
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: "dd M yy",
-			maxDate: "+0d"
+			maxDate: "+0d",
+			beforeShow: beforeShow
 		};
 		
 		var pos = e;
@@ -126,50 +142,50 @@ $(document).ready(function() {
 	});
 });
 
-var initAutoComplete = function(){
-	
-	var accentMap = {
-		"Š": "S",
-		"Œ": "OE",
-		"Ž": "Z",
-		"š": "s",
-		"œ": "oe",
-		"ž": "z",
-		"Ÿ": "Y",
-		"Š": "S",
-		"À": "A","Á": "A","Â": "A","Ã": "A","Ä": "A","Å": "A",
-		"Æ": "AE",
-		"Ç": "C",
-		"È": "E","É": "E","Ê": "E","Ë": "E",
-		"Ì": "I","Í": "I","Î": "I","Ï": "I",
-		"Ð": "D",
-		"Ñ": "N",
-		"Ò": "O","Ó": "O","Ô": "O","Õ": "O","Ö": "O","Ø": "O",
-		"Ù": "U","Ú": "U","Û": "U","Ü": "U",
-		"Ý": "Y",
-		"Þ": "p",
-		"ß": "ss",
-		"à": "a","á": "a","â": "a","ã": "a","ä": "a","å": "a",
-		"æ": "ae",
-		"ç": "c",
-		"è": "e","é": "e","ê": "e","ë": "e",
-		"ì": "i","í": "i","î": "i","ï": "i",
-		"ð": "d",
-		"ñ": "n",
-		"ò": "o","ó": "o","ô": "o","õ": "o","ö": "o","ø": "o",
-		"ù": "u","ú": "u","û": "u","ü": "u",
-		"ý": "y",
-		"-": " ",
-		" ": "-"			
-	};
-  
-	var normalize = function( term ) {
-		var ret = "";
-		for ( var i = 0; i < term.length; i++ ) {
-			ret += accentMap[ term.charAt(i) ] || term.charAt(i);
-		}
-		return ret;
-	};
+var accentMap = {
+	"Š": "S",
+	"Œ": "OE",
+	"Ž": "Z",
+	"š": "s",
+	"œ": "oe",
+	"ž": "z",
+	"Ÿ": "Y",
+	"Š": "S",
+	"À": "A","Á": "A","Â": "A","Ã": "A","Ä": "A","Å": "A",
+	"Æ": "AE",
+	"Ç": "C",
+	"È": "E","É": "E","Ê": "E","Ë": "E",
+	"Ì": "I","Í": "I","Î": "I","Ï": "I",
+	"Ð": "D",
+	"Ñ": "N",
+	"Ò": "O","Ó": "O","Ô": "O","Õ": "O","Ö": "O","Ø": "O",
+	"Ù": "U","Ú": "U","Û": "U","Ü": "U",
+	"Ý": "Y",
+	"Þ": "p",
+	"ß": "ss",
+	"à": "a","á": "a","â": "a","ã": "a","ä": "a","å": "a",
+	"æ": "ae",
+	"ç": "c",
+	"è": "e","é": "e","ê": "e","ë": "e",
+	"ì": "i","í": "i","î": "i","ï": "i",
+	"ð": "d",
+	"ñ": "n",
+	"ò": "o","ó": "o","ô": "o","õ": "o","ö": "o","ø": "o",
+	"ù": "u","ú": "u","û": "u","ü": "u",
+	"ý": "y",
+	"-": " ",
+	" ": "-"			
+};
+
+var normalize = function( term ) {
+	var ret = "";
+	for ( var i = 0; i < term.length; i++ ) {
+		ret += accentMap[ term.charAt(i) ] || term.charAt(i);
+	}
+	return ret;
+};
+
+var initColSearch = function(){
 	
 	$.ajax({
 		type: "GET",
@@ -177,10 +193,10 @@ var initAutoComplete = function(){
 		dataType : 'json',
 		success : function(data) {
 			
-			$( "#search-box" ).autocomplete({
+			$(colElement).autocomplete({
 				minLength: 2,
 				delay: 300,
-				appendTo: "#search-box-wrapper",
+				appendTo: colElementWrapper,
 				//position: { my : "right top", at: "right bottom" },
 				source: function( request, response ) {
 					var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
@@ -189,9 +205,9 @@ var initAutoComplete = function(){
 						return matcher.test( value ) || matcher.test( normalize( value ) );
 					})
 					
-					searchCount = res.length;
-					if (searchCount > 0){
-						firstColIDString = res[0].ColIDString;
+					colSearchCount = res.length;
+					if (colSearchCount > 0){
+						colSearchId = res[0].ColIDString;
 					}
 					
 					response(res.slice(0,10));
@@ -213,7 +229,7 @@ var initAutoComplete = function(){
 					if (ui.content.length === 0) {
 						remark = "No cols found";
 					} else {
-						remark = searchCount + " cols found" + (searchCount > 10 ? ", showing first 10" : "");
+						remark = colSearchCount + " cols found" + (colSearchCount > 10 ? ", showing first 10" : "");
 					}
 
 					var remarks = { "isRemark": true, "remark": remark };
@@ -225,14 +241,14 @@ var initAutoComplete = function(){
 					ui.content.unshift(remarks);
 				},
 				open: function() {
-					var ui = $("#search-box");
+					var ui = $(colElement);
 							
-					if (ui.parent().find("#search-box-wrapper").length > 0){
+					if (ui.parent().find(colElementWrapper).length > 0){
 						var width = ui.outerWidth();
 						var height = ui.outerHeight();
 						var top = ui.position().top;
 								
-						ui.parent().find("#search-box-wrapper")
+						ui.parent().find(colElementWrapper)
 							.width(width)
 							.css("top", top);
 					}
@@ -241,7 +257,7 @@ var initAutoComplete = function(){
 					$(".ui-autocomplete").addClass("list-group");
 				},
 				close: function() {
-					$("#search-box").removeClass("ui-autocomplete-input-open");
+					$(colElement).removeClass("ui-autocomplete-input-open");
 				}
 			})
 			.autocomplete( "instance" )._renderItem = function( ul, item ) {
@@ -258,6 +274,97 @@ var initAutoComplete = function(){
 					}
 					html += "<span class=\"px-1\">" + item.label + "</span>";
 					html += "<span class=\"badge badge-altitude font-weight-light\">" + item.Height + "m</span></a>";
+					return $( "<li>" )
+						.append(html)
+						.addClass("list-group-item list-group-item-action p-1 font-weight-light")
+						.appendTo( ul );
+				}
+			};
+		}
+	});
+}
+
+var initAthleteSearch = function(){
+	
+	$.ajax({
+		type: "GET",
+		url : "/service/athletes/search",
+		dataType : 'json',
+		success : function(data) {
+			
+			$(athleteElement).autocomplete({
+				minLength: 2,
+				delay: 300,
+				appendTo: athleteElementWrapper,
+				//position: { my : "right top", at: "right bottom" },
+				source: function( request, response ) {
+					var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
+					var res = $.grep( data, function( value ) {
+						value = value.name;
+						return matcher.test( value ) || matcher.test( normalize( value ) );
+					})
+					
+					athleteSearchCount = res.length;
+					if (athleteSearchCount > 0){
+						athleteSearchId = res[0].id;
+					}
+					
+					response(res.slice(0,10));
+				},
+				select: function( event, ui ) {		
+					if (history.pushState) {
+						history.pushState(null, null, window.location.href);
+					}
+					window.location.replace("/athlete/" + ui.item.id);
+		 
+					return false;
+				},
+				response: function(event, ui) {
+					var remark = null;
+					
+					if (ui.content.length === 0) {
+						remark = "No athletes found";
+					} else {
+						remark = athleteSearchCount + " athletes found" + (athleteSearchCount > 10 ? ", showing first 10" : "");
+					}
+
+					var remarks = { "isRemark": true, "remark": remark };
+					
+					ui.content.forEach(function(c){
+						c.isRemark = false;
+					});
+					
+					ui.content.unshift(remarks);
+				},
+				open: function() {
+					var ui = $(athleteElement);
+							
+					if (ui.parent().find(athleteElementWrapper).length > 0){
+						var width = ui.outerWidth();
+						var height = ui.outerHeight();
+						var top = ui.position().top;
+								
+						ui.parent().find(athleteElementWrapper)
+							.width(width)
+							.css("top", top);
+					}
+					
+					ui.addClass("ui-autocomplete-input-open");
+					$(".ui-autocomplete").addClass("list-group");
+				},
+				close: function() {
+					$(athleteElement).removeClass("ui-autocomplete-input-open");
+				}
+			})
+			.autocomplete( "instance" )._renderItem = function( ul, item ) {
+				if (item.isRemark){
+					var html = item.remark;
+					return $( "<li>" )
+						.append(html)
+						.addClass("list-group-item list-group-item-action p-1 font-weight-light disabled")
+						.appendTo( ul );				
+				} else {
+					var html = "<span class=\"px-1\">" + item.name + "</span>";
 					return $( "<li>" )
 						.append(html)
 						.addClass("list-group-item list-group-item-action p-1 font-weight-light")
@@ -324,7 +431,7 @@ var getTopStats = function(colIDString,profileFileName) {
 				}
 			}
 		}
-	})
+	});
 }
 	
 var initToolTip = function(el){

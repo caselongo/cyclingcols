@@ -232,5 +232,32 @@ class UserController extends Controller
 			->with('country',$country_current)
 			->with('cols',$cols);
 	}
+	
+	/* service */
+	
+	public function _following(Request $request, $userid)
+    {
+		$user = Auth::user()->following()->wherePivot('UserIDFollowing', $userid)->first();
+		
+		$returnHTML = view('sub.following')
+			->with('user', $user)
+			->render();
+		
+		return response()->json(array('success' => true, 'html' => $returnHTML));
+    }
+	
+	public function _follow(Request $request, $userid)
+    {
+		$user = Auth::user()->following()->attach($userid);
+		
+        return response(['success' => true], 200);
+    }
+	
+	public function _unfollow(Request $request, $userid)
+    {
+		$user = Auth::user()->following()->detach($userid);
+		
+        return response(['success' => true], 200);
+    }
 
 }

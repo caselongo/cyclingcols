@@ -70,7 +70,7 @@ Route::get('strava/connect','Strava\StravaController@connect');
 Route::get('strava/process','Strava\StravaController@process');
 Route::get('strava/cols','Strava\StravaController@cols');
 Route::get('strava/error','Strava\StravaController@error');
-
+Route::get('strava/claim','Strava\StravaController@claim');
 
 Route::middleware(['ajax'])->group(function () {
 	/* col */
@@ -103,6 +103,14 @@ Route::middleware(['ajax'])->group(function () {
 
 	/* strava */
 	Route::get('service/strava/status/{processed}','Strava\StravaController@_status');
+	
+	/* user */
+	Route::get('service/user/following/{userid}','User\UserController@_following');
+	Route::post('service/user/follow/{userid}','User\UserController@_follow');
+	Route::post('service/user/unfollow/{userid}','User\UserController@_unfollow');
+	
+	/* users */
+	Route::get('service/athletes/search','Users\UsersController@_search');
 });
 
 	

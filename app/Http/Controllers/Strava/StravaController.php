@@ -84,10 +84,6 @@ class StravaController extends Controller
 		
 		$page = 1;
  		ProcessAthlete::dispatch($user, $athlete, $page, $access_token)->onQueue('athlete')->delay(10);
-		
-		/* unflag previous strava cols */
-		$user->cols()->where('StravaNew', true)
-			->update(['StravaNew' => false]);
 
 		/* update user */
 		$user->strava_athlete_id = $athlete->id;
@@ -125,7 +121,20 @@ class StravaController extends Controller
 		
 		return view('pages.stravaerror');
 	}
+	
+	public function claim(Request $request)
+    {
+		$user = Auth::user();
+		
+		if ($user != null){			
+			/* unflag StravaNew */
+			$user->colsNew()->update(['StravaNew' => false]);
+		}
+		
+        return \Redirect::to('/athlete');
+    }
 	   
+    /* service */
 	public function _status(Request $request, $processed)
     {
 		$user = Auth::user();

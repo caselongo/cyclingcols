@@ -119,13 +119,13 @@ footer{
     font-weight: 600;
 }*/
 	
-#search-box{
+.search-input{
 	/*margin: auto;
 	width: 50%;
 	top: 30%;*/
 	width: 100%;
 }
-#search-box-wrapper{
+.search-input-wrapper{
 	position: absolute;
     z-index: 1000;
 }
@@ -156,6 +156,15 @@ footer{
 }
 .fas-grey{
 	color: #999;
+}
+
+/* follow */
+.follow{
+	cursor: pointer;
+}
+
+.cursor-wait{
+	cursor: wait!important;
 }
 
 /* flags */
