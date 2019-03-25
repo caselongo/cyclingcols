@@ -130,15 +130,16 @@ class GeneralController extends Controller
 		return response()->json($rides);
     }
 
-    public function _banners_all(Request $request){
-		return $this->_banners($request, null);
-	}
-	
-    public function _banners(Request $request, $colIDString)
+    public function _banners(Request $request)
     {
+		$colIDString = $request->query('col', 'home');
+		$count = $request->query('cnt', 1000);
+		$contact = $request->query('ct', true);
+		if($contact == "false") $contact = false;
+		
 		$colid = 0;
 		
-		if ($colIDString != null){
+		if ($colIDString != null && $colIDString != "home"){
 			$col = Col::where('ColIDString', $colIDString)->first();
 			
 			if ($col != null){
@@ -152,8 +153,14 @@ class GeneralController extends Controller
 					->where('ColID', $colid)
 					->where('Active', 1)
                     ->inRandomOrder()
+					->limit($count)
 					->get();
 		
-		return response()->json($banners);
+		$returnHTML = view('sub.banners')
+			->with('banners', $banners)
+			->with('contact', $contact)
+			->render();
+		
+		return response()->json(array('success' => true, 'html' => $returnHTML));	
     }
 }

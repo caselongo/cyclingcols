@@ -44,7 +44,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		getColsNearby();
 		getFirst($("#col-first"),5);
 		getTopStats("{{$col->ColIDString}}",null);
-		getBanners({{$col->ColID}});
+		getBanners("#ads","{{$col->ColIDString}}",3,true);
 		getUsers();	
 			
 		$('#modal-first').on('show.bs.modal', function (event) {
@@ -226,7 +226,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		
 		$.ajax({
 			type: "GET",
-			url : url,
+			url: url,
 			dataType : 'json',
 			success : function(result) {	
 				if (result.success){
@@ -240,37 +240,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				}
 			}
 		})
-	}
-		
-	var getBanners = function() {
-		$.ajax({
-			type: "GET",
-			url : "/service/banners/{{$col->ColIDString}}",
-			dataType : 'json',
-			success : function(data) {
-				if (data.length > 0){
-					$("#ads").toggleClass("d-block d-none");
-						
-					for(var i = 0; i < data.length; i++){
-						var a = document.createElement("a");
-						var img = document.createElement("img");
-						$(img)							
-							.addClass("ad rounded")
-							.attr("src","/images/banners/" + data[i].BannerFileName);
-							
-						if (i > 0){$(img)							
-							.addClass("mt-2")		
-						}
-						
-						$(a)							
-							.attr("href","http://" + data[i].RedirectURL)
-							.attr("target","_blank");
-						$("#ads").append(a);
-						$(a).append(img);
-					}
-				}			
-			}
-		});
 	}
 	
 	var _users_ = null;
@@ -599,8 +568,8 @@ $profile_string = $profile_count . " profile" . $profile_string;
 					<div id="col-nearby" class="font-weight-light px-2 py-1">
 					</div>
 				</div>				
-			</div>	
-			<div id="ads" class="w-100 mb-3 text-center p-1 d-none">			
+			</div>
+			<div id="ads" class="w-100 mb-3 text-center p-1">			
 			</div>
 			<div class="col-box w-100 mb-3">
 				<div class="p-2 border-bottom d-flex align-items-center">

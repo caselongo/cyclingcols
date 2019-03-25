@@ -4,16 +4,16 @@
 	@foreach ($users as $user)
 		<div class="text-small-90 align-items-baseline d-flex">
 		@auth
-			<div class="text-primary text-small-75" style="flex: 0 0 15px;">
+		@endauth
+			<div class="text-truncate">
+				<a href="/athlete/{{$user->id}}">{{$user->name}}</a>
+			</div>
+			<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
 			@if ($user->id == Auth::user()->id)
 				<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
 			@elseif ($user->followedByMe())
 				<i class="fas fa-check" title="Following" data-toggle="tooltip"></i> 
 			@endif
-			</div>
-		@endauth
-			<div class="text-truncate">
-				<a href="/athlete/{{$user->id}}">{{$user->name}}</a>
 			</div>
 			<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
 		@if ($user->pivot->ClimbedAt != null)

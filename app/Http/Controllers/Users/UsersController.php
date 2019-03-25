@@ -28,6 +28,8 @@ class UsersController extends Controller
 	/* views */	
 	public function index(Request $request)
     {
+		$user = Auth::user();
+		
 		/* overview */
 		$total = UserCol::count();
 		
@@ -36,6 +38,8 @@ class UsersController extends Controller
 		$total_lastyear = UserCol::where('ClimbedAt','<',Carbon::now()->startOfYear())->where('ClimbedAt','>=',Carbon::now()->addYear(-1)->startOfYear())->count();
 		
 		$users = User::count();
+		$users_following = $user->following()->count();
+		$users_followed = $user->followed()->count();
 		
 		$cols = UserCol::distinct()->count('ColID');
 	
@@ -59,7 +63,7 @@ class UsersController extends Controller
                       ->from('useruser')
                       ->whereRaw('useruser.UserIDFollowing = users.id AND useruser.UserID = ' . Auth::user()->id);
             })
-			->orWhere('users.id', '=', Auth::user()->id)
+			->orWhere('users.id', '=', $user->id)
 			->groupBy('users.id')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
 			->limit(5)
@@ -73,7 +77,7 @@ class UsersController extends Controller
 			->get(['cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2', DB::raw('count(usercol.id) as users')]);
 			
 		$cols_most_year = Col::join('usercol','usercol.ColID', '=', 'cols.ColID')
-			->where('ClimbedAt','>=',Carbon::now()->startOfYear())
+			->where('ClimbedAt', '>=', Carbon::now()->startOfYear())
 			->groupBy('cols.ColID')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
 			->limit(5)
@@ -90,6 +94,15 @@ class UsersController extends Controller
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
 			->limit(5)
 			->get(['cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2', DB::raw('count(usercol.id) as users')]);
+			
+		/* following */
+		$following = Auth::user()->following()
+			->join('usercol', 'useruser.UserIDFollowing', 'usercol.UserID')
+			->join('cols', 'usercol.ColID', 'cols.ColID')
+			->select('users.id', 'users.name', 'usercol.ColID', 'usercol.ClimbedAt', 'cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2')
+			->orderBy('usercol.climbedAt', 'DESC')
+			->limit(50)
+			->get();
 			
 		/* countries */
 		$countries = Country::get();
@@ -114,7 +127,7 @@ class UsersController extends Controller
 		
 		$countries = $countries->sortBy('Users')->reverse();
 
-        return view('pages.users', compact('users_most', 'users_most_year', 'users_most_following', 'cols_most', 'cols_most_year', 'cols_most_following', 'countries', 'total', 'total_year', 'total_lastyear', 'users', 'cols'));
+        return view('pages.users', compact('users_most', 'users_most_year', 'users_most_following', 'cols_most', 'cols_most_year', 'cols_most_following', 'countries', 'following', 'total', 'total_year', 'total_lastyear', 'users', 'users_following', 'users_followed', 'cols'));
     }
 	
 	/* service */

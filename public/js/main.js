@@ -380,6 +380,27 @@ var initAthleteSearch = function(){
 	});
 }
 
+var getBanners = function(selector,colIDString,count,contact) {	
+	var url = "/service/banners?col=" + colIDString;
+	if (count){
+		url += "&cnt=" + count;
+	}
+	if (contact != null){
+		url += "&ct=" + contact;
+	}
+
+	$.ajax({
+		type: "GET",
+		url: url,
+		dataType : 'json',
+		success : function(result) {	
+			if (result.success){
+				$(selector).html(result.html);		
+			}
+		}
+	});
+}
+
 var getTopStats = function(colIDString,profileFileName) {
 	var url = null;
 	if (profileFileName){

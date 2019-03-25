@@ -13,7 +13,7 @@ CyclingCols - Main
         </div>
 		<div id="slide" class="d-flex w-100 justify-content-around">		
 			<div id="search" class="ui-front">
-				<input class="form-control font-weight-light px-2 py-1" id="search-box" type="search" placeholder="Search a col in Europe...">
+				<input class="form-control font-weight-light px-2 py-1" id="search-col" type="search" placeholder="Search a col in Europe...">
 			</div>
 			<div id="phototext" class="phototext font-weight-light"><a href=""></a></div>
         </div>
@@ -22,7 +22,7 @@ CyclingCols - Main
 			var images;
 			var path;
 			
-			function getBanners() {	
+			function getBanners_() {	
 				var width = $(window).width();
 				var height = $(window).height() - $('footer').height() - $('header').height();
 				var count = parseInt(height/150);
@@ -30,27 +30,8 @@ CyclingCols - Main
 				if (width < 992) return;
 				
 				$("#ads-wrapper").css("height", height);
-			
-				$.ajax({
-					type: "GET",
-					url : "/service/banners",
-					dataType : 'json',
-					success : function(data) {
-						for(var i = 0; i < count; i++){
-							var a = document.createElement("a");
-							var img = document.createElement("img");
-							$(img)							
-								.addClass("ad m-1 rounded")
-								.attr("src","/images/banners/" + data[i].BannerFileName);
-							$(a)							
-								.addClass("d-block")
-								.attr("href","http://" + data[i].RedirectURL)
-								.attr("target","_blank");
-							$('#ads-wrapper').append(a);
-							$(a).append(img);
-						}
-					}
-				})
+				
+				getBanners("#ads-wrapper","home",count);
 			}
 
 			function showSlide(images,nr,init) {
@@ -112,7 +93,7 @@ CyclingCols - Main
 			$(document).ready(function() {
 				calculateslideshowheight();
 				startSlideShow();
-				getBanners();
+				getBanners_();
 			});
 			
 			$(window).resize(function() {

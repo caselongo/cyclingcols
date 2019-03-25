@@ -245,8 +245,7 @@ CyclingCols - My CyclingCols
 					<div class="mb-3 text-small-75">(highest col climbed)</div>
 <?php
 	}
-	
-	$c = $countries[0];
+	$c = $countries->first();
 	if ($c->col_count_user > 0){
 ?>
 					<div class="mb-1">

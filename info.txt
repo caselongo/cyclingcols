@@ -1,0 +1,8 @@
+/* starten ssh */
+
+ssh cyclingcolscom@fragrant-union.cyclingcolscom.webinf.buildingtogether.io
+
+/* starten queue */
+
+php artisan queue:work --queue=athlete
+php artisan queue:work --queue=activity
