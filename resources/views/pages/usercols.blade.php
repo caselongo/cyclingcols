@@ -50,7 +50,7 @@ CyclingCols - My CyclingCols
 	</nav>
 
 	<div class="container-fluid p-3">
-		<div class="card-deck w-100">	
+		<div class="card-columns-2">	
 			<div class="card mb-3">
 				<div class="card-header p-2">
 					<span>All Cols - {{$sorttype->SortType}}</span>
@@ -63,11 +63,11 @@ CyclingCols - My CyclingCols
 					</div>
 @foreach($cols as $col)
 					<div class="align-items-end d-flex">
-						<div class="text-truncate">
-							<img src="/images/flags/{{$col->Country1}}.gif" title="{{$col->Country1}}" class="flag mr-1">
+						<img src="/images/flags/{{$col->Country1}}.gif" title="{{$col->Country1}}" class="flag mr-1">
 	@if ($col->Country2)
-							<img src="/images/flags/{{$col->Country2}}.gif" title="{{$col->Country2}}" class="flag mr-1">
+						<img src="/images/flags/{{$col->Country2}}.gif" title="{{$col->Country2}}" class="flag mr-1">
 	@endif
+						<div class="text-truncate">
 							<a href="/col/{{$col->ColIDString}}">{{($col->{$sorttype->NameField})}}</a>
 						</div>
 						<div class="ml-auto text-small-75 text-centre badge badge-elevation font-weight-light" style="flex: 0 0 45px;">
@@ -95,6 +95,9 @@ CyclingCols - My CyclingCols
 					<span class="text-small-75">No cols in {{$country->Country}} climbed yet.</span>
 @endif
 				</div>
+				<div class="card-footer text-muted px-3 pt-3">
+					{{$cols->links()}}
+				</div><!--card-footer-->
 			</div>
 			<!-- -->	
 			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>

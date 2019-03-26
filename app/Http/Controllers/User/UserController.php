@@ -124,7 +124,10 @@ class UserController extends Controller
 		}
 		$width_total = 1 - $width_climbed;
 		
-		$countries = $countries->sortByDesc('col_count_user');
+		//$countries = $countries->sortByDesc('col_count_user');
+		$countries = $countries->sortBy(function($country){
+			return substr("000000" . strval(10000 - $country->col_count_user), -6) . $country->Country;
+		});
 
         return view('pages.user', compact('user', 'climbed', 'climbed_count', 'climbed_year_count', 'climbed_lastyear_count', 'claimed', 'countries', 'highest', 'width_total', 'width_climbed', 'perc_climbed'));
     }
@@ -182,6 +185,7 @@ class UserController extends Controller
 		
 		/* country */	
 		$countries = \App\Country::get();
+		$countries = $countries->sortBy("Country");
 		
 		$country_all = new \stdClass();
 		$country_all->CountryID = 0;
@@ -207,7 +211,7 @@ class UserController extends Controller
 		} else if (is_null($sorttype_current)){
 			return \Redirect::to('athlete/cols/' . $userid . '/' . $countryurl . '/' . $this->sorttypeurl_default);
 		} else if (is_null($country_current)){
-			return \Redirect::to('athlete/cols/' . $userid . '/' . $countryurl_default . '/' . $sorttypeurl);		
+			return \Redirect::to('athlete/cols/' . $userid . '/' . $this->countryurl_default . '/' . $sorttypeurl);		
 		}
 
         $user = User::where('id', $userid)->first();
@@ -222,7 +226,7 @@ class UserController extends Controller
 			});
 		} 
 
-		$cols = $cols->orderBy($sorttype_current->SortField, $sorttype_current->SortDirection)->get();
+		$cols = $cols->orderBy($sorttype_current->SortField, $sorttype_current->SortDirection)->paginate(30);
 		
         return view('pages.usercols')
 			->with('user',$user)

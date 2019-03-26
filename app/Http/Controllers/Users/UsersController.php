@@ -17,8 +17,9 @@ use Illuminate\Support\Facades\DB;
 
 class UsersController extends Controller
 {
-	protected $sorttypeurl_default = "climbed";
+	protected $yearurl_default = "all";
 	protected $countryurl_default = "eur";
+	protected $athleteurl_default = "all";
 	
     public function __construct()
     {
@@ -50,12 +51,16 @@ class UsersController extends Controller
 			->limit(5)
 			->get(['users.id', 'users.name', DB::raw('count(usercol.id) as cols')]);
 			
+		$users_most_me = $user->cols()->count();
+			
 		$users_most_year = User::join('usercol','usercol.UserID', '=', 'users.id')
 			->where('ClimbedAt','>=',Carbon::now()->startOfYear())
 			->groupBy('users.id')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
 			->limit(5)
 			->get(['users.id', 'users.name', DB::raw('count(usercol.id) as cols')]);
+			
+		$users_most_year_me = $user->cols()->wherePivot('ClimbedAt','>=',Carbon::now()->startOfYear())->count();
 			
 		$users_most_following = User::join('usercol','usercol.UserID', '=', 'users.id')
 			->whereExists(function ($query) {
@@ -127,8 +132,182 @@ class UsersController extends Controller
 		
 		$countries = $countries->sortBy('Users')->reverse();
 
-        return view('pages.users', compact('users_most', 'users_most_year', 'users_most_following', 'cols_most', 'cols_most_year', 'cols_most_following', 'countries', 'following', 'total', 'total_year', 'total_lastyear', 'users', 'users_following', 'users_followed', 'cols'));
+        return view('pages.users', compact('users_most', 'users_most_me', 'users_most_year', 'users_most_year_me', 'users_most_following', 'cols_most', 'cols_most_year', 'cols_most_following', 'countries', 'following', 'total', 'total_year', 'total_lastyear', 'users', 'users_following', 'users_followed', 'cols'));
     }
+	
+    public function cols(Request $request, $countryurl, $yearurl, $athleteurl)
+    {		
+		return $this->_most( $request, $countryurl, $yearurl, $athleteurl, "pages.userscols");
+	}
+	
+    public function athletes(Request $request, $countryurl, $yearurl, $athleteurl)
+    {		
+		return $this->_most( $request, $countryurl, $yearurl, $athleteurl, "pages.usersathletes");
+	}
+	
+    private function _most(Request $request, $countryurl, $yearurl, $athleteurl, $page)
+    {		
+		$redirect = false;
+		$currentyear = date('Y');
+	
+        /* year */	
+			
+		$year_alltime = new \stdClass();
+		$year_alltime->Year = "All Years"; 
+		$year_alltime->URL = "all";
+		$year_alltime->Title = "";
+		
+		$years = array($year_alltime);
+		
+		$minyear = Carbon::parse(UserCol::min('ClimbedAt'))->year;
+		$maxyear = Carbon::now()->year;
+		
+		while ($maxyear >= $minyear){
+			$year__ = new \stdClass();
+			$year__->Year = $maxyear; 
+			$year__->URL = $maxyear;
+			$year__->Title = "in " . $maxyear;
+			
+			$years[] = $year__;
+			
+			$maxyear--;
+		}		
+				
+		$year_current = null;
+		foreach($years as $year){
+			if ($year->URL == $yearurl){
+				$year_current = $year;
+				break;
+			}
+		}
+		if ($year_current == null) {
+			$year_current = $this->yearurl_default;
+			$redirect = true;
+		}
+		
+		/* country */	
+		$countries = \App\Country::get();
+		$countries = $countries->sortBy("Country");
+		
+		$country_all = new \stdClass();
+		$country_all->CountryID = 0;
+		$country_all->Country = "Europe"; 
+		$country_all->URL = "eur"; 
+		$country_all->Flag = "europe"; 		
+		$countries->prepend($country_all);	
+		
+		$country_current = null;
+		foreach($countries as $country){
+			if ($country->CountryID > 0){
+				$country->URL = strtolower($country->CountryAbbr);
+				$country->Flag = strtolower($country->Country);
+			}
+			
+			if ($country->URL == $countryurl){
+				$country_current = $country;
+			}
+		}
+		if ($country_current == null) {
+			$country_current = $this->countryurl_default;
+			$redirect = true;
+		}
+		
+		/* athletes */
+		
+		$athletes_all = new \stdClass();
+		$athletes_all->Type = "All Athletes"; 
+		$athletes_all->URL = "all";
+		$athletes_all->Title = "";
+		
+		$athletes_following = new \stdClass();
+		$athletes_following->Type = "Following"; 
+		$athletes_following->URL = "following";
+		$athletes_following->Title = "by athletes you are following";
+		
+		$athletes = array($athletes_all, $athletes_following);
+				
+		$athlete_current = null;
+		foreach($athletes as $athlete){
+			if ($athlete->URL == $athleteurl){
+				$athlete_current = $athlete;
+				break;
+			}
+		}
+		if ($athlete_current == null) {
+			$athlete_current = $this->athleteurl_default;
+			$redirect = true;
+		}
+		
+		if ($redirect){
+			return \Redirect::to('athletes/cols/' . $this->countryurl_default . '/' . $this->yearurl_default . '/' . $this->athleteurl_default);
+		}
+		
+		/* year filter */
+		
+		
+		if ($page == "pages.userscols"){
+			$set = Col::join('usercol', 'usercol.ColID', '=', 'cols.ColID');
+		
+		} else if ($page == "pages.usersathletes"){
+			$set = User::join('usercol', 'usercol.UserID', '=', 'users.id')
+						->join('cols', 'cols.ColID', '=', 'usercol.ColID');
+		}
+		
+		if ($year_current->URL != "all"){
+			$offset = $year_current->Year - $currentyear;
+			$set = $set->where('ClimbedAt','<',Carbon::now()->addYear($offset + 1)->startOfYear())
+						->where('ClimbedAt','>=',Carbon::now()->addYear($offset)->startOfYear());		
+		}
+		
+		/* country filter */
+		if ($country_current->CountryID > 0) {
+			$this->CountryID = $country_current->CountryID;
+			
+			$set = $set->where(function ($query) {
+				$query->where('Country1ID', '=', $this->CountryID)->orWhere('Country2ID', '=', $this->CountryID);
+			});
+		}  
+		
+		/* athletes filter */
+		if ($athlete_current->URL == "following"){
+				
+			$set = $set->whereExists(function ($query) {
+				$query->select(DB::raw(1))
+					  ->from('useruser')
+					  ->whereRaw('useruser.UserIDFollowing = usercol.UserID AND useruser.UserID = ' . Auth::user()->id);
+			});				
+		}
+				
+		/* cols */
+		
+		if ($page == "pages.userscols"){
+		
+			$set = $set
+					->groupBy('cols.ColID')
+					->orderBy(DB::raw('count(usercol.id)'), 'DESC')
+					->select('cols.ColID', 'cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2', DB::raw('count(usercol.id) as count'));
+		} else if ($page == "pages.usersathletes"){
+		
+			$set = $set			
+					->groupBy('users.id')
+					->orderBy(DB::raw('count(usercol.id)'), 'DESC')
+					->select('users.id', 'users.name', DB::raw('count(usercol.id) as count'));
+			
+		} else {
+			return response(['success' => false], 404);
+		}
+
+		$set = $set->paginate(30);
+		
+        return view($page)
+			->with('years',$years)
+			->with('year',$year_current)
+			->with('countries',$countries)
+			->with('country',$country_current)
+			->with('athletes',$athletes)
+			->with('athlete',$athlete_current)
+			->with('set',$set);
+	}
 	
 	/* service */
 	public function _search(Request $request)

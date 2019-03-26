@@ -199,7 +199,7 @@ CyclingCols - My CyclingCols
 		</div>	
 	</div>
 	<div class="container-fluid">
-		<div class="card-columns">
+		<div class="card-columns-3">
 			<div class="card mb-3">
 				<div class="card-header p-2">
 					Overview
@@ -352,8 +352,8 @@ CyclingCols - My CyclingCols
 				<div class="card-body p-0 font-weight-light text-small-90">
 					<div class="p-2 border-bottom d-flex align-items-center">
 						<h6 class="font-weight-light m-0">Last Climbed</h6>
-						<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-							<a href="/athlete/{{$user->id}}/cols/eur/climbed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+						<div class="ml-auto" tabindex="0" role="button">
+							<a href="/athlete/{{$user->id}}/cols/eur/climbed"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
 						</div>
 					</div>
 					<div class="p-2">
@@ -388,8 +388,8 @@ CyclingCols - My CyclingCols
 					</div>			
 					<div class="p-2 border-bottom border-top d-flex align-items-center">						
 						<h6 class="font-weight-light m-0">Last Claimed</h6>
-						<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-							<a href="/athlete/{{$user->id}}/cols/eur/claimed"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+						<div class="ml-auto" tabindex="0" role="button">
+							<a href="/athlete/{{$user->id}}/cols/eur/claimed"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
 						</div>
 					</div>				
 					<div class="p-2">
@@ -414,8 +414,8 @@ CyclingCols - My CyclingCols
 					</div>	
 					<div class="p-2 border-bottom border-top d-flex align-items-center">
 						<h6 class="font-weight-light m-0">Highest</h6>
-						<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-							<a href="/athlete/{{$user->id}}/cols/eur/elevation"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+						<div class="ml-auto" tabindex="0" role="button">
+							<a href="/athlete/{{$user->id}}/cols/eur/elevation"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
 						</div>
 					</div>
 					<div class="p-2">

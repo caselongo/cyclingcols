@@ -11,6 +11,10 @@ CyclingCols - My CyclingCols
 	});
 </script>
 
+<?php
+	$user = Auth::user();
+?>
+
 <main role="main" class="bd-content">
     <div class="header px-4 py-3 row m-0">
 		<div class="col-xs-12 col-md-4 px-0 pt-1">
@@ -65,7 +69,7 @@ CyclingCols - My CyclingCols
 						<div class="ml-2">Athletes Registered</div>
 					</div>
 					<div class="px-2 pb-2 text-small-75 text-left">
-						You are following <span class="font-weight-normal">{{$users_following}}</span> of them, while <span class="font-weight-normal">{{$users_followed}}</span> of them are following you.
+						You are following <span class="font-weight-normal">{{$users_following}}</span> of them, while <span class="font-weight-normal">{{$users_followed}}</span> of them {{$users_followed == 1 ? "is" : "are"}} following you.
 					</div>
 				</div>
 			</div>
@@ -167,16 +171,22 @@ if (count($following) == 0){
 			<div class="card mb-3">
 				<div class="card-header p-2 d-flex align-items-center">
 					<span>Most Cols Climbed</span>
-					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-						<a href="/athletes/mostcols"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
-					</div>
 				</div>
 				<div class="card-body p-0 font-weight-light text-small-90">
-					<div class="p-2 border-bottom">
+					<div class="p-2 border-bottom d-flex align-items-center">
 						<h6 class="font-weight-light m-0">Alltime</h6>
+						<div class="ml-auto" tabindex="0" role="button">
+							<a href="/athletes/athletes/eur/all/all"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+						</div>
 					</div>
 					<div class="p-2">
-@foreach($users_most as $users_most_)
+<?php
+$user_found = false;
+
+foreach($users_most as $users_most_) {
+	if ($users_most_->id == $user->id) $user_found = true;
+
+?>
 						<div class="align-items-baseline d-flex">
 							<div class="text-truncate">
 								<a href="/athlete/{{$users_most_->id}}">
@@ -184,7 +194,7 @@ if (count($following) == 0){
 								</a>
 							</div>
 							<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
-	@if ($users_most_->id == Auth::user()->id)
+	@if ($users_most_->id == $user->id)
 								<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
 	@elseif ($users_most_->followedByMe())
 								<i class="fas fa-check" title="Following" data-toggle="tooltip"></i> 
@@ -194,13 +204,39 @@ if (count($following) == 0){
 								{{$users_most_->cols}}
 							</div>
 						</div>
-@endforeach
+<?php
+}
+?>
+@if (!$user_found)
+						<div class="align-items-baseline d-flex">
+							<div class="text-truncate mt-1 border-top">
+								<a href="/athlete/{{$user->id}}">
+									<span class="">{{$user->name}}</span>
+								</a>
+							</div>
+							<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
+								<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
+							</div>
+							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
+								{{$users_most_me}}
+							</div>
+						</div>	
+@endif
 					</div>
-					<div class="p-2 border-bottom border-top">
+					<div class="p-2 border-bottom border-top d-flex align-items-center">
 						<h6 class="font-weight-light m-0">In {{date("Y")}}</h6>
+						<div class="ml-auto" tabindex="0" role="button">
+							<a href="/athletes/athletes/eur/{{date('Y')}}/all"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+						</div>
 					</div>
 					<div class="p-2">
-@foreach($users_most_year as $users_most_year_)
+<?php
+$user_found = false;
+
+foreach($users_most_year as $users_most_year_) {
+	if ($users_most_year_->id == $user->id) $user_found = true;
+
+?>
 						<div class="align-items-baseline d-flex">
 							<div class="text-truncate">
 								<a href="/athlete/{{$users_most_year_->id}}">
@@ -208,7 +244,7 @@ if (count($following) == 0){
 								</a>
 							</div>
 							<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
-	@if ($users_most_year_->id == Auth::user()->id)
+	@if ($users_most_year_->id == $user->id)
 								<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
 	@elseif ($users_most_year_->followedByMe())
 								<i class="fas fa-check" title="Following" data-toggle="tooltip"></i> 
@@ -218,19 +254,45 @@ if (count($following) == 0){
 								<span class="">{{$users_most_year_->cols}}</span>
 							</div>
 						</div>
-@endforeach
+<?php
+}
+?>
+@if (!$user_found)
+						<div class="align-items-baseline d-flex">
+							<div class="text-truncate mt-1 border-top">
+								<a href="/athlete/{{$user->id}}">
+									<span class="">{{$user->name}}</span>
+								</a>
+							</div>
+							<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
+								<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
+							</div>
+							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
+								{{$users_most_year_me}}
+							</div>
+						</div>	
+@endif
 					</div>
-					<div class="p-2 border-bottom border-top">
+					<div class="p-2 border-bottom border-top d-flex align-items-center">
 						<h6 class="font-weight-light m-0">Following</h6>
+						<div class="ml-auto" tabindex="0" role="button">
+							<a href="/athletes/athletes/eur/all/following"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+						</div>
 					</div>
 					<div class="p-2">
-@foreach($users_most_following as $users_most_following_)
+<?php
+$user_found = false;
+
+foreach($users_most_following as $users_most_following_) {
+	if ($users_most_following_->id == $user->id) $user_found = true;
+
+?>
 						<div class="align-items-baseline d-flex">
 							<div class="text-truncate">
 								<a href="/athlete/{{$users_most_following_->id}}">{{$users_most_following_->name}}</a>
 							</div>
 							<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
-	@if ($users_most_following_->id == Auth::user()->id)
+	@if ($users_most_following_->id == $user->id)
 								<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
 	@elseif ($users_most_following_->followedByMe())
 								<i class="fas fa-check" title="Following" data-toggle="tooltip"></i> 
@@ -240,7 +302,24 @@ if (count($following) == 0){
 								{{$users_most_following_->cols}}
 							</div>
 						</div>
-@endforeach
+<?php
+}
+?>
+@if (!$user_found)
+						<div class="align-items-baseline d-flex">
+							<div class="text-truncate mt-1 border-top">
+								<a href="/athlete/{{$user->id}}">
+									<span class="">{{$user->name}}</span>
+								</a>
+							</div>
+							<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
+								<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
+							</div>
+							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
+								{{$users_most_me}}
+							</div>
+						</div>	
+@endif
 					</div>
 				</div>
 			</div>
@@ -277,13 +356,13 @@ if (count($following) == 0){
 			<div class="card mb-3">
 				<div class="card-header p-2 d-flex align-items-center">
 					<span>Most Climbed Cols</span>
-					<div class="ml-auto" tabindex="0" role="button" data-toggle="modal" data-target="#modal-first">
-						<a href="/athletes/colsmost"><i id="col-first-all" class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
-					</div>
 				</div>
 				<div class="card-body p-0 font-weight-light text-small-90">
-					<div class="p-2 border-bottom">
+					<div class="p-2 border-bottom d-flex align-items-center">
 						<h6 class="font-weight-light m-0">Alltime</h6>
+						<div class="ml-auto" tabindex="0" role="button">
+							<a href="/athletes/cols/eur/all/all"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+						</div>
 					</div>
 					<div class="p-2">
 @foreach($cols_most as $cols_most_)
@@ -301,8 +380,11 @@ if (count($following) == 0){
 						</div>
 @endforeach
 					</div>
-					<div class="p-2 border-bottom border-top">
+					<div class="p-2 border-bottom border-top d-flex align-items-center">
 						<h6 class="font-weight-light m-0">In {{date("Y")}}</h6>
+						<div class="ml-auto" tabindex="0" role="button">
+							<a href="/athletes/cols/eur/{{date('Y')}}/all"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+						</div>
 					</div>
 					<div class="p-2">
 @foreach($cols_most_year as $cols_most_year_)
@@ -320,8 +402,11 @@ if (count($following) == 0){
 						</div>
 @endforeach
 					</div>
-					<div class="p-2 border-bottom border-top">
+					<div class="p-2 border-bottom border-top d-flex align-items-center">
 						<h6 class="font-weight-light m-0">Following</h6>
+						<div class="ml-auto" tabindex="0" role="button">
+							<a href="/athletes/cols/eur/all/following"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+						</div>
 					</div>
 					<div class="p-2">
 @foreach($cols_most_following as $cols_most_following_)

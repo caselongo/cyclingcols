@@ -1,6 +1,8 @@
 <?php
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Col extends Model
@@ -27,5 +29,16 @@ class Col extends Model
         return $this->belongsToMany(User::class,'usercol','ColID','UserID','ColID',null)
 			->wherePivot('StravaNew', false)
             ->withPivot(['ClimbedAt','CreatedAt','UpdatedAt']);
+    }
+
+    public function climbedByMe()
+	{
+		$user = Auth::user();
+		
+		if ($user == null){
+			return false;
+		} else {
+			return \App\UserCol::where('UserID', '=', $user->id)->where('ColID', '=', $this->ColID)->exists();
+		}
     }
 }

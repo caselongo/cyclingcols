@@ -49,6 +49,7 @@ class StatsController extends Controller
 		
 		/* country */	
 		$countries = \App\Country::get();
+		$countries = $countries->sortBy("Country");
 		
 		$country_all = new \stdClass();
 		$country_all->CountryID = 0;

@@ -4803,7 +4803,7 @@ input[type="button"].btn-block {
 }
 
 @media (min-width: 576px) {/* sm */
-  .card-columns {
+  .card-columns-2 {
     -webkit-column-count: 2;
     -moz-column-count: 2;
     column-count: 2;
@@ -4813,14 +4813,29 @@ input[type="button"].btn-block {
     orphans: 1;
     widows: 1;
   }
-  .card-columns .card {
+  .card-columns-2 .card {
+    display: inline-block;
+    width: 100%;
+  }
+
+  .card-columns-3 {
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+    -webkit-column-gap: 1.25rem;
+    -moz-column-gap: 1.25rem;
+    column-gap: 1.25rem;
+    orphans: 1;
+    widows: 1;
+  }
+  .card-columns-3 .card {
     display: inline-block;
     width: 100%;
   }
 }
 
 @media (min-width: 992px) {/* lg */
-  .card-columns {
+  .card-columns-3 {
     -webkit-column-count: 3;
     -moz-column-count: 3;
     column-count: 3;
@@ -4830,7 +4845,7 @@ input[type="button"].btn-block {
     orphans: 1;
     widows: 1;
   }
-  .card-columns .card {
+  .card-columns-3 .card {
     display: inline-block;
     width: 100%;
   }
@@ -4910,7 +4925,7 @@ input[type="button"].btn-block {
 .page-link {
   position: relative;
   display: block;
-  padding: 0.5rem 0.75rem;
+  padding: 0.25rem 0.5rem; /*0.5rem 0.75rem;*/
   margin-left: -1px;
   line-height: 1.25;
   color: #ff8000;

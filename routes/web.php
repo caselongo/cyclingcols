@@ -60,10 +60,12 @@ Route::get('athlete/welcome', 'User\UserController@welcome');
 Route::get('athlete','User\UserController@index_default');
 Route::get('athlete/{userID}','User\UserController@index');
 Route::get('athlete/{userID}/cols','User\UserController@cols_default');
-Route::get('athlete/{userID}/cols/{country_url}/{sort}','User\UserController@cols');
+Route::get('athlete/{userID}/cols/{countryurl}/{sorttypeurl}','User\UserController@cols');
 
 // Users
 Route::get('athletes','Users\UsersController@index');
+Route::get('athletes/cols/{countryurl}/{yearurl}/{athleteurl}','Users\UsersController@cols');
+Route::get('athletes/athletes/{countryurl}/{yearurl}/{athleteurl}','Users\UsersController@athletes');
 
 // Strava
 Route::get('strava/connect','Strava\StravaController@connect');
