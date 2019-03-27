@@ -63,9 +63,9 @@ CyclingCols - My CyclingCols
 					</div>
 @foreach($cols as $col)
 					<div class="align-items-end d-flex">
-						<img src="/images/flags/{{$col->Country1}}.gif" title="{{$col->Country1}}" class="flag mr-1">
+						<img src="/images/flags/{{$col->Country1}}.gif" title="{{$col->Country1}}" data-toggle="tooltip" class="flag mr-1">
 	@if ($col->Country2)
-						<img src="/images/flags/{{$col->Country2}}.gif" title="{{$col->Country2}}" class="flag mr-1">
+						<img src="/images/flags/{{$col->Country2}}.gif" title="{{$col->Country2}}" data-toggle="tooltip" class="flag mr-1">
 	@endif
 						<div class="text-truncate">
 							<a href="/col/{{$col->ColIDString}}">{{($col->{$sorttype->NameField})}}</a>
@@ -88,6 +88,13 @@ CyclingCols - My CyclingCols
 	@else
 							unknown
 	@endif
+						</div>
+						<div class="ml-1 text-small-75 text-centre font-weight-light" style="flex: 0 0 15px;">
+@if ($col->pivot->StravaActivityIDs != null)
+							<div class="pointer" onclick="openActivities('{{$col->pivot->StravaActivityIDs}}'); return false;">
+								<img src="/images/strava.png"/ class="w-100 strava-icon">
+							</div>
+@endif
 						</div>
 					</div>
 @endforeach

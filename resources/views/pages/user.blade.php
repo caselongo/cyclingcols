@@ -361,7 +361,7 @@ CyclingCols - My CyclingCols
 						<span class="text-small-75">No cols climbed yet.</span>
 @else
 	@foreach($climbed as $climbed_)
-						<div class="align-items-end d-flex">
+						<div class="align-items-baseline d-flex">
 							<img src="/images/flags/{{$climbed_->Country1}}.gif" title="{{$climbed_->Country1}}" data-toggle="tooltip" class="flag mr-1">
 		@if ($climbed_->Country2)
 							<img src="/images/flags/{{$climbed_->Country2}}.gif" title="{{$climbed_->Country2}}" data-toggle="tooltip" class="flag mr-1">
@@ -382,6 +382,13 @@ CyclingCols - My CyclingCols
 							unknown
 		@endif
 							</div>
+							<div class="ml-1 text-small-75 text-centre font-weight-light" style="flex: 0 0 15px;">
+		@if ($climbed_->pivot->StravaActivityIDs != null)
+								<div class="pointer" onclick="openActivities('{{$climbed_->pivot->StravaActivityIDs}}'); return false;">
+									<img src="/images/strava.png"/ class="w-100 strava-icon">
+								</div>
+		@endif
+							</div>
 						</div>
 	@endforeach
 @endif
@@ -397,7 +404,7 @@ CyclingCols - My CyclingCols
 						<span class="text-small-75">No cols claimed yet.</span>
 @else
 	@foreach($claimed as $claimed_)
-						<div class="align-items-end d-flex">
+						<div class="align-items-baseline d-flex">
 							<img src="/images/flags/{{$claimed_->Country1}}.gif" title="{{$claimed_->Country1}}" data-toggle="tooltip" class="flag mr-1">
 		@if ($claimed_->Country2)
 							<img src="/images/flags/{{$claimed_->Country2}}.gif" title="{{$claimed_->Country2}}" data-toggle="tooltip" class="flag mr-1">
@@ -407,6 +414,13 @@ CyclingCols - My CyclingCols
 							</div>
 							<div class="ml-auto text-small-75 text-right" style="flex: 0 0 70px;">
 							{{getHumanDate($claimed_->pivot->CreatedAt)}}
+							</div>
+							<div class="ml-1 text-small-75 text-centre font-weight-light" style="flex: 0 0 15px;">
+		@if ($claimed_->pivot->StravaActivityIDs != null)
+								<div class="pointer" onclick="openActivities('{{$claimed_->pivot->StravaActivityIDs}}'); return false;">
+									<img src="/images/strava.png"/ class="w-100 strava-icon">
+								</div>
+		@endif
 							</div>
 						</div>
 	@endforeach
@@ -423,7 +437,7 @@ CyclingCols - My CyclingCols
 						<span class="text-small-75">No cols claimed yet.</span>
 @else
 	@foreach($highest as $highest_)
-						<div class="align-items-end d-flex">
+						<div class="align-items-baseline d-flex">
 							<img src="/images/flags/{{$highest_->Country1}}.gif" title="{{$highest_->Country1}}" data-toggle="tooltip" class="flag mr-1">
 		@if ($highest_->Country2)
 							<img src="/images/flags/{{$highest_->Country2}}.gif" title="{{$highest_->Country2}}" data-toggle="tooltip" class="flag mr-1">
@@ -433,6 +447,13 @@ CyclingCols - My CyclingCols
 							</div>
 							<div class="ml-auto text-small-75 text-centre badge badge-elevation font-weight-light" style="flex: 0 0 45px;">
 							{{$highest_->Height}}m
+							</div>
+							<div class="ml-1 text-small-75 text-centre font-weight-light" style="flex: 0 0 15px;">
+		@if ($highest_->pivot->StravaActivityIDs != null)
+								<div class="pointer" onclick="openActivities('{{$highest_->pivot->StravaActivityIDs}}'); return false;">
+									<img src="/images/strava.png"/ class="w-100 strava-icon">
+								</div>
+		@endif
 							</div>
 						</div>
 	@endforeach

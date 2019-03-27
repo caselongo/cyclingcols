@@ -534,3 +534,11 @@ var saveUser = function(colIDString, climbedAtText, callback){
 	});
 }
 
+var openActivities = function(activities){
+	activities = activities.split(";");
+	
+	activities.forEach(function(a){
+		window.open('https://www.strava.com/activities/' + a,'_blank');
+	});
+}
+

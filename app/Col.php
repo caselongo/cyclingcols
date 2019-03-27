@@ -28,7 +28,7 @@ class Col extends Model
 	{
         return $this->belongsToMany(User::class,'usercol','ColID','UserID','ColID',null)
 			->wherePivot('StravaNew', false)
-            ->withPivot(['ClimbedAt','CreatedAt','UpdatedAt']);
+            ->withPivot(['ClimbedAt','CreatedAt','UpdatedAt','StravaActivityIDs']);
     }
 
     public function climbedByMe()
