@@ -92,8 +92,7 @@ Route::middleware(['ajax'])->group(function () {
 	Route::get('service/cols/photos','Cols\ColsController@_photos');
 
 	/* stat */
-	Route::get('service/stats/top/{country_url}','Stats\StatsController@_top');	
-	Route::get('service/stats2/top/{country_url}','Stats\Stats2Controller@_top');	
+	Route::get('service/stats/top/{country_url}','Stats\StatsController@_top');		
 	
 	/* general */
 	Route::get('service/countries','General\GeneralController@_countries');

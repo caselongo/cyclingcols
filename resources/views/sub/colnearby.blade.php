@@ -1,7 +1,7 @@
 @foreach ($nearby as $nearby_)
 <?php
 	$dis = round($nearby_->Distance/1000);
-	$dir = round($nearby_->Direction/1000);
+	$dir = round($nearby_->Direction);
 	
 	if ($dir <= 22) $dir_ = "South";
 	else if ($dir <= 67) $dir_ = "South-West";
