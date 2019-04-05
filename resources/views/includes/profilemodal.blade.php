@@ -13,7 +13,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<img class="profile-img" src=""></img>
+					<img class="profile-img" src="" data-path="{{\App\Constants::ProfilesPath}}"></img>
 				</div>
 				<div class="modal-footer p-0 text-small-75 d-flex justify-content-start align-items-start">
 					<div class="stat1 px-2 py-1 border m-2" title="Distance" data-toggle="tooltip">

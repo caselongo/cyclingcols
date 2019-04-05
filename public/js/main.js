@@ -50,8 +50,10 @@ $(document).ready(function() {
  
 		var modal = $(this);
 		
-		modal.find('.date').text(date);				
-		modal.find('.ride-img').attr("src","/tours/" + fileName + ".gif");	
+		modal.find('.date').text(date);	
+
+		var img = modal.find('.ride-img');
+		img.attr("src",img.data("path") + "/" + fileName + ".gif");	
 	});
 	
 	$('#modalProfile').draggable({
@@ -79,7 +81,8 @@ $(document).ready(function() {
 				} else {
 					modal.find('.modal-title-secondary').text("");  
 				}
-				modal.find('.profile-img').attr("src","/profiles/" + data.FileName + ".gif");
+				var img = modal.find('.profile-img');
+				img.attr("src",img.data("path") + "/" + data.FileName + ".gif");
 				
 				modal.find('.stat1 span').html(data.DistanceFormatted);
 				modal.find('.stat1 i').removeClass("color-1 color-2");

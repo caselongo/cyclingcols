@@ -283,7 +283,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		var h = $(window).height();
 		var wh = w;
 		if (h > w) wh = h;
-		var path = "/images/covers/";
+		var path = "{{\App\Constants::ImagesPath}}/covers/";
 		var image2 = ($(".colimage2").length > 0);
 		
 		if (wh <= 680){	 
@@ -403,7 +403,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 	<div class="d-flex w-100 p-0 m-0 bg-white border-bottom justify-content-between align-items-center">
 		<div class="d-none d-sm-block px-3 py-2 w-25 text-right">
 @if ($col->PanelURL)
-			<img class="panel" src="/images/{{$col->PanelURL}}" />
+			<img class="panel" src="{{\App\Constants::ImagesPath}}/{{$col->PanelURL}}" />
 @else
 			<span class="px-5"></span>
 @endif
@@ -525,7 +525,7 @@ $profile_string = $profile_count . " profile" . $profile_string;
 		@endif
 				</div>
 				<div>
-					<img class="profile-img" src="/profiles/{{$profile->FileName}}.gif"/>
+					<img class="profile-img" src="{{\App\Constants::ProfilesPath}}/{{$profile->FileName}}.gif"/>
 				</div>
 				<div class="p-0 text-small-75 d-flex">
 					<div class="stat1 px-2 py-1 border m-2" title="Distance" data-toggle="tooltip">
