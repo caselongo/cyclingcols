@@ -47,7 +47,6 @@ public/css/__component.css
 public/css/__default.css
 resources/views/__cols/
 OLDenv.example
-app/constants.php
 app/Http/Controllers/Strava/StravaController - Copy.php
 resources/views/pages/user.blade - Copy.php
 app/Http/Controllers/Strava/StravaController - Copy (2).php
