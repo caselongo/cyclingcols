@@ -24,7 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-		$schedule->command('queue:work --queue=athlete --sleep=5 --tries=3 --daemon &')->everyMinute();
+		$schedule->command('queue:work --queue=athlete --sleep=5 --tries=3 &')->everyMinute();
+		$schedule->command('queue:work --queue=activity --sleep=5 --tries=3 &')->everyMinute();
     }
 
     /**

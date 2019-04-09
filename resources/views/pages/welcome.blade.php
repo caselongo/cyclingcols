@@ -3,11 +3,12 @@
 @section('content')
 <main role="main" class="bd-content p-3 font-weight-light">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Thanks for joining CyclingCols!</div>
-
+        <div class="col-12 col-md-8">
+            <div class="card shadow-sm">
                 <div class="card-body px-4 py-3">
+					<div class="text-center mb-3">
+						<h4 class="font-weight-light">Thanks for joining CyclingCols!</h4>
+					</div>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}

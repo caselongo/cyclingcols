@@ -3,7 +3,7 @@
 @section('content')
     <div class="container py-4 font-weight-light">
         <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-6 col-xs-12">
+            <div class="col-12 col-md-8 col-lg-6">
                 <div class="card shadow-sm">
 
                     <div class="card-body">
@@ -16,13 +16,13 @@
 
                             <div class="form-group row">
                                 <label for="name"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('User name') }}
+                                       class="col-4 col-form-label text-right">{{ __('User name') }}
                                     <i class="fas fas-grey fa-info-circle"
                                        title="The username will be displayed in the application and can be visible to other users."
                                        data-toggle="tooltip"></i>
                                 </label>
 
-                                <div class="col-md-6">
+                                <div class="col-6">
                                     <input id="name" type="text"
                                            class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}"
                                            name="name" value="{{ old('name') }}" required autofocus>
@@ -37,9 +37,9 @@
 
                             <div class="form-group row">
                                 <label for="email"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                                       class="col-4 col-form-label text-right">{{ __('E-Mail Address') }}</label>
 
-                                <div class="col-md-6">
+                                <div class="col-6">
                                     <input id="email" type="email"
                                            class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}"
                                            name="email" value="{{ old('email') }}" required>
@@ -54,9 +54,9 @@
 
                             <div class="form-group row">
                                 <label for="password"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
+                                       class="col-4 col-form-label text-right">{{ __('Password') }}</label>
 
-                                <div class="col-md-6">
+                                <div class="col-6">
                                     <input id="password" type="password"
                                            class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}"
                                            name="password" required>
@@ -71,16 +71,16 @@
 
                             <div class="form-group row">
                                 <label for="password-confirm"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
+                                       class="col-4 col-form-label text-right">{{ __('Confirm Password') }}</label>
 
-                                <div class="col-md-6">
+                                <div class="col-6">
                                     <input id="password-confirm" type="password" class="form-control"
                                            name="password_confirmation" required>
                                 </div>
                             </div>
 
                             <div class="form-group row mb-0">
-                                <div class="col-md-6 offset-md-4">
+                                <div class="col-6 offset-4">
                                     <button type="submit" class="btn btn-primary" style="width:100%">
                                         {{ __('Register') }}
                                     </button>

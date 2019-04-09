@@ -19,9 +19,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+
+use Symfony\Component\Process\Process;
 
 //use Polyline;
 
@@ -94,6 +97,29 @@ class StravaController extends Controller
 		$user->save();
 		
 		$request->offsetUnset('scope');
+		
+		//$athleteQueueProcess = new Process('php artisan queue:work --queue=athlete --sleep=5 --tries=3 --daemon &');
+        //$athleteQueueProcess->run();
+		
+		//$activityQueueProcess = new Process('php artisan queue:work --queue=activity --sleep=5 --tries=3 --daemon &');
+        //$activityQueueProcess->run();
+
+		
+		
+		/*$command = Artisan::callSilent('queue:work', [
+			'--queue' => 'athlete',
+			'--sleep' => 5,
+			'--tries' => 3,
+			'--daemon' => true
+		]);
+		$process = new Process($command);
+		
+		$exitCode = Artisan::call('queue:work', [
+			'--queue' => 'activity',
+			'--sleep' => 5,
+			'--tries' => 3,
+			'--daemon' => true
+		]);*/
 
         return \Redirect::to('/athlete');
     }

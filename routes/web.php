@@ -12,19 +12,33 @@
 */
 
 // Login Routes...
-Route::get('login', ['as' => 'login', 'uses' => 'Auth\LoginController@showLoginForm']);
+/*Route::get('login', ['as' => 'login', 'uses' => 'Auth\LoginController@showLoginForm']);
 Route::post('login', ['as' => 'login.post', 'uses' => 'Auth\LoginController@login']);
-Route::get('logout', ['as' => 'logout', 'uses' => 'Auth\LoginController@logout']);
+Route::get('logout', ['as' => 'logout', 'uses' => 'Auth\LoginController@logout']);*/
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login')->name('login.post');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
 // Registration Routes...
-Route::get('register', ['as' => 'register', 'uses' => 'Auth\RegisterController@showRegistrationForm']);
-Route::post('register', ['as' => 'register.post', 'uses' => 'Auth\RegisterController@register']);
+/*Route::get('register', ['as' => 'register', 'uses' => 'Auth\RegisterController@showRegistrationForm']);
+Route::post('register', ['as' => 'register.post', 'uses' => 'Auth\RegisterController@register']);*/
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register')->name('register.post');
+
+// Verification Routes...
+Route::get('email/verify', 'Auth\VerificationController@show')->name('verification.notice');
+Route::get('email/verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
+Route::get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
 // Password Reset Routes...
-Route::get('password/reset', ['as' => 'password.reset', 'uses' => 'Auth\ForgotPasswordController@showLinkRequestForm']);
+/*Route::get('password/reset', ['as' => 'password.reset', 'uses' => 'Auth\ForgotPasswordController@showLinkRequestForm']);
 Route::post('password/email', ['as' => 'password.email', 'uses' => 'Auth\ForgotPasswordController@sendResetLinkEmail']);
 Route::get('password/reset/{token}', ['as' => 'password.reset.token', 'uses' => 'Auth\ResetPasswordController@showResetForm']);
-Route::post('password/reset', ['as' => 'password.reset.post', 'uses' => 'Auth\ResetPasswordController@reset']);
+Route::post('password/reset', ['as' => 'password.reset.post', 'uses' => 'Auth\ResetPasswordController@reset']);*/
+Route::get('password/request', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.reset.post');
 
 // Col
 Route::get('col/{colIDString}','Col\ColController@col');
@@ -56,16 +70,19 @@ Route::get('about','General\GeneralController@about');
 Route::get('rides','General\GeneralController@rides');
 
 // User
-Route::get('athlete/welcome', 'User\UserController@welcome');
-Route::get('athlete','User\UserController@index_default');
-Route::get('athlete/{userID}','User\UserController@index');
-Route::get('athlete/{userID}/cols','User\UserController@cols_default');
-Route::get('athlete/{userID}/cols/{countryurl}/{sorttypeurl}','User\UserController@cols');
 
-// Users
-Route::get('athletes','Users\UsersController@index');
-Route::get('athletes/cols/{countryurl}/{yearurl}/{athleteurl}','Users\UsersController@cols');
-Route::get('athletes/athletes/{countryurl}/{yearurl}/{athleteurl}','Users\UsersController@athletes');
+Route::middleware(['verified'])->group(function () {
+	Route::get('athlete/welcome', 'User\UserController@welcome');
+	Route::get('athlete','User\UserController@index_default');
+	Route::get('athlete/{userID}','User\UserController@index');
+	Route::get('athlete/{userID}/cols','User\UserController@cols_default');
+	Route::get('athlete/{userID}/cols/{countryurl}/{sorttypeurl}','User\UserController@cols');
+
+	// Users
+	Route::get('athletes','Users\UsersController@index');
+	Route::get('athletes/cols/{countryurl}/{yearurl}/{athleteurl}','Users\UsersController@cols');
+	Route::get('athletes/athletes/{countryurl}/{yearurl}/{athleteurl}','Users\UsersController@athletes');
+});
 
 // Strava
 Route::get('strava/connect','Strava\StravaController@connect');
