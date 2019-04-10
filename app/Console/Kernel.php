@@ -24,7 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-		$schedule->command('queue:work --sleep=5 --tries=3 --stop-when-empty')->everyMinute()->withoutOverlapping();
+		$schedule->command('queue:work --queue=athlete --sleep=5 --tries=3 --stop-when-empty')->everyMinute();
+		$schedule->command('queue:work --queue=activity --sleep=5 --tries=3 --stop-when-empty')->everyMinute();
 		//$schedule->command('queue:work --queue=activity --sleep=5 --tries=3')->everyMinute()->runInBackground();
     }
 

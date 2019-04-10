@@ -95,7 +95,7 @@ class ProcessAthlete implements ShouldQueue
 					'LongitudeMax' => $lng_max * 1000000
 				]);
 				
-				ProcessActivity::dispatch($this->user, $activity, $date, $this->access_token)->onQueue('activity')->delay(10);
+				ProcessActivity::dispatch($this->user, $activity, $date, $this->access_token)->onQueue('activity');
 				//ProcessActivity::dispatch($this->user, $activity, $date, $this->access_token)->delay(10);
             }
         }
@@ -121,7 +121,7 @@ class ProcessAthlete implements ShouldQueue
     }
 	
 	private function finishAthlete(){
-		FinishAthlete::dispatch($this->user)->onQueue('activity');
+		FinishAthlete::dispatch($this->user)->onQueue('activity')->delay(10);
 	}
 
     private function getActivities()
