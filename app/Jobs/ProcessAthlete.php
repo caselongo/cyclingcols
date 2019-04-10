@@ -95,7 +95,8 @@ class ProcessAthlete implements ShouldQueue
 					'LongitudeMax' => $lng_max * 1000000
 				]);
 				
-				ProcessActivity::dispatch($this->user, $activity, $date, $this->access_token)->onQueue('activity')->delay(10);
+				//ProcessActivity::dispatch($this->user, $activity, $date, $this->access_token)->onQueue('activity')->delay(10);
+				ProcessActivity::dispatch($this->user, $activity, $date, $this->access_token)->delay(10);
             }
         }
 		
@@ -112,7 +113,7 @@ class ProcessAthlete implements ShouldQueue
 		//}
 		
 		if ($this->page < 10){
-			ProcessAthlete::dispatch($this->user, $this->athlete, $this->page + 1, $this->access_token)->onQueue('athlete');
+			ProcessAthlete::dispatch($this->user, $this->athlete, $this->page + 1, $this->access_token);//->onQueue('athlete');
 		} else {			
 			$this->finishAthlete();
 			return;
@@ -120,7 +121,7 @@ class ProcessAthlete implements ShouldQueue
     }
 	
 	private function finishAthlete(){
-		FinishAthlete::dispatch($this->user)->onQueue('activity');
+		FinishAthlete::dispatch($this->user);//->onQueue('activity');
 	}
 
     private function getActivities()

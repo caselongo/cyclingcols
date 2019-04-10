@@ -88,7 +88,9 @@ class StravaController extends Controller
         $user = Auth::user();
 		
 		$page = 1;
- 		ProcessAthlete::dispatch($user, $athlete, $page, $access_token)->onQueue('athlete')->delay(10);
+ 		//ProcessAthlete::dispatch($user, $athlete, $page, $access_token)->onQueue('athlete')->delay(10);
+ 		ProcessAthlete::dispatch($user, $athlete, $page, $access_token)->delay(10);
+
 
 		/* update user */
 		$user->strava_athlete_id = $athlete->id;
