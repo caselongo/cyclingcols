@@ -112,7 +112,7 @@ class ProcessAthlete implements ShouldQueue
 			//$this->user->save();
 		//}
 		
-		if ($this->page < 2){
+		if ($this->page < 10){
 			ProcessAthlete::dispatch($this->user, $this->athlete, $this->page + 1, $this->access_token)->onQueue('athlete');
 		} else {			
 			$this->finishAthlete();
