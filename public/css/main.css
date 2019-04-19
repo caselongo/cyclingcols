@@ -552,28 +552,28 @@ img.ad {
     width: 80px;
     height: 80px;
     line-height: 80px;
-    font-size: 36px;
-}
-
-.kpi-2{	
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
     font-size: 24px;
 }
 
+.kpi-2{	
+    width: 67px;
+    height: 67px;
+    line-height: 67px;
+    font-size: 20px;
+}
+
 .kpi-3{	
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    font-size: 16;
+    width: 53px;
+    height: 53px;
+    line-height: 53px;
+    font-size: 16px;
 }
 
 .kpi-4{	
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    font-size: 12;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 12px;
 }
 
 /* rides */

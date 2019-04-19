@@ -1,7 +1,7 @@
 <footer class="footer mt-auto bg-dark text-white text-small-75">
 	<div class="d-flex flex-row flex-wrap justify-content-between">
 		<div class="px-3 py-2">
-			Developed&nbsp;by&nbsp;Michiel&nbsp;van&nbsp;Lonkhuyzen&nbsp;| Contact:&nbsp;<a href="mailto:cyclingcols@gmail.com">cyclingcols@gmail.com</a>&nbsp;|
+			Developed&nbsp;by&nbsp;Michiel&nbsp;van&nbsp;Lonkhuyzen&nbsp;| Contact:&nbsp;<a href="mailto:info@cyclingcols.com">info@cyclingcols.com</a>&nbsp;|
 				©&nbsp;2001&nbsp;-&nbsp;{{date("Y")}},&nbsp;<a href="http://www.cyclingcols.com" target="_blank">cyclingcols.com</a>,&nbsp;all&nbsp;rights&nbsp;reserved
 		</div>
 		<div class="px-3 py-2">

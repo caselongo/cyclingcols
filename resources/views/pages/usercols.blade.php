@@ -59,7 +59,8 @@ CyclingCols - My CyclingCols
 					<div class="align-items-end d-flex justify-content-begin">
 						<div class="ml-auto text-small-75 text-centre border-bottom" style="flex: 0 0 45px;">elevation</div>
 						<div class="ml-1 text-small-75 text-right border-bottom" style="flex: 0 0 70px;">claimed</div>
-						<div class="ml-1 text-small-75 text-right border-bottom ml-1" style="flex: 0 0 75px;">climbed</div>
+						<div class="ml-1 text-small-75 text-right border-bottom" style="flex: 0 0 75px;">climbed</div>
+						<div class="ml-1 text-small-75 text-centre font-weight-light" style="flex: 0 0 15px;"></div>
 					</div>
 @foreach($cols as $col)
 					<div class="align-items-end d-flex">
