@@ -108,7 +108,7 @@ if (count($following) == 0){
 			
 ?>
 		@if ($count_col > 1)
-						<div class="ml-1 text-small-75">and {{$count_col - 1}} other col {{$count_col - 1 > 1 ? 's' : ''}}</div>
+						<div class="ml-1 text-small-75">and {{$count_col - 1}} other col{{$count_col - 1 > 1 ? 's' : ''}}</div>
 		@endif
 					</div>		
 <?php	
@@ -130,7 +130,7 @@ if (count($following) == 0){
 ?>
 					<div class="px-2 py-0 align-items-end d-flex">
 						<div>
-							<a href="/athlete/{{$following_->id}}">{{$following_->name}}</a>
+							<a href="/athlete/{{$following_->slug}}">{{$following_->name}}</a>
 							<span class="text-small-75">climbed</span>
 						</div>
 						<img src="/images/flags/{{$following_->Country1}}.gif" title="{{$following_->Country1}}" data-toggle="tooltip" class="flag mx-1">
@@ -189,7 +189,7 @@ foreach($users_most as $users_most_) {
 ?>
 						<div class="align-items-baseline d-flex">
 							<div class="text-truncate">
-								<a href="/athlete/{{$users_most_->id}}">
+								<a href="/athlete/{{$users_most_->slug}}">
 									<span class="">{{$users_most_->name}}</span>
 								</a>
 							</div>
@@ -210,7 +210,7 @@ foreach($users_most as $users_most_) {
 @if (!$user_found)
 						<div class="align-items-baseline d-flex">
 							<div class="text-truncate mt-1 border-top">
-								<a href="/athlete/{{$user->id}}">
+								<a href="/athlete/{{$user->slug}}">
 									<span class="">{{$user->name}}</span>
 								</a>
 							</div>
@@ -239,7 +239,7 @@ foreach($users_most_year as $users_most_year_) {
 ?>
 						<div class="align-items-baseline d-flex">
 							<div class="text-truncate">
-								<a href="/athlete/{{$users_most_year_->id}}">
+								<a href="/athlete/{{$users_most_year_->slug}}">
 									<span class="">{{$users_most_year_->name}}</span>
 								</a>
 							</div>
@@ -260,7 +260,7 @@ foreach($users_most_year as $users_most_year_) {
 @if (!$user_found)
 						<div class="align-items-baseline d-flex">
 							<div class="text-truncate mt-1 border-top">
-								<a href="/athlete/{{$user->id}}">
+								<a href="/athlete/{{$user->slug}}">
 									<span class="">{{$user->name}}</span>
 								</a>
 							</div>
@@ -289,7 +289,7 @@ foreach($users_most_following as $users_most_following_) {
 ?>
 						<div class="align-items-baseline d-flex">
 							<div class="text-truncate">
-								<a href="/athlete/{{$users_most_following_->id}}">{{$users_most_following_->name}}</a>
+								<a href="/athlete/{{$users_most_following_->slug}}">{{$users_most_following_->name}}</a>
 							</div>
 							<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
 	@if ($users_most_following_->id == $user->id)
@@ -308,7 +308,7 @@ foreach($users_most_following as $users_most_following_) {
 @if (!$user_found)
 						<div class="align-items-baseline d-flex">
 							<div class="text-truncate mt-1 border-top">
-								<a href="/athlete/{{$user->id}}">
+								<a href="/athlete/{{$user->slug}}">
 									<span class="">{{$user->name}}</span>
 								</a>
 							</div>

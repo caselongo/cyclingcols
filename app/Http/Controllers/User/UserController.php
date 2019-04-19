@@ -33,12 +33,12 @@ class UserController extends Controller
     {
         $user = Auth::user();
 		
-		return \Redirect::to('athlete/' . $user->id);	
+		return \Redirect::to('athlete/' . $user->slug);	
 	}
 	
-    public function index(Request $request, $userid)
+    public function index(Request $request, $slug)
     {
-        $user = User::where('id', $userid)->first();
+        $user = User::where('slug', $slug)->first();
 		
 		if ($user == null){
             return response(['success' => false], 404);
@@ -132,12 +132,12 @@ class UserController extends Controller
         return view('pages.user', compact('user', 'climbed', 'climbed_count', 'climbed_year_count', 'climbed_lastyear_count', 'claimed', 'countries', 'highest', 'width_total', 'width_climbed', 'perc_climbed'));
     }
 	
-    public function cols_default(Request $request, $userid)
+    public function cols_default(Request $request, $slug)
 	{
-		return \Redirect::to('athlete/' . $userid . '/cols/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
+		return \Redirect::to('athlete/' . $slug . '/cols/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
 	}
 	
-    public function cols(Request $request, $userid, $countryurl, $sorttypeurl)
+    public function cols(Request $request, $slug, $countryurl, $sorttypeurl)
     {		
         /* sorttype */	
 			
@@ -207,14 +207,14 @@ class UserController extends Controller
 		}
 		
 		if (is_null($sorttype_current) && is_null($country_current)){
-			return \Redirect::to('athlete/cols/' . $userid . '/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
+			return \Redirect::to('athlete/cols/' . $slug . '/' . $this->countryurl_default . '/' . $this->sorttypeurl_default);
 		} else if (is_null($sorttype_current)){
-			return \Redirect::to('athlete/cols/' . $userid . '/' . $countryurl . '/' . $this->sorttypeurl_default);
+			return \Redirect::to('athlete/cols/' . $slug . '/' . $countryurl . '/' . $this->sorttypeurl_default);
 		} else if (is_null($country_current)){
-			return \Redirect::to('athlete/cols/' . $userid . '/' . $this->countryurl_default . '/' . $sorttypeurl);		
+			return \Redirect::to('athlete/cols/' . $slug . '/' . $this->countryurl_default . '/' . $sorttypeurl);		
 		}
 
-        $user = User::where('id', $userid)->first();
+        $user = User::where('slug', $slug)->first();
 				
 		$cols = $user->cols()->select("cols.ColIDString", "cols.Col", "cols.ColSort", "cols.Country1ID", "cols.Country1", "cols.Country2ID", "cols.Country2", "cols.Height");
 		
@@ -239,8 +239,9 @@ class UserController extends Controller
 	
 	/* service */
 	
-	public function _following(Request $request, $userid)
+	public function _following(Request $request, $slug)
     {
+		$userid = User::where('slug', $slug)->first()->id;
 		$user = Auth::user()->following()->wherePivot('UserIDFollowing', $userid)->first();
 		
 		$returnHTML = view('sub.following')
@@ -250,15 +251,17 @@ class UserController extends Controller
 		return response()->json(array('success' => true, 'html' => $returnHTML));
     }
 	
-	public function _follow(Request $request, $userid)
+	public function _follow(Request $request, $slug)
     {
+		$userid = User::where('slug', $slug)->first()->id;
 		$user = Auth::user()->following()->attach($userid);
 		
         return response(['success' => true], 200);
     }
 	
-	public function _unfollow(Request $request, $userid)
+	public function _unfollow(Request $request, $slug)
     {
+		$userid = User::where('slug', $slug)->first()->id;
 		$user = Auth::user()->following()->detach($userid);
 		
         return response(['success' => true], 200);

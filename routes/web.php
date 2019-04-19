@@ -65,9 +65,9 @@ Route::get('rides','General\GeneralController@rides');
 Route::middleware(['verified'])->group(function () {
 	Route::get('athlete/welcome', 'User\UserController@welcome');
 	Route::get('athlete','User\UserController@index_default');
-	Route::get('athlete/{userID}','User\UserController@index');
-	Route::get('athlete/{userID}/cols','User\UserController@cols_default');
-	Route::get('athlete/{userID}/cols/{countryurl}/{sorttypeurl}','User\UserController@cols');
+	Route::get('athlete/{slug}','User\UserController@index');
+	Route::get('athlete/{slug}/cols','User\UserController@cols_default');
+	Route::get('athlete/{slug}/cols/{countryurl}/{sorttypeurl}','User\UserController@cols');
 
 	// Users
 	Route::get('athletes','Users\UsersController@index');
@@ -113,9 +113,9 @@ Route::middleware(['ajax'])->group(function () {
 	Route::get('service/strava/status/{processed}','Strava\StravaController@_status');
 	
 	/* user */
-	Route::get('service/user/following/{userid}','User\UserController@_following');
-	Route::post('service/user/follow/{userid}','User\UserController@_follow');
-	Route::post('service/user/unfollow/{userid}','User\UserController@_unfollow');
+	Route::get('service/user/following/{slug}','User\UserController@_following');
+	Route::post('service/user/follow/{slug}','User\UserController@_follow');
+	Route::post('service/user/unfollow/{slug}','User\UserController@_unfollow');
 	
 	/* users */
 	Route::get('service/athletes/search','Users\UsersController@_search');

@@ -49,7 +49,7 @@ class UsersController extends Controller
 			->groupBy('users.id')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
 			->limit(5)
-			->get(['users.id', 'users.name', DB::raw('count(usercol.id) as cols')]);
+			->get(['users.id', 'users.name', 'users.slug', DB::raw('count(usercol.id) as cols')]);
 			
 		$users_most_me = $user->cols()->count();
 			
@@ -58,7 +58,7 @@ class UsersController extends Controller
 			->groupBy('users.id')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
 			->limit(5)
-			->get(['users.id', 'users.name', DB::raw('count(usercol.id) as cols')]);
+			->get(['users.id', 'users.name', 'users.slug', DB::raw('count(usercol.id) as cols')]);
 			
 		$users_most_year_me = $user->cols()->wherePivot('ClimbedAt','>=',Carbon::now()->startOfYear())->count();
 			
@@ -72,7 +72,7 @@ class UsersController extends Controller
 			->groupBy('users.id')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
 			->limit(5)
-			->get(['users.id', 'users.name', DB::raw('count(usercol.id) as cols')]);
+			->get(['users.id', 'users.name', 'users.slug', DB::raw('count(usercol.id) as cols')]);
 			
 		/* cols */
 		$cols_most = Col::join('usercol','usercol.ColID', '=', 'cols.ColID')
@@ -104,7 +104,7 @@ class UsersController extends Controller
 		$following = Auth::user()->following()
 			->join('usercol', 'useruser.UserIDFollowing', 'usercol.UserID')
 			->join('cols', 'usercol.ColID', 'cols.ColID')
-			->select('users.id', 'users.name', 'usercol.ColID', 'usercol.ClimbedAt', 'cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2')
+			->select('users.id', 'users.name', 'users.slug', 'usercol.ColID', 'usercol.ClimbedAt', 'cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2')
 			->orderBy('usercol.climbedAt', 'DESC')
 			->limit(50)
 			->get();
@@ -291,7 +291,7 @@ class UsersController extends Controller
 			$set = $set			
 					->groupBy('users.id')
 					->orderBy(DB::raw('count(usercol.id)'), 'DESC')
-					->select('users.id', 'users.name', DB::raw('count(usercol.id) as count'));
+					->select('users.id', 'users.name', 'users.slug', DB::raw('count(usercol.id) as count'));
 			
 		} else {
 			return response(['success' => false], 404);
@@ -312,7 +312,7 @@ class UsersController extends Controller
 	/* service */
 	public function _search(Request $request)
     {
-		$users = User::selectRaw("users.id, users.name, useruser.id as following")
+		$users = User::selectRaw("users.name, users.slug, useruser.id as following")
 			->leftJoin('useruser', function ($join) {
 				$join->on('useruser.UserIDFollowing', '=', 'users.id')
 					->where('useruser.UserID', '=', Auth::user()->id);

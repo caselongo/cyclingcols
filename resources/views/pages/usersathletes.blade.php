@@ -74,7 +74,7 @@ CyclingCols - My CyclingCols
 @foreach($set as $user)
 					<div class="align-items-baseline d-flex">
 						<div class="text-truncate">
-							<a href="/athlete/{{$user->id}}">
+							<a href="/athlete/{{$user->slug}}">
 								<span class="">{{$user->name}}</span>
 							</a>
 						</div>

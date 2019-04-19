@@ -309,7 +309,7 @@ var initAthleteSearch = function(){
 					
 					athleteSearchCount = res.length;
 					if (athleteSearchCount > 0){
-						athleteSearchId = res[0].id;
+						athleteSearchId = res[0].slug;
 					}
 					
 					response(res.slice(0,10));
@@ -318,7 +318,7 @@ var initAthleteSearch = function(){
 					if (history.pushState) {
 						history.pushState(null, null, window.location.href);
 					}
-					window.location.replace("/athlete/" + ui.item.id);
+					window.location.replace("/athlete/" + ui.item.slug);
 		 
 					return false;
 				},

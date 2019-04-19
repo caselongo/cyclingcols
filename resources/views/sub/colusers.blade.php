@@ -5,7 +5,7 @@
 		<div class="text-small-90 align-items-baseline d-flex">
 		@auth
 			<div class="text-truncate">
-				<a href="/athlete/{{$user->id}}">{{$user->name}}</a>
+				<a href="/athlete/{{$user->slug}}">{{$user->name}}</a>
 			</div>
 			<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
 			@if ($user->id == Auth::user()->id)

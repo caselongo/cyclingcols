@@ -27,7 +27,7 @@ CyclingCols - My CyclingCols
 			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$sorttype->SortType}}</a>
 			<div class="dropdown-menu">
 @foreach ($sorttypes as $sorttype_)
-				<a class="dropdown-item font-weight-light" href="/athlete/{{$user->id}}/cols/{{$country->URL}}/{{$sorttype_->URL}}">
+				<a class="dropdown-item font-weight-light" href="/athlete/{{$user->slug}}/cols/{{$country->URL}}/{{$sorttype_->URL}}">
 					<span>{{$sorttype_->SortType}}</span>
 				</a>
 @endforeach
@@ -37,7 +37,7 @@ CyclingCols - My CyclingCols
 			<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$country->Country}}</a>
 			<div class="dropdown-menu">
 @foreach ($countries as $country_)
-				<a class="dropdown-item font-weight-light" href="/athlete/{{$user->id}}/cols/{{$country_->URL}}/{{$sorttype->URL}}">
+				<a class="dropdown-item font-weight-light" href="/athlete/{{$user->slug}}/cols/{{$country_->URL}}/{{$sorttype->URL}}">
 					<img src="/images/flags/{{$country_->Flag}}.gif" class="flag mr-1">{{$country_->Country}}
 				</a>
 @if ($country_->CountryID == 0)

@@ -69,7 +69,7 @@ CyclingCols - My CyclingCols
 
 @if (!$isOwner)	
 	var getFollowing = function(){
-		var url = "/service/user/following/{{$user->id}}";
+		var url = "/service/user/following/{{$user->slug}}";
 		
 		$.ajax({
 			type: "GET",
@@ -132,7 +132,7 @@ CyclingCols - My CyclingCols
 				url += "follow";
 			}
 			
-			url += "/{{$user->id}}";
+			url += "/{{$user->slug}}";
 			
 			var this_ = this;
 			
@@ -156,7 +156,7 @@ CyclingCols - My CyclingCols
 	}
 
 	var getFollowing = function(callback){
-		var url = "/service/user/following/{{$user->id}}";
+		var url = "/service/user/following/{{$user->slug}}";
 		
 		$.ajax({
 			type: "GET",
@@ -254,7 +254,7 @@ CyclingCols - My CyclingCols
 					<div class="d-flex justify-content-center align-items-baseline">
 						<div class="text-truncate">
 							{{$c->col_count_user}} Cols Climbed In
-							<a href="/athlete/{{$user_->id}}/cols/{{$c->URL}}/climbed">{{$c->Country}}</a>
+							<a href="/athlete/{{$user_->slug}}/cols/{{$c->URL}}/climbed">{{$c->Country}}</a>
 						</div>
 					</div>
 					<div class="mb-1 text-small-75">(most popular country)</div>
@@ -312,7 +312,7 @@ CyclingCols - My CyclingCols
 					<div class="align-items-end d-flex">
 						<img src="/images/flags/{{$country->Country}}.gif" title="{{$country->Country}}" data-toggle="tooltip" class="flag mr-1">
 						<div class="text-truncate">
-							<a href="/athlete/{{$user_->id}}/cols/{{$country->URL}}/climbed">{{$country->Country}}</a>
+							<a href="/athlete/{{$user_->slug}}/cols/{{$country->URL}}/climbed">{{$country->Country}}</a>
 						</div>
 						<div class="ml-auto text-small-90 text-right" style="flex: 0 0 30px;">
 							{{$country->col_count_user}}
@@ -353,7 +353,7 @@ CyclingCols - My CyclingCols
 					<div class="p-2 border-bottom d-flex align-items-center">
 						<h6 class="font-weight-light m-0">Last Climbed</h6>
 						<div class="ml-auto" tabindex="0" role="button">
-							<a href="/athlete/{{$user->id}}/cols/eur/climbed"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+							<a href="/athlete/{{$user->slug}}/cols/eur/climbed"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
 						</div>
 					</div>
 					<div class="p-2">
@@ -396,7 +396,7 @@ CyclingCols - My CyclingCols
 					<div class="p-2 border-bottom border-top d-flex align-items-center">						
 						<h6 class="font-weight-light m-0">Last Claimed</h6>
 						<div class="ml-auto" tabindex="0" role="button">
-							<a href="/athlete/{{$user->id}}/cols/eur/claimed"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+							<a href="/athlete/{{$user->slug}}/cols/eur/claimed"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
 						</div>
 					</div>				
 					<div class="p-2">
@@ -429,7 +429,7 @@ CyclingCols - My CyclingCols
 					<div class="p-2 border-bottom border-top d-flex align-items-center">
 						<h6 class="font-weight-light m-0">Highest</h6>
 						<div class="ml-auto" tabindex="0" role="button">
-							<a href="/athlete/{{$user->id}}/cols/eur/elevation"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
+							<a href="/athlete/{{$user->slug}}/cols/eur/elevation"><i class="fas fas-grey fa-search-plus" title="Show all" data-toggle="tooltip"></i></a>
 						</div>
 					</div>
 					<div class="p-2">

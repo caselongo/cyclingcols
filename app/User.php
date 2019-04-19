@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -33,6 +34,15 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+		
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->slug = Str::slug($model->name, '-');
+        });
+    }
 
     public function cols()
 	{
