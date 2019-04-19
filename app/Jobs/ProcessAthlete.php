@@ -68,19 +68,55 @@ class ProcessAthlete implements ShouldQueue
 
 				/* get maximum latlng window of activity */
                 $distance = $activity->distance;
-                $distance_direct = distance($activity->start_latlng[0], $activity->start_latlng[1], $activity->end_latlng[0], $activity->end_latlng[1], "K");
+				/*if ($activity->id == 725690359 || $activity->id == 724625021){
+					echo $distance;
+					echo "\r\n";
+				}  */              
+				
+				$distance_direct = distance($activity->start_latlng[0], $activity->start_latlng[1], $activity->end_latlng[0], $activity->end_latlng[1], "K");
+				/*if ($activity->id == 725690359 || $activity->id == 724625021){
+					echo $distance_direct;
+					echo "\r\n";
+				} */   
+
+				if (is_nan($distance_direct)) $distance_direct = 0;
+					
                 $d_distance = ($distance / 1000 - $distance_direct) / 2;
+				/*if ($activity->id == 725690359 || $activity->id == 724625021){
+					echo $d_distance;
+					echo "\r\n";
+				}*/
 
                 $lat_min = min($activity->start_latlng[0], $activity->end_latlng[0]);
                 $lat_max = max($activity->start_latlng[0], $activity->end_latlng[0]);
                 $lng_min = min($activity->start_latlng[1], $activity->end_latlng[1]);
                 $lng_max = max($activity->start_latlng[1], $activity->end_latlng[1]);
+				/*if ($activity->id == 725690359 || $activity->id == 724625021){
+					echo $lat_min;
+					echo "\r\n";
+					echo $lat_max;
+					echo "\r\n";
+					echo $lng_min;
+					echo "\r\n";
+					echo $lng_max;
+					echo "\r\n";
+				}    */            
 
                 $lat_min -= distanceToLatitude($d_distance);
                 $lat_max += distanceToLatitude($d_distance);
 
                 $lng_min -= distanceToLongitude($d_distance, ($lat_min + $lat_max) / 2);
                 $lng_max += distanceToLongitude($d_distance, ($lat_min + $lat_max) / 2);
+				/*if ($activity->id == 725690359 || $activity->id == 724625021){
+					echo $lat_min;
+					echo "\r\n";
+					echo $lat_max;
+					echo "\r\n";
+					echo $lng_min;
+					echo "\r\n";
+					echo $lng_max;
+					echo "\r\n";
+				}   */             
 				
 				//DB::enableQueryLog();
 			
@@ -112,7 +148,7 @@ class ProcessAthlete implements ShouldQueue
 			//$this->user->save();
 		//}
 		
-		if ($this->page < 10){
+		if ($this->page < 15){
 			ProcessAthlete::dispatch($this->user, $this->athlete, $this->page + 1, $this->access_token)->onQueue('athlete');
 		} else {			
 			$this->finishAthlete();
