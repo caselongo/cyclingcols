@@ -5,6 +5,11 @@ CyclingCols - My CyclingCols
 @stop
 
 @section('content')
+<script type="text/javascript">		
+	$(document).ready(function() {
+		getBanners("#ads","home",5,true);
+	});
+</script>
 
 <?php
 	$isOwner = false;
@@ -108,15 +113,126 @@ CyclingCols - My CyclingCols
 				</div><!--card-footer-->
 			</div>
 			<!-- -->	
-			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>
-			<div class="card mb-3">
-			- cols with photo: climbed on same date earlier year
-			- cols with photo: highest
-			- cols with photo: random
-			- date with most cols climbed
+			<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 1 on sm--></div>		
+			<div class="card card-invisible mb-3">		
+				<div class="card-deck">
+<?php
+	function showRandomCol($col,$header,$count){
+		
+		$coverPhoto = "_Dummy";
+		$coverPhotoPosition = 50;
+		if ($col->CoverPhotoPosition){
+			$coverPhoto = $col->ColIDString;
+			$coverPhotoPosition = $col->CoverPhotoPosition;
+		}
+		
+		$dateString = getHumanDate(Carbon\Carbon::parse($col->pivot->ClimbedAt));
+?>			
+		@if ($count > 0 && $count % 2 == 0)
+					<div class="w-100 d-block"><!-- wrap every 2--></div>
+		@endif	
+					<div class="card mb-3">
+						<div class="card-header p-2">
+							<span>{{$header}}</span>
+						</div>					
+						<div class="card-img-top card-img-background" onclick='goToCol("{{$col->ColIDString}}")' style='background-position: 50% {{$coverPhotoPosition}}%; background-image: url("{{App\Constants::ImagesPath}}/covers/small/{{$coverPhoto}}.jpg")'>
+						</div>	
+						<div class="card-body p-0">
+							<h6 class="card-title p-2 m-0 font-weight-light">
+								<img src="/images/flags/{{$col->Country1}}.gif" title="{{$col->Country1}}" data-toggle="tooltip" class="flag">
+		@if ($col->Country2)
+								<img src="/images/flags/{{$col->Country2}}.gif" title="{{$col->Country2}}" data-toggle="tooltip" class="flag flag2">
+		@endif
+								<a href="/col/{{$col->ColIDString}}">{{$col->Col}}</a>
+								<span class="badge badge-elevation font-weight-light text-small-70">{{$col->Height}}m</span>
+							</h6>
+						</div>
+						<div class="card-footer text-muted">
+							<span class="text-small-75">Climbed At {{$dateString}}</span>
+						</div>				
+					</div>
+<?php	
+	}
+
+	$count = 0;
+	
+	$years = [];
+	$count_ = 0;
+
+	foreach($diff_years as $diff_years_){
+		$years_ = $diff_years_->years;
+		
+		if (!in_array($years_,$years)){
+			switch($years_){
+				case 0:
+					$ago = "Climbed Today";
+					break;
+				case 1:
+					$ago = "Climbed  1 Year Ago";
+					break;
+				default:
+					$ago = "Climbed " . $years_ . " Years Ago";
+					break;
+			}
+
+			showRandomCol($diff_years_, $ago, $count);
+
+			$years[] = $years_;
+			$count++;
+			$count_++;
 			
-			</div>
-		</div>
-	</div>
+			if ($count_ >= 3) break;
+		}
+	}
+
+	$days = [];
+	$count_ = 0;
+
+	foreach($diff_days as $diff_days_){
+		$days_ = $diff_days_->days;
+		
+		if (!in_array($days_,$days)){
+			$ago = "Climbed " . $days_ . " Days Ago";
+
+			showRandomCol($diff_days_, $ago, $count);
+
+			$days[] = $days_;
+			$count++;
+			$count_++;
+			
+			if ($count_ >= 3) break;
+		}
+	}
+
+	$months = [];
+	$count_ = 0;
+
+	foreach($diff_months as $diff_months_){
+		$months_ = $diff_months_->months;
+		if ($months_ < 0) $months_ += 12;
+		
+		if (!in_array($months_,$months)){
+			$ago = "Climbed " . $months_ . " Months Ago";
+
+			showRandomCol($diff_months_, $ago, $count);
+
+			$months[] = $months_;
+			$count++;
+			$count_++;
+			
+			if ($count_ >= 3) break;
+		}
+	}
+?>
+	@if ($count % 2 > 0)
+					<div class="card card-invisible"></div>
+	@endif		
+					<div class="w-100 d-block"><!-- wrap --></div>
+					<div id="ads" class="card card-invisible mb-3 text-center">
+					</div>
+				</div><!--card-deck-->
+			</div><!-- card -->
+		</div><!-- card-columns -->
+	</div><!-- container -->
 </main>
 @stop

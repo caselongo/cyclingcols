@@ -228,13 +228,39 @@ class UserController extends Controller
 
 		$cols = $cols->orderBy($sorttype_current->SortField, $sorttype_current->SortDirection)->paginate(30);
 		
+		$diff_years = $user->cols()
+			->selectRaw("*, YEAR(CURRENT_DATE()) - YEAR(usercol.ClimbedAt) AS years")
+			->whereRaw("MONTH(usercol.ClimbedAt) = MONTH(CURRENT_DATE())")
+			->whereRaw("DAY(usercol.ClimbedAt) = DAY(CURRENT_DATE())")
+			/*->orderBy("pivot_ClimbedAt","DESC")*/
+			->orderByRaw("RAND()")
+			->get();
+		
+		$diff_days = $user->cols()
+			->selectRaw("*, DATEDIFF(CURRENT_DATE(),usercol.ClimbedAt) AS days")
+			->whereRaw("DATEDIFF(CURRENT_DATE(),usercol.ClimbedAt) IN (100,1000)")
+			/*->orderBy("pivot_ClimbedAt","DESC")*/
+			->orderByRaw("RAND()")
+			->get();
+		
+		$diff_months = $user->cols()
+			->selectRaw("*, MONTH(CURRENT_DATE()) - MONTH(usercol.ClimbedAt) AS months")
+			->whereRaw("DAY(usercol.ClimbedAt) = DAY(CURRENT_DATE())")
+			->whereRaw("DATEDIFF(CURRENT_DATE(),usercol.ClimbedAt) < 365")
+			/*->orderBy("pivot_ClimbedAt","DESC")*/
+			->orderByRaw("RAND()")
+			->get();
+		
         return view('pages.usercols')
 			->with('user',$user)
 			->with('sorttypes',$sorttypes)
 			->with('sorttype',$sorttype_current)
 			->with('countries',$countries)
 			->with('country',$country_current)
-			->with('cols',$cols);
+			->with('cols',$cols)
+			->with('diff_years',$diff_years)
+			->with('diff_days',$diff_days)
+			->with('diff_months',$diff_months);
 	}
 	
 	/* service */
