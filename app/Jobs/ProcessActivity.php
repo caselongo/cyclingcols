@@ -174,7 +174,7 @@ class ProcessActivity implements ShouldQueue
 			$now = Carbon::now('Europe/Amsterdam');
 
             $array = [];
-            $col_ = $this->user->cols()->where('cols.ColID', $col->ColID)->first();
+            $col_ = $this->user->colsAll()->where('cols.ColID', $col->ColID)->first();
 
             if ($col_ != null) {
                 $date = Carbon::today();
@@ -196,7 +196,7 @@ class ProcessActivity implements ShouldQueue
                 $array['StravaActivityIDs'] = $stravaActivityIDs;
                 if ($this->date < $date) $array['ClimbedAt'] = $this->date;
 				
-                $this->user->cols()->updateExistingPivot($col->ColID, $array, false);
+                $this->user->colsAll()->updateExistingPivot($col->ColID, $array, false);
             } else {
                 $array['UpdatedAt'] = $now;
                 $array['CreatedAt'] = $now;

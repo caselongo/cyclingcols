@@ -58,6 +58,12 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
             ->withPivot(['ClimbedAt','CreatedAt','UpdatedAt','StravaNew','StravaActivityIDs']);
     }
 
+    public function colsAll()
+	{
+        return $this->belongsToMany(Col::class,'usercol','UserID','ColID',null,'ColID')
+			->withPivot(['ClimbedAt','CreatedAt','UpdatedAt','StravaNew','StravaActivityIDs']);
+    }
+
     public function activities()
 	{
         return $this->hasMany(Activity::class,'UserID','id');
