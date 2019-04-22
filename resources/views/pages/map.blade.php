@@ -102,6 +102,10 @@ CyclingCols - Search On Map
 		$('#map-canvas').height(height);
 	}
 	
+	var removeTooltip = function(){
+		$(".tooltip").remove();
+	}
+	
 	$(window).on('resize', function() {
 		calculatemapheight();
 	});
@@ -127,14 +131,17 @@ CyclingCols - Search On Map
 		map = L.map('map-canvas', mapOptions).on('load', onMapReady).setView([lat, lng], zoom);
 		
 		map.on('zoomend', function() {
+			removeTooltip();
 			showMarkers();
 		});
 		
 		map.on('move', function() {
+			removeTooltip();
 			showMarkers();
 		});	
 		
 		map.on('dragend', function() {
+			removeTooltip();
 			showMarkers();
 		});		
 		
@@ -393,6 +400,11 @@ CyclingCols - Search On Map
 						minZoom: minzooms[i],
 						maxZoom: maxzooms[i]
 					});
+					
+					marker.on("add", function(e){
+						var e = $(e.target._icon);	
+						initToolTip(e);
+					});
 								
 					geos[i] = marker;
 					
@@ -487,6 +499,11 @@ CyclingCols - Search On Map
 						minZoom: minzooms[i],
 						maxZoom: maxzooms[i]
 					});
+					
+					marker.on("add", function(e){
+						var e = $(e.target._icon);	
+						initToolTip(e);
+					});
 								
 					geos[i] = marker;
 					
@@ -567,6 +584,11 @@ CyclingCols - Search On Map
 						lng: lng_,
 						minZoom: minzooms[i],
 						maxZoom: maxzooms[i]
+					});
+					
+					marker.on("add", function(e){
+						var e = $(e.target._icon);	
+						initToolTip(e);
 					});
 								
 					geos[i] = marker;

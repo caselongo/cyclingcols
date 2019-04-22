@@ -22,6 +22,9 @@
 	</div>
 	<div>
 		processing... 
+		<br/>
+		<span class="text-small-75">(this can take a few minutes)</span>
+		<br/>
 		<span class="text-small-75">({{$count}} new col{{ $count != 1 ? "s" : ""}} found so far)</span>
 @elseif ($count > 0)
 		<a href="/strava/cols">

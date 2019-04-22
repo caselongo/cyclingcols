@@ -193,14 +193,14 @@ class UsersController extends Controller
 		$country_all->CountryID = 0;
 		$country_all->Country = "Europe"; 
 		$country_all->URL = "eur"; 
-		$country_all->Flag = "europe"; 		
+		$country_all->Flag = "Europe"; 		
 		$countries->prepend($country_all);	
 		
 		$country_current = null;
 		foreach($countries as $country){
 			if ($country->CountryID > 0){
 				$country->URL = strtolower($country->CountryAbbr);
-				$country->Flag = strtolower($country->Country);
+				$country->Flag = $country->Country;
 			}
 			
 			if ($country->URL == $countryurl){
@@ -274,7 +274,7 @@ class UsersController extends Controller
 			$set = $set->whereExists(function ($query) {
 				$query->select(DB::raw(1))
 					  ->from('useruser')
-					  ->whereRaw('useruser.UserIDFollowing = usercol.UserID AND useruser.UserID = ' . Auth::user()->id);
+					  ->whereRaw('(useruser.UserIDFollowing = usercol.UserID AND useruser.UserID = ' . Auth::user()->id . ') OR users.id = ' . Auth::user()->id);
 			});				
 		}
 				

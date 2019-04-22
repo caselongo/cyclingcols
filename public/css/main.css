@@ -206,7 +206,6 @@ footer{
 	height: 100px;
 	background-size: cover;
 	position: relative;
-	cursor: pointer;
 }
 
 .card-img-new{
@@ -515,7 +514,7 @@ img.ad {
 	float: left;
 	line-height: 1;
 	color: #fff;
-    border: 0.03rem solid #ff8800;
+    border: 0.05rem solid #ff8800;
 }
 
 .bar-big{

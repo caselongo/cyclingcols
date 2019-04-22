@@ -98,7 +98,7 @@ class StatsController extends Controller
 			}
 			
 			if($user != null){
-				$usercol = \App\UserCol::where('ColID',$col->ColID)->first();
+				$usercol = $user->cols()->where('cols.ColID',$col->ColID)->first();
 				
 				if ($usercol){
 					$stat->Climbed = true;
