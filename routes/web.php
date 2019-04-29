@@ -92,6 +92,7 @@ Route::middleware(['ajax'])->group(function () {
 	Route::get('service/col/profile/{fileName}','Col\ColController@_profile');
 	Route::get('service/col/athlete/{colIDString}','Col\ColController@_user');
 	Route::post('service/col/athlete/save/{colIDString}','Col\ColController@_user_save');
+	Route::post('service/col/athlete/delete/{colIDString}','Col\ColController@_user_delete');
 	Route::get('service/col/athletes/{colIDString}','Col\ColController@_users');
 	
 	/* cols */

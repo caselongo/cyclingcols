@@ -37,9 +37,24 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		
 		showCovers("{{$col->ColIDString}}",{{$col->CoverPhotoPosition}});
 		
-@if (Auth::user())
+@auth
 		getUser();
-@endif
+			
+		$('#btn-unclaim-cancel').on('click', function (event) {
+			$('#modal-confirm').modal('hide');
+		});
+			
+		$('#btn-unclaim-okay').on('click', function (event) {	
+			_climbed.climbed = false;
+			
+			showUser();	
+			
+			deleteUserCol("{{$col->ColIDString}}", function(){
+				getUsers();
+				$('#modal-confirm').modal('hide');
+			});
+		});
+@endauth
 
 		getColsNearby();
 		getFirst($("#col-first"),5);
@@ -48,10 +63,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		getUsers();	
 			
 		$('#modal-first').on('show.bs.modal', function (event) {
-			var button = $(event.relatedTarget);
-
-			var modal = $(this);
-			
 			getFirst($("#modal-first").find(".modal-body"));
 		});
 		
@@ -63,31 +74,6 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 		dateSelectCallback = function(){
 			getUsers();
 		};
-		
-		/*var datepickerOptions = {
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: "dd M yy",
-			maxDate: "+0d",
-			onSelect: function(dateText, inst){
-				_climbed.climbedAt = new Date(dateText);
-				_climbed.climbedAtText = dateText;
-				
-				saveUser("{{$col->ColIDString}}", _climbed.climbedAtText, function(){
-					getUsers();
-				});
-			}
-		};
-		
-		$(".col-climbed-date").on("click", function(){
-			$(".ui-datepicker-prev span").hide();
-			$(".ui-datepicker-next span").hide();
-			$(".ui-datepicker-prev span").html("<i class=\"fas fa-chevron-left\"></i>");
-			$(".ui-datepicker-next span").html("<i class=\"fas fa-chevron-right\"></i>");
-			$(this).datepicker( "show" );
-		});*/
-
-
 	});
 	
 	var initMap = function(){
@@ -179,9 +165,11 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 				
 				showUser();	
 				
-				saveUser("{{$col->ColIDString}}", _climbed.climbedAtText, function(){
+				saveUserCol("{{$col->ColIDString}}", _climbed.climbedAtText, function(){
 					getUsers();
 				});
+			} else {
+				$('#modal-confirm').modal('show');
 			}
 		});	
 	}
@@ -610,6 +598,35 @@ $profile_string = $profile_count . " profile" . $profile_string;
 		</div>
 	</div>
 </div>
+@auth
+<div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="modal-confirm-label" aria-hidden="true">
+	<div class="d-flex align-items-center justify-content-around h-100 text-small-90 text-center" style="pointer-events: none">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div>
+						<h6 class="modal-title font-weight-light" id="modal-confirm-label">Unclaim This Col?</h6>
+					</div>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body p-1 font-weight-light" style="max-height: 80vh; overflow-y: auto;">
+					<div class="p-2">Are you sure you want to unclaim this col?</div>
+					<div class="d-flex justify-content-around">
+						<button type="button" class="btn btn-primary" id="btn-unclaim-okay">
+							Okay
+						</button>
+						<button type="button" class="btn btn-secondary" id="btn-unclaim-cancel">
+							Cancel
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@endauth
 @stop
 
 @include('includes.profilemodal')

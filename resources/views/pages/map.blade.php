@@ -106,6 +106,19 @@ CyclingCols - Search On Map
 		$(".tooltip").remove();
 	}
 	
+	var addSearchControl = function(){
+		var searchControl = L.esri.Geocoding.geosearch().addTo(map);
+
+		var results = L.layerGroup().addTo(map);
+
+		searchControl.on('results', function(data){
+			results.clearLayers();
+			for (var i = data.results.length - 1; i >= 0; i--) {
+				results.addLayer(L.marker(data.results[i].latlng));
+			}
+		});		
+	}
+	
 	$(window).on('resize', function() {
 		calculatemapheight();
 	});
@@ -171,23 +184,17 @@ CyclingCols - Search On Map
 			};
 
 			command.addTo(map);	
+			addSearchControl();
 		}, 500);
+@else
+		addSearchControl();
 @endauth
 			
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 		}).addTo(map);
 		
-		var searchControl = L.esri.Geocoding.geosearch().addTo(map);
-
-		var results = L.layerGroup().addTo(map);
-
-		searchControl.on('results', function(data){
-			results.clearLayers();
-			for (var i = data.results.length - 1; i >= 0; i--) {
-				results.addLayer(L.marker(data.results[i].latlng));
-			}
-		});
+		
 	});
 	
 @auth	

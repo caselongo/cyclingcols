@@ -116,7 +116,7 @@ $(document).ready(function() {
 		var colIDString = this_.data("colidstring");
 		
 		var onSelect = function(dateText, inst){
-			saveUser(this_.data("colidstring"), dateText);
+			saveUserCol(this_.data("colidstring"), dateText);
 			
 			var dd = isToday(dateText);
 			var dd1 = isYesterday(dateText);
@@ -519,7 +519,7 @@ var getHumanDate = function(dateText){
 
 /** user **/
 	
-var saveUser = function(colIDString, climbedAtText, callback){
+var saveUserCol = function(colIDString, climbedAtText, callback){
 	$.ajax({
 		type: "POST",
 		url : "/service/col/athlete/save/" + colIDString,
@@ -527,6 +527,20 @@ var saveUser = function(colIDString, climbedAtText, callback){
 			climbedAt: climbedAtText,
 
 		},
+		dataType : 'json',
+		success : function(data) {		
+			if (callback) callback();
+		},
+		error: function(err){
+			
+		}
+	});
+}
+	
+var deleteUserCol = function(colIDString, callback){
+	$.ajax({
+		type: "POST",
+		url : "/service/col/athlete/delete/" + colIDString,
 		dataType : 'json',
 		success : function(data) {		
 			if (callback) callback();

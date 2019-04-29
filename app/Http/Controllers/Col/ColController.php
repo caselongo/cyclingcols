@@ -123,6 +123,25 @@ class ColController extends Controller
 
         return response(['success' => true], 200);
     }
+
+    public function _user_delete(Request $request, $colIDString)
+    {
+		$user = Auth::user();
+
+        if ($user == null) {
+            return response(['success' => false], 404);
+        }
+		
+        $col = Col::where('ColIDString', $colIDString)->first();
+
+        if ($col == null) {
+            return response(['success' => false], 404);
+        }
+		
+		$user->cols()->detach($col->ColID);
+
+        return response(['success' => true], 200);
+    }
 	
     public function _nearby(Request $request, $colIDString)
     {
