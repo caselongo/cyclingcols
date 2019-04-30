@@ -12,6 +12,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 
@@ -47,6 +49,11 @@ class ProcessAthlete implements ShouldQueue
 		//echo $this->page;
 		
 		$activities = $this->getActivities();
+		
+		if (is_null($activities)) {	
+			$this->finishAthlete();
+			return;
+		};
 		
 		echo "UserID: " . $this->user->id . "\r\n";
 		echo "Page: " . $this->page . "\r\n";
@@ -164,30 +171,42 @@ class ProcessAthlete implements ShouldQueue
 
     private function getActivities()
     {
-        $client = new \GuzzleHttp\Client();
+		$client = new \GuzzleHttp\Client();
 
         $headers = [
             'Authorization' => 'Bearer ' . $this->access_token
         ];
+		
+		try{
 
-        $response = $client->request('GET', 'https://www.strava.com/api/v3/athlete/activities', [
-            'query' => [
-                'page' => $this->page,
-                'per_page' => 50
-            ],
-            /*'query' => [
-                'page' => 1,
-                'after' => 1523752202,
-                'before' => 1523838602,
-                'per_page' => 100
-                //before 1538169064
-                //before 1536932064
-                //after 1536786664
+			$response = $client->request('GET', 'https://www.strava.com/api/v3/athlete/activities', [
+				'query' => [
+					'page' => $this->page,
+					'per_page' => 100
+				],
+				/*'query' => [
+					'page' => 1,
+					'after' => 1523752202,
+					'before' => 1523838602,
+					'per_page' => 100
+					//before 1538169064
+					//before 1536932064
+					//after 1536786664
 
-            ],*/
-			'headers' => $headers,
-            'verify' => false
-        ]);
+				],*/
+				'headers' => $headers,
+				'verify' => false
+			]);
+		}
+		catch (RequestException $e) {
+			echo "error";
+			return null;
+			
+			
+			//if ($e->hasResponse()) {
+			//	echo Psr7\str($e->getResponse());
+			//}
+		}
 
         return json_decode($response->getBody()->getContents());
     }

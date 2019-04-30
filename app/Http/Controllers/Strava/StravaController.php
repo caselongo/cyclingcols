@@ -43,7 +43,7 @@ class StravaController extends Controller
 //       $uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=http://localhost:8000/strava/process/#/&approval_prompt=force";
 //		}
 
-		$uri = "https://www.strava.com/oauth/authorize?client_id=" . \App\Constants::StravaClientId . "&response_type=code&redirect_uri=" . $request->getSchemeAndHttpHost() . "/strava/process&scope=activity:read_all";
+		$uri = "https://www.strava.com/oauth/authorize?client_id=" . \App\Constants::StravaClientId . "&response_type=code&redirect_uri=" . $request->getSchemeAndHttpHost() . "/strava/process&scope=activity:read&approval_prompt=force";
 
         return \Redirect::to($uri);
     }
