@@ -612,6 +612,18 @@ img.ad {
 	height: 1.5em;
 }
 
+.list-category{
+	background-color: #f2f3f4;
+	border: 0.03rem solid #ff8800;
+    border-radius: 10px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1.2rem;
+    font-size: 12px;
+}
+
 /*  datepicker */
 
 .ui-datepicker {

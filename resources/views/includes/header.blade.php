@@ -11,6 +11,7 @@
 	$help = ($path == "help");
 	$about = ($path == "about");
 	$map = ($path == "map");
+	$lists = ($path == "list");
 	$login = ($path == "login");
 ?>
 
@@ -87,7 +88,18 @@
 				<span class="sr-only">(current)</span>
 			@endif
 			</a>
-		  </li>  
+		  </li> 
+		  <li class="nav-item font-weight-light
+			@if ($lists)
+				active
+			@endif	  
+			">
+			<a class="nav-link" href="/list">Lists 
+			@if ($lists)
+				<span class="sr-only">(current)</span>
+			@endif
+			</a>
+		  </li>   
 		@auth
 		  <li class="nav-item font-weight-light dropdown">
 			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

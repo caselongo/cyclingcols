@@ -57,6 +57,10 @@ Route::get('help','General\GeneralController@help');
 // About
 Route::get('about','General\GeneralController@about');
 
+//Lists
+Route::get('list','LList\ListController@index_default');
+Route::get('list/{slug}','LList\ListController@index');
+
 // Rides
 Route::get('rides','General\GeneralController@rides');
 
