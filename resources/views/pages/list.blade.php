@@ -29,7 +29,11 @@ CyclingCols - Lists
 				<div class="card-body p-2 font-weight">
 		@foreach($sections_->cols()->orderBy('Sort')->get() as $col)
 <?php
-		$climbed = null;
+			$climbed = null;
+			$col_ = $col->col;
+			if (is_null($col_)){
+				$col->ColID = 0;
+			}
 ?>
 					<div class="font-weight-light text-small-90 d-flex justify-content-between">
 			@if ($col->Category)
@@ -40,7 +44,6 @@ CyclingCols - Lists
 			@endif
 			@if ($col->ColID > 0)
 <?php
-			$col_ = $col->col;
 			if (Auth::user()){
 				$climbed = $col_->climbedByMe();
 			}
