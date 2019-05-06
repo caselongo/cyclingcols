@@ -48,10 +48,10 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-			'host'      => env('DB_HOST',''),  //'localhost',   	//'sql9.pcextreme.nl', 
-			'database'  => env('DB_DATABASE',''), //'cyclingcols', 	//'69432cyclingcols',
-			'username'  => env('DB_USERNAME',''), //'root', 			//'69432website',
-			'password'  => env('DB_PASSWORD',''), //'',				//'w3bs1t3',
+			'host'      => env('DB_HOST',''),
+			'database'  => env('DB_DATABASE',''),
+			'username'  => env('DB_USERNAME',''),
+			'password'  => env('DB_PASSWORD',''),
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

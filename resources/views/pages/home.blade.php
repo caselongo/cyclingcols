@@ -67,7 +67,7 @@ CyclingCols - Main
 				var h = $(window).height();
 				var wh = w;
 				if (h > w) wh = h;
-				path = "{{\App\Constants::ImagesPath}}/covers/";
+				path = "{{env('IMAGES_PATH','\images')}}/covers/";
 				
 				if (wh <= 1024){	 
 					path += "medium/";
