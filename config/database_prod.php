@@ -51,7 +51,7 @@ return array(
 			'host'      => 'dawn-sound.cyclingcols.dbinf.buildingtogether.io',
 			'database'  => 'cyclingcols',
 			'username'  => 'admin',
-			'password'  => '9BUPfggL9BUPfggL',
+			'password'  => '9BUPfggL9BUPfggR',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
