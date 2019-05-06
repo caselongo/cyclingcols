@@ -52,3 +52,6 @@ resources/views/pages/user.blade - Copy.php
 app/Http/Controllers/Strava/StravaController - Copy (2).php
 _temp/
 info.txt
+config/OLDdatabase_local.php
+config/OLDdatabase_prod.php
+config/OLDdatabase_test.php
