@@ -14,7 +14,7 @@ CyclingCols - Search On Map
 	$longitude = 9.7;
 	$zoom_level = 4;
 	
-	$colID = 0;
+	$colIDString = 0;
 	
 	if (isset($country))
 	{
@@ -41,7 +41,7 @@ CyclingCols - Search On Map
 		$latitude = $col->Latitude/1000000;
 		$longitude = $col->Longitude/1000000;
 		$zoom_level = 10;
-		$colID = $col->ColID;
+		$colIDString = $col->ColIDString;
 	}
 ?>	
 
@@ -77,8 +77,6 @@ CyclingCols - Search On Map
 		lat = history.state.latitude;
 		lng = history.state.longitude;
 	}
-	
-	var colID = {{$colID}};
 	
 	var tryShowMarkers = function(count){
 		if (!count) count = 1;
@@ -261,7 +259,6 @@ CyclingCols - Search On Map
 		var names = new Array();
 		var ids = new Array();
 		var heights = new Array();
-		var colMarker = null;
 		
 		$.ajax({
 			type: "GET",
@@ -298,19 +295,21 @@ CyclingCols - Search On Map
 					var lat_ = data[j].Latitude/1000000;
 					var lng_ = data[j].Longitude/1000000;
 					var marker = L.marker([lat_, lng_], markerOptions);
-					marker.ColID = data[j].ColID;
+					marker.ColIDString = data[j].ColIDString;
 @auth					
 					if (data[j].ClimbedAt){
 						marker.on("add", function(e){
 							var e = $(e.target._icon);		
 							e.addClass("col-marker col-marker-climbed");
 							initToolTip(e);
+							showToolTip(e,this.ColIDString);
 						})
 					} else {				
 						marker.on("add", function(e){
 							var e = $(e.target._icon);		
 							e.addClass("col-marker");
 							initToolTip(e);
+							showToolTip(e,this.ColIDString);
 						});
 					}
 					
@@ -318,12 +317,7 @@ CyclingCols - Search On Map
 					marker.on("add", function(e){
 						var e = $(e.target._icon);
 						initToolTip(e);
-						
-						if(this.ColID == {{$colID}}){
-							setTimeout(function(){
-								e.tooltip('show');
-							}, 1000);
-						}
+						showToolTip(e,this.ColIDString);
 					});	
 @endauth
 					
@@ -337,7 +331,7 @@ CyclingCols - Search On Map
 					});
 					
 					names[j] = data[j].Col;
-					ids[j] = data[j].ColID;
+					ids[j] = data[j].ColIDString;
 					heights[j] = data[j].Height						
 					cols[j] = marker;
 					
@@ -346,14 +340,6 @@ CyclingCols - Search On Map
 						var url = "/col/" + data[j].ColIDString;
 					
 						addClickCols(cols[j], title, url);	
-						
-						if (parseInt(data[j].ColID) == colID){
-							colMarker = {
-								marker: marker,
-								title: title,
-								url: url
-							};
-						}
 					})(j);					
 				}
 				
@@ -362,6 +348,15 @@ CyclingCols - Search On Map
 			}
 		})
 	};	
+	
+	var showToolTip = function(e,colIDString){		
+		if(colIDString == "{{$colIDString}}"){
+			setTimeout(function(){
+				e.tooltip('show');
+			}, 1000);
+		}
+	}
+					
 			
 	var getCountries = function() {	
 		var geos = new Array();

@@ -104,6 +104,10 @@ a {outline:0;}
     border-bottom-right-radius: 0;
 }
 
+.ui-helper-hidden-accessible{
+	display: none;
+}
+
 /*
 .searchitemflag {
     width: 20px;
