@@ -13,6 +13,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
+					<div class="modal-remarks text-small-75 text-muted"></div>
 					<img class="profile-img" src="" data-path="{{\App\Constants::ProfilesPath}}"></img>
 				</div>
 				<div class="modal-footer p-0 text-small-75 d-flex justify-content-start align-items-start">

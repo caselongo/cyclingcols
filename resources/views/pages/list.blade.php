@@ -70,7 +70,7 @@ $profile = null;
 							<img class="direction" src="/images/{{$profile->Side}}.png">
 						</div>
 						<div class="ml-2">
-							<a tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-profile="{{$profile->FileName}}" data-col="{{$col->Col}}">
+							<a tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-profile="{{$profile->FileName}}" data-col="{{$col_->Col}}" data-remarks="{{$col->Remarks}}">
 								<i class="fas fas-grey  fa-search-plus"></i>
 							</a>
 						</div>

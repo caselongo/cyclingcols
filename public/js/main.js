@@ -65,6 +65,7 @@ $(document).ready(function() {
 		var button = $(event.relatedTarget);
 		var fileName = button.data('profile');
 		var col = button.data('col');
+		var remarks = button.data('remarks');
  
 		var modal = $(this);
 		modal.find('.modal-content').hide();
@@ -81,6 +82,12 @@ $(document).ready(function() {
 				} else {
 					modal.find('.modal-title-secondary').text("");  
 				}
+				if (remarks){
+					modal.find('.modal-remarks').text(remarks); 
+				} else {
+					modal.find('.modal-remarks').text(""); 
+				}
+				
 				var img = modal.find('.profile-img');
 				img.attr("src",img.data("path") + "/" + data.FileName + ".gif");
 				
