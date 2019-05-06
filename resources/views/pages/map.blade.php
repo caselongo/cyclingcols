@@ -171,7 +171,7 @@ CyclingCols - Search On Map
 			command.onAdd = function (map) {
 				var div = L.DomUtil.create('div', 'command');
 
-				div.innerHTML = '<div class="leaflet-bar climbed-control d-flex align-items-center justify-content-around" title="Show only climbed cols"><a><i class="fas fa-check"></i></a></div>'; 
+				div.innerHTML = '<div class="leaflet-bar climbed-control d-flex align-items-center justify-content-around" title="Only show cols climbed by you"><a><i class="fas fa-check climbed-control-checked"></i></a></div>'; 
 				
 				initToolTip($(div).find(".leaflet-bar"));
 				
@@ -298,6 +298,7 @@ CyclingCols - Search On Map
 					var lat_ = data[j].Latitude/1000000;
 					var lng_ = data[j].Longitude/1000000;
 					var marker = L.marker([lat_, lng_], markerOptions);
+					marker.ColID = data[j].ColID;
 @auth					
 					if (data[j].ClimbedAt){
 						marker.on("add", function(e){
@@ -312,6 +313,18 @@ CyclingCols - Search On Map
 							initToolTip(e);
 						});
 					}
+					
+@else 
+					marker.on("add", function(e){
+						var e = $(e.target._icon);
+						initToolTip(e);
+						
+						if(this.ColID == {{$colID}}){
+							setTimeout(function(){
+								e.tooltip('show');
+							}, 1000);
+						}
+					});	
 @endauth
 					
 					markers.push({

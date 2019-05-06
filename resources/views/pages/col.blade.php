@@ -86,7 +86,7 @@ http://www.cyclingcols.com/profiles/{{$profiles->first()->FileName}}.gif
 			zoomControl: false,
 			dragging: false
 		};
-		var map = L.map('map', mapOptions).setView([lat, lng], 4);
+		var map = L.map('map', mapOptions).setView([lat, lng], 6);
 		map.scrollWheelZoom.disable();
 		
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

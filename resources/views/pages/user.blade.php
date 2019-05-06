@@ -286,10 +286,10 @@ CyclingCols - My CyclingCols
 					</div>
 					<div class="p-2">
 						<div>Explore your cols in a map <a href="/map">here</a>.</div>
-						<div>Make sure this checkbox is turned on and zoom in.</div>
+						<!--<div>Make sure this checkbox is turned on and zoom in.</div>
 						<div class="d-flex justify-content-around mt-1">
 							<div class="command leaflet-control"><div class="leaflet-bar climbed-control d-flex align-items-center justify-content-around"><a style="outline: none;"><i class="fas fa-check climbed-control-checked"></i></a></div></div>
-						</div>
+						</div>-->
 					</div>
 				</div>
 			</div>
