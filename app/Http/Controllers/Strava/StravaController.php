@@ -43,7 +43,8 @@ class StravaController extends Controller
 //       $uri = "https://www.strava.com/oauth/authorize?client_id=8752&response_type=code&redirect_uri=http://localhost:8000/strava/process/#/&approval_prompt=force";
 //		}
 
-		$uri = "https://www.strava.com/oauth/authorize?client_id=" . \App\Constants::StravaClientId . "&response_type=code&redirect_uri=" . $request->getSchemeAndHttpHost() . "/strava/process&scope=activity:read&approval_prompt=force";
+		//$uri = "https://www.strava.com/oauth/authorize?client_id=" . \App\Constants::StravaClientId . "&response_type=code&redirect_uri=" . $request->getSchemeAndHttpHost() . "/strava/process&scope=activity:read&approval_prompt=force";
+		$uri = "https://www.strava.com/oauth/authorize?client_id=" . env('STRAVA_CLIENTID', '0') . "&response_type=code&redirect_uri=" . $request->getSchemeAndHttpHost() . "/strava/process&scope=activity:read&approval_prompt=force";
 
         return \Redirect::to($uri);
     }
@@ -64,8 +65,8 @@ class StravaController extends Controller
 		
 		$response_athlete = $client->request('POST', 'https://www.strava.com/oauth/token', [
             'form_params' => [
-                'client_id' => \App\Constants::StravaClientId,
-                'client_secret' => \App\Constants::StravaClientSecret,
+                'client_id' => env('STRAVA_CLIENTID', '0'),
+                'client_secret' => env('STRAVA_CLIENTSECRET', '0'),
                 'code' => $code
             ],
             /*'stream_context' => [

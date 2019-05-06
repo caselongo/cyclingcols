@@ -9,7 +9,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<img class="ride-img" src="" data-path="{{\App\Constants::ToursPath}}"></img>
+					<img class="ride-img" src="" data-path="{{env('TOURS_PATH','/tours')}}"></img>
 				</div>
 			</div>
 		</div>

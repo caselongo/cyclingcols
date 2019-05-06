@@ -159,7 +159,7 @@ showRides = function(){
 		var profile = "";
 		if (r.FileName){
 			
-			profile = "<a tabindex=\"0\" role=\"button\" data-toggle=\"modal\" data-target=\"#modalRide\" data-ride=\"" + r.FileName + "\" data-date=\"" + r.Date + "\"><img class=\"ride-profile\" src=\"{{\App\Constants::ToursPath}}/" + r.FileName + ".gif\"></img></a>";
+			profile = "<a tabindex=\"0\" role=\"button\" data-toggle=\"modal\" data-target=\"#modalRide\" data-ride=\"" + r.FileName + "\" data-date=\"" + r.Date + "\"><img class=\"ride-profile\" src=\"{{env('TOURS_PATH','/tours')}}/" + r.FileName + ".gif\"></img></a>";
 		}
 		
 		var class_ = "ride-index-4";

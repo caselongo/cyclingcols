@@ -14,7 +14,7 @@
 				</div>
 				<div class="modal-body">
 					<div class="modal-remarks text-small-75 text-muted"></div>
-					<img class="profile-img" src="" data-path="{{\App\Constants::ProfilesPath}}"></img>
+					<img class="profile-img" src="" data-path="{{env('PROFILES_PATH','/profiles')}}"></img>
 				</div>
 				<div class="modal-footer p-0 text-small-75 d-flex justify-content-start align-items-start">
 					<div class="stat1 px-2 py-1 border m-2" title="Distance" data-toggle="tooltip">
