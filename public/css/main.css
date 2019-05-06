@@ -14,6 +14,9 @@ footer{
 	z-index: 1000;
 }
 
+button:focus {outline:0;}
+a {outline:0;}
+
 .navbar-nav{
 	flex-grow: 1;
 }
@@ -180,6 +183,10 @@ footer{
 
 .flag-big{
 	height: 1.6em!important;
+}
+
+.flag-small{
+	height: 0.6em!important;
 }
 
 /* panels */

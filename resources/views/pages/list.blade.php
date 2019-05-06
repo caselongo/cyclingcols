@@ -14,19 +14,19 @@ CyclingCols - Lists
 @endif
 	</div>	
 	<div class="w-100 d-flex align-items-start flex-wrap">
-		<div class="w-100 w-sm-25 p-3"><!--sidebar-->
+		<div class="w-100 w-md-25 p-3"><!--sidebar-->
 @foreach($lists as $lists_)
 			<a href="/list/{{$lists_->Slug}}">{{$lists_->Name}}</a>
 @endforeach
 		</div>		
-		<div class="w-100 w-sm-50 p-3"><!-- w-75 -->
+		<div class="w-100 w-md-50 p-3"><!-- w-75 -->
 @if (!is_null($list))
 	@foreach($sections as $sections_)
 			<div class="card mb-1">
 				<div class="card-header p-2">
 					{{$sections_->Name}}
 				</div>
-				<div class="card-body p-2 font-weight">
+				<div class="card-body px-2 py-1 font-weight">
 		@foreach($sections_->cols()->orderBy('Sort')->get() as $col)
 <?php
 			$climbed = null;
@@ -35,7 +35,7 @@ CyclingCols - Lists
 				$col->ColID = 0;
 			}
 ?>
-					<div class="font-weight-light text-small-90 d-flex justify-content-between">
+					<div class="font-weight-light text-small-90 d-flex justify-content-between mt-1 align-items-baseline">
 			@if ($col->Category)
 						<div class="list-category mr-1" title="Category" data-toggle="tooltip">{{$col->Category}}</div>
 			@endif
@@ -56,8 +56,29 @@ CyclingCols - Lists
 					@endif
 						<a href="/col/{{$col_->ColIDString}}">{{$col_->Col}}</a>
 				@endif
+				<?php
+$profile = null;
+				if ($col->ProfileID > 0){
+					$profile = \App\Profile::where('ProfileID','=',$col->ProfileID)->first();
+					
+				}
+
+?>				
+				@if (!is_null($profile))
+						<div>
+							<span class="text-small-75 ml-1">{{$profile->Side}}</span>
+							<img class="direction" src="/images/{{$profile->Side}}.png">
+						</div>
+						<div class="ml-2">
+							<a tabindex="0" role="button" data-toggle="modal" data-target="#modalProfile" data-profile="{{$profile->FileName}}" data-col="{{$col->Col}}">
+								<i class="fas fas-grey  fa-search-plus"></i>
+							</a>
+						</div>
+				@endif
 
 			@endif
+			
+
 <?php
 		if (is_null($climbed)){
 ?>
@@ -77,6 +98,18 @@ CyclingCols - Lists
 		}
 ?>					
 					</div>
+			@if ($list->EventID > 0)
+<?php
+	$last = $col->lastPassage($list->EventID);
+?>
+				@if (!is_null($last))
+						<div class="d-flex font-weight-light ml-4 align-items-end">
+							<span class="text-small-75 mr-1">Last time in {{$last->eventShort()}}: {{$last->Edition}}</span>
+							<div class="text-small-75 mr-1">{{$last->Person}}</div>
+							<img class="flag flag-small" src='/images/flags/small/{{strtolower($last->NatioAbbr)}}.gif' title='{{$last->Natio}}'/>
+						</div>
+				@endif
+			@endif
 		@endforeach
 				</div>
 			</div>
@@ -84,7 +117,7 @@ CyclingCols - Lists
 @endif
 		</div><!-- w-75 -->
 		
-		<div class="w-100 w-sm-25 p-3"><!--sidebar-->
+		<div class="w-100 w-md-25 p-3"><!--sidebar-->
 @if (!is_null($list))
 			<div class="card mb-1">
 				<div class="card-header p-2">
@@ -125,3 +158,5 @@ CyclingCols - Lists
 	</div><!--container-->
 </main>
 @stop
+
+@include('includes.profilemodal')

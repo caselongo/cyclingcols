@@ -13,4 +13,12 @@ class ListCol extends Model
 	{
         return $this->hasOne(Col::class,'ColID','ColID');
     }
+	
+	public function lastPassage($eventId)
+	{
+		return \App\Passage::where('EventID','=',$eventId)
+			->where('ColID','=',$this->ColID)
+			->orderBy('Edition','DESC')
+			->first();
+	}
 }
