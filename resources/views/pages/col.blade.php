@@ -548,16 +548,21 @@ $profile_string = $profile_count . " profile" . $profile_string;
 ?>
 		</div>
 		<div class="w-100 w-lg-25 px-3 pl-md-0 py-3"><!--sidebar-->
-			<div class="col-box w-100 mb-3">
+			<div class="col-box w-100 mb-1">
 				<div id="map" class="col-map">
 				</div>
+			</div>
+			<div class="w-100 mb-1 text-small-75 text-muted text-center font-weight-light p-1">
+				Coordinates incorrect? Or something else missing? Let me know at <a href="mailto:info@cyclingcols.com">info@cyclingcols.com</a>.
+			</div>
+			<div class="col-box w-100 mb-2">
 				<div>
 					<h6 class="font-weight-light p-2 m-0 border-bottom">Cols Nearby</h6>
 					<div id="col-nearby" class="font-weight-light px-2 py-1">
 					</div>
 				</div>				
 			</div>
-			<div id="ads" class="w-100 mb-3 text-center p-1">			
+			<div id="ads" class="w-100 mb-2 text-center p-1">			
 			</div>
 			<div class="col-box w-100 mb-3">
 				<div class="p-2 border-bottom d-flex align-items-center">
