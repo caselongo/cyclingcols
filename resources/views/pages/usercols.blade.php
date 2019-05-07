@@ -135,7 +135,7 @@ CyclingCols - My CyclingCols
 						<div class="card-header p-2">
 							<span>{{$header}}</span>
 						</div>					
-						<div class="card-img-top card-img-background" onclick='goToCol("{{$col->ColIDString}}")' style='background-position: 50% {{$coverPhotoPosition}}%; background-image: url("{{App\Constants::ImagesPath}}/covers/small/{{$coverPhoto}}.jpg")'>
+						<div class="card-img-top card-img-background" onclick='goToCol("{{$col->ColIDString}}")' style='background-position: 50% {{$coverPhotoPosition}}%; background-image: url("{{env('IMAGES_PATH','\images')}}/covers/small/{{$coverPhoto}}.jpg")'>
 						</div>	
 						<div class="card-body p-0">
 							<h6 class="card-title p-2 m-0 font-weight-light">
