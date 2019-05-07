@@ -46,6 +46,7 @@ class UsersController extends Controller
 	
 		/* users */
 		$users_most = User::join('usercol','usercol.UserID', '=', 'users.id')
+			->where('StravaNew','=',0)
 			->groupBy('users.id')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
 			->limit(5)
@@ -54,6 +55,7 @@ class UsersController extends Controller
 		$users_most_me = $user->cols()->count();
 			
 		$users_most_year = User::join('usercol','usercol.UserID', '=', 'users.id')
+			->where('StravaNew','=',0)
 			->where('ClimbedAt','>=',Carbon::now()->startOfYear())
 			->groupBy('users.id')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
@@ -63,6 +65,7 @@ class UsersController extends Controller
 		$users_most_year_me = $user->cols()->wherePivot('ClimbedAt','>=',Carbon::now()->startOfYear())->count();
 			
 		$users_most_following = User::join('usercol','usercol.UserID', '=', 'users.id')
+			->where('StravaNew','=',0)
 			->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                       ->from('useruser')
@@ -76,12 +79,14 @@ class UsersController extends Controller
 			
 		/* cols */
 		$cols_most = Col::join('usercol','usercol.ColID', '=', 'cols.ColID')
+			->where('StravaNew','=',0)
 			->groupBy('cols.ColID')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
 			->limit(5)
 			->get(['cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2', DB::raw('count(usercol.id) as users')]);
 			
 		$cols_most_year = Col::join('usercol','usercol.ColID', '=', 'cols.ColID')
+			->where('StravaNew','=',0)
 			->where('ClimbedAt', '>=', Carbon::now()->startOfYear())
 			->groupBy('cols.ColID')
 			->orderBy(DB::raw('count(usercol.id)'), 'DESC')
@@ -89,6 +94,7 @@ class UsersController extends Controller
 			->get(['cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2', DB::raw('count(usercol.id) as users')]);
 		
 		$cols_most_following = Col::join('usercol','usercol.ColID', '=', 'cols.ColID')
+			->where('StravaNew','=',0)
 			->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                       ->from('useruser')
@@ -103,6 +109,7 @@ class UsersController extends Controller
 		/* following */
 		$following = Auth::user()->following()
 			->join('usercol', 'useruser.UserIDFollowing', 'usercol.UserID')
+			->where('StravaNew','=',0)
 			->join('cols', 'usercol.ColID', 'cols.ColID')
 			->select('users.id', 'users.name', 'users.slug', 'usercol.ColID', 'usercol.ClimbedAt', 'cols.ColIDString', 'cols.Col', 'cols.Country1', 'cols.Country2')
 			->orderBy('usercol.climbedAt', 'DESC')
@@ -116,6 +123,7 @@ class UsersController extends Controller
 			
 		foreach($countries as $country){
 			$col = Col::join('usercol','usercol.ColID', '=', 'cols.ColID')
+				->where('StravaNew','=',0)
 				->whereRaw('cols.Country1ID = ' . $country->CountryID)
 				->orWhereRaw('cols.Country2ID = ' . $country->CountryID)
 				->groupBy('cols.ColID')
@@ -246,10 +254,12 @@ class UsersController extends Controller
 		
 		
 		if ($page == "pages.userscols"){
-			$set = Col::join('usercol', 'usercol.ColID', '=', 'cols.ColID');
+			$set = Col::join('usercol', 'usercol.ColID', '=', 'cols.ColID')
+				->where('StravaNew','=',0);
 		
 		} else if ($page == "pages.usersathletes"){
 			$set = User::join('usercol', 'usercol.UserID', '=', 'users.id')
+						->where('StravaNew','=',0)
 						->join('cols', 'cols.ColID', '=', 'usercol.ColID');
 		}
 		
