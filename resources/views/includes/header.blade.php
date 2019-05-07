@@ -139,5 +139,10 @@
 		@endif
 	  </div>
 	</nav>
+	<div class="bg-dark font-weight-light text-white px-5 text-center text-small-90">
+		<span class="px-2">Welcome at the new CyclingCols website!</span>
+		<span class="px-2"><a href="/register">Register</a> and create your own cols list.</span>
+		<span class="px-2"><a href="/list/giro_d_italia_2019">Discover</a> the cols the Giro d'Italia 2019 <img class="flag" src="/images/flags/Italy.gif"></span>
+	</div>
 </header>
 
