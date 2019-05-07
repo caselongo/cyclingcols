@@ -38,7 +38,7 @@ class UsersController extends Controller
 		
 		$total_lastyear = UserCol::where('ClimbedAt','<',Carbon::now()->startOfYear())->where('ClimbedAt','>=',Carbon::now()->addYear(-1)->startOfYear())->count();
 		
-		$users = User::count();
+		$users = User::whereNotNull('email_verified_at')->count();
 		$users_following = $user->following()->count();
 		$users_followed = $user->followed()->count();
 		
