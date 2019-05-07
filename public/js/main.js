@@ -451,7 +451,7 @@ var getTopStats = function(colIDString,profileFileName) {
 							if (data[i].GeoID == data[i].Country1ID) geo = data[i].Country1;
 							else if (data[i].GeoID == data[i].Country2ID) geo = data[i].Country2;
 						}
-						geo = geo.toLowerCase();
+						
 						var geo_img = "<img src='/images/flags/" + geo + ".gif' class='flag pr-1' title='" + geo + "'/>";
 						var el = el_.find(".stat" + data[i].StatTypeID);
 						var el2 = document.createElement("div");
