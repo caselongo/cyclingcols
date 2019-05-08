@@ -38,11 +38,33 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
     public static function boot()
     {
         parent::boot();
-
+		
         static::saving(function ($model) {
-            $model->slug = Str::slug($model->name, '-');
+			if (is_null($model->slug)){
+				$model->slug = $model->get_slug($model->name);
+			}
         });
     }
+	
+	private function get_slug($name){
+		$slug = Str::slug($name, '-');
+		$slug_ = $slug;
+		$suffix = 0;
+		
+		while($this->slug_exists($slug_)){
+			$suffix++;
+			$slug_ = $slug . $suffix;
+		}
+
+		return $slug_;
+	}
+	
+	private function slug_exists($slug)
+	{
+		$user = User::where('slug','=',$slug)->first();
+		
+		return !is_null($user);
+	}
 
     public function cols()
 	{
