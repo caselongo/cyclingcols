@@ -129,6 +129,21 @@ class ProcessActivity implements ShouldQueue
             else if ($lng > $lng_max) $lng_max = $lng;
         }
 		
+		/*$this->activity->update([
+			'LatitudeMin' => $lat_min * 1000000,
+			'LatitudeMax' => $lat_max * 1000000,
+			'LongitudeMin' => $lng_min * 1000000,
+			'LongitudeMax' => $lng_max * 1000000
+		]);*/
+		
+		//echo $this->activity->LatitudeMin;
+		
+		$this->activity->LatitudeMin = $lat_min * 1000000;
+		$this->activity->LatitudeMax = $lat_max * 1000000;
+		$this->activity->LongitudeMin = $lng_min * 1000000;
+		$this->activity->LongitudeMax = $lng_max * 1000000;
+		$this->activity->save();
+		
 		//echo "\r\n2\r\n";
 		//echo Carbon::now();
 
