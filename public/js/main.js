@@ -141,6 +141,7 @@ $(document).ready(function() {
 		var options = {
 			changeMonth: true,
 			changeYear: true,
+			yearRange: "1970:+0",
 			dateFormat: "dd M yy",
 			maxDate: "+0d",
 			beforeShow: beforeShow
