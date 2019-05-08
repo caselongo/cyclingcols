@@ -55,3 +55,6 @@ info.txt
 config/OLDdatabase_local.php
 config/OLDdatabase_prod.php
 config/OLDdatabase_test.php
+.env.local
+.env.test
+.env.production
