@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\User;
+use App\Col;
 
 use Carbon\Carbon;
 
@@ -67,9 +68,24 @@ class ProcessAthlete implements ShouldQueue
         $cols = array();
 		
         foreach ($activities as $activity) {
-			$activity_existing = $this->user->activities->where('ActivityID', $activity->id)->first();
+			if ($activity->type != "Ride") continue;
 			
-            if ($activity_existing == null && $activity->type == "Ride") { //new activity
+			$process = true;
+			
+			$activity_ = $this->user->activities->where('ActivityID', $activity->id)->first();
+			
+			if (!is_null($activity_)){
+				$cols = Col::where('Latitude','>=',$activity_->LatitudeMin)
+					->where('Latitude','<=',$activity_->LatitudeMax)
+					->where('Longitude','>=',$activity_->LongitudeMin)
+					->where('Longitude','<=',$activity_->LongitudeMax)
+					->where('Modified','>',$activity_->UpdatedAt)
+					->count();
+					
+				$process = ($cols > 0);
+			}
+			
+            if ($process) { //new activity
 			    $date = new Carbon($activity->start_date_local);
                 $date->setTime(0, 0, 0);
 
@@ -126,19 +142,25 @@ class ProcessAthlete implements ShouldQueue
 				}   */             
 				
 				//DB::enableQueryLog();
-			
-				$activity = $this->user->activities()->create([
-					//'CreatedAt' => Carbon::now('Europe/Amsterdam'),
-					//'UpdatedAt' => Carbon::now('Europe/Amsterdam'),
-					'AthleteID' => $this->athlete->id,
-					'ActivityID' => $activity->id,
-					'LatitudeMin' => $lat_min * 1000000,
-					'LatitudeMax' => $lat_max * 1000000,
-					'LongitudeMin' => $lng_min * 1000000,
-					'LongitudeMax' => $lng_max * 1000000
-				]);
 				
-				ProcessActivity::dispatch($this->user, $activity, $date, $this->access_token)->onQueue('activity');
+				if (!is_null($activity_)){
+					$activity_->UpdatedAt = Carbon::now('Europe/Amsterdam');
+					$activity_->save();
+				} else {
+					$activity_ = $this->user->activities()->create([
+						//'CreatedAt' => Carbon::now('Europe/Amsterdam'),
+						//'UpdatedAt' => Carbon::now('Europe/Amsterdam'),
+						'AthleteID' => $this->athlete->id,
+						'ActivityID' => $activity->id,
+						'LatitudeMin' => $lat_min * 1000000,
+						'LatitudeMax' => $lat_max * 1000000,
+						'LongitudeMin' => $lng_min * 1000000,
+						'LongitudeMax' => $lng_max * 1000000
+					]);
+					
+				}
+				
+				ProcessActivity::dispatch($this->user, $activity_, $date, $this->access_token)->onQueue('activity');
 				//ProcessActivity::dispatch($this->user, $activity, $date, $this->access_token)->delay(10);
             }
         }
