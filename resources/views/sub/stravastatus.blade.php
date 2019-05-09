@@ -1,11 +1,13 @@
 <div>Initialize or update your cols list with Strava</div>
 <div class="p-1">
 @if ($strava_processing)
-	<a class="btn btn-primary disabled">
+	<a class="btn p-0 disabled">
+		<img src="/images/strava/btn_strava_connectwith_orange.png"></img>
 @else
-	<a class="btn btn-primary" href="/strava/connect">
+	<a class="btn p-0" href="/strava/connect">
+		<img src="/images/strava/btn_strava_connectwith_orange.png"></img>
 @endif
-		Connect with Strava
+		
 	</a>
 </div>
 <div id="stravastatus">

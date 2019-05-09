@@ -273,8 +273,8 @@ CyclingCols - My CyclingCols
 					<div class="p-2 text-center" id="stravastatus">
 						<div>Initialize or update your cols list with Strava</div>
 						<div class="p-1">
-							<a class="btn btn-primary disabled" href="/strava/connect">
-								Connect with Strava
+							<a class="btn p-0 disabled">
+								<img src="/images/strava/btn_strava_connectwith_orange.png"></img>
                             </a>
 						</div>
 						<div id="stravastatus">
@@ -384,7 +384,7 @@ CyclingCols - My CyclingCols
 							</div>
 							<div class="ml-1 text-small-75 text-centre font-weight-light" style="flex: 0 0 15px;">
 		@if ($climbed_->pivot->StravaActivityIDs != null)
-								<div class="pointer" onclick="openActivities('{{$climbed_->pivot->StravaActivityIDs}}'); return false;">
+								<div class="pointer viewonstrava" onclick="openActivities('{{$climbed_->pivot->StravaActivityIDs}}'); return false;" title="View on Strava" data-toggle="tooltip">
 									<img src="/images/strava.png"/ class="w-100 strava-icon">
 								</div>
 		@endif
