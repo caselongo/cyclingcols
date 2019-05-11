@@ -284,7 +284,7 @@ class UsersController extends Controller
 			$set = $set->whereExists(function ($query) {
 				$query->select(DB::raw(1))
 					  ->from('useruser')
-					  ->whereRaw('(useruser.UserIDFollowing = usercol.UserID AND useruser.UserID = ' . Auth::user()->id . ') OR users.id = ' . Auth::user()->id);
+					  ->whereRaw('(useruser.UserIDFollowing = usercol.UserID AND useruser.UserID = ' . Auth::user()->id . ') OR usercol.UserID = ' . Auth::user()->id);
 			});				
 		}
 				
