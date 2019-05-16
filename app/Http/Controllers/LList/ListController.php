@@ -25,26 +25,27 @@ class ListController extends Controller
 		
 		$list = null;
 		$sections = null;
+		$users = null;
 		
 		if (!is_null($slug)){
 			$list = LList::where('Slug',$slug)->first();
 			if (!is_null($list)){
 				$sections = $list->sections()->orderBy('Sort')->get();
+				
+				//users		
+				$users = User::join('usercol', 'usercol.UserID', '=', 'users.id')
+								->join('cols', 'cols.ColID', '=', 'usercol.ColID')
+								->join('listcol', 'listcol.ColID', '=', 'usercol.ColID')
+								->where('listcol.ListID','=',$list->ID);
+					
+				$users = $users			
+					->groupBy('users.id')
+					->orderBy(DB::raw('count(listcol.ID)'), 'DESC')
+					->select('users.id', 'users.name', 'users.slug', DB::raw('count(listcol.id) as count'))
+					->limit(10)
+					->get();						
 			}
 		}
-		
-		//users
-		
-		$users = User::join('usercol', 'usercol.UserID', '=', 'users.id')
-						->join('cols', 'cols.ColID', '=', 'usercol.ColID')
-						->join('listcol', 'listcol.ColID', '=', 'usercol.ColID');
-			
-		$users = $users			
-			->groupBy('users.id')
-			->orderBy(DB::raw('count(listcol.ID)'), 'DESC')
-			->select('users.id', 'users.name', 'users.slug', DB::raw('count(listcol.id) as count'))
-			->limit(10)
-			->get();
        	
         return view('pages.list')
 			->with('lists',$lists)
