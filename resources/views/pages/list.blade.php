@@ -190,7 +190,7 @@ $profile = null;
 		
 		<div class="w-100 w-md-50 w-lg-25 p-3"><!--sidebar-->
 @if (!is_null($list))
-			<div class="card mb-1">
+			<div class="card mb-3">
 				<div class="card-header p-2">
 					Most Cols In This List Climbed
 				</div>
@@ -224,7 +224,7 @@ $profile = null;
 					<span class="text-small-75">{{$list->colCount()}} cols in this list</span>
 				</div><!--card-footer-->
 			</div>
-			<div class="col-box w-100 mb-3 h-100">
+			<div class="col-box w-100 mb-1 h-100">
 				<div id="map" class="col-map">
 				</div>			
 			</div>	
