@@ -16,16 +16,18 @@ CyclingCols - Lists
 	<div class="w-100 d-flex align-items-start flex-wrap">
 		<div class="w-100 w-md-25 p-3"><!--sidebar-->
 @foreach($lists as $lists_)
-			<a href="/list/{{$lists_->Slug}}">{{$lists_->Name}}</a>
+			<a class="d-block" href="/list/{{$lists_->Slug}}">{{$lists_->Name}}</a>
 @endforeach
 		</div>		
 		<div class="w-100 w-md-50 p-3"><!-- w-75 -->
 @if (!is_null($list))
 	@foreach($sections as $sections_)
 			<div class="card mb-1">
+		@if (!is_null($sections_->Name))
 				<div class="card-header p-2">
 					{{$sections_->Name}}
 				</div>
+		@endif
 				<div class="card-body px-2 py-1 font-weight">
 		@foreach($sections_->cols()->orderBy('Sort')->get() as $col)
 <?php
