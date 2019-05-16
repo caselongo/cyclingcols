@@ -1,7 +1,11 @@
 @extends('layouts.master')
 
 @section('title')
-CyclingCols - Lists
+	@if (is_null($list))
+		CyclingCols - Lists
+	@else
+		CyclingCols - Lists - {{$list->Name}}
+	@endif
 @stop
 
 @section('content')
@@ -18,16 +22,17 @@ $rank_ = 0;
 $stattypeid_ = 0;
 $value_ = 0;
 
-foreach($sections as $sections_){
-	foreach($sections_->cols()->orderBy('Sort')->get() as $col){
-		if ($col->ColID > 0){
+if (!is_null($sections)){
+	foreach($sections as $sections_){
+		foreach($sections_->cols()->orderBy('Sort')->get() as $col){
+			if ($col->ColID > 0){
 ?>
 		markers.push({lat:{{$col->col->Latitude/1000000}},lng:{{$col->col->Longitude/1000000}},colIDString:"{{$col->col->ColIDString}}",title:"{{$col->col->Col}}"});
 <?php
+			}
 		}
 	}
 }
-
 ?>
 
 	var mapOptions = {
