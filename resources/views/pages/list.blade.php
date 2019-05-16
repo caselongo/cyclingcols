@@ -6,6 +6,70 @@ CyclingCols - Lists
 
 @section('content')
 
+<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+<script type="text/javascript">	
+	window.onload = function(){
+		var markers = [];
+		
+<?php
+
+$rankpos_ = 0;
+$rank_ = 0;
+$stattypeid_ = 0;
+$value_ = 0;
+
+foreach($sections as $sections_){
+	foreach($sections_->cols()->orderBy('Sort')->get() as $col){
+		if ($col->ColID > 0){
+?>
+		markers.push({lat:{{$col->col->Latitude/1000000}},lng:{{$col->col->Longitude/1000000}},colIDString:"{{$col->col->ColIDString}}",title:"{{$col->col->Col}}"});
+<?php
+		}
+	}
+}
+
+?>
+
+	var mapOptions = {
+		attributionControl: false,
+		zoomControl: true,
+		dragging: true
+	};
+	var map = L.map('map', mapOptions);//.setView([lat, lng], 4
+	map.fitBounds(markers.map(function(m){
+		return [m.lat, m.lng];
+	}),{padding: [20,20]});
+	map.scrollWheelZoom.disable();
+	
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+	
+	var icon = L.icon({
+		iconUrl: '/images/ColRed.png'	,
+		iconAnchor: [16,35]
+	});
+	
+	markers.forEach(function(m){
+		var html = m.rank;
+	
+		var markerOptions = {
+			icon: icon,
+			bubblingMouseEvents: true
+		};
+		
+		var marker = L.marker([m.lat, m.lng], markerOptions).addTo(map);
+		
+		$(marker._icon).attr("title", m.title);
+		initToolTip($(marker._icon));
+		
+		marker.on("click", function() {
+			parent.document.location.href = "/col/" + m.colIDString
+		});
+	});
+}
+</script>
+
 <main role="main" class="bd-content">
     <div class="header px-4 py-3 d-flex align-items-baseline">
         <h4 class="font-weight-light">Lists</h4>
@@ -14,12 +78,12 @@ CyclingCols - Lists
 @endif
 	</div>	
 	<div class="w-100 d-flex align-items-start flex-wrap">
-		<div class="w-100 w-md-25 p-3"><!--sidebar-->
+		<div class="w-100 w-lg-25 p-3"><!--sidebar-->
 @foreach($lists as $lists_)
 			<a class="d-block" href="/list/{{$lists_->Slug}}">{{$lists_->Name}}</a>
 @endforeach
 		</div>		
-		<div class="w-100 w-md-50 p-3"><!-- w-75 -->
+		<div class="w-100 w-md-50 w-lg-50 p-3"><!-- w-75 -->
 @if (!is_null($list))
 	@foreach($sections as $sections_)
 			<div class="card mb-1">
@@ -119,42 +183,46 @@ $profile = null;
 @endif
 		</div><!-- w-75 -->
 		
-		<div class="w-100 w-md-25 p-3"><!--sidebar-->
+		<div class="w-100 w-md-50 w-lg-25 p-3"><!--sidebar-->
 @if (!is_null($list))
 			<div class="card mb-1">
 				<div class="card-header p-2">
 					Most Cols In This List Climbed
 				</div>
 				<div class="card-body p-2 font-weight-light text-small-90">
-@foreach($users as $user)
+	@foreach($users as $user)
 					<div class="align-items-baseline d-flex">
-	@auth
+		@auth
 						<div class="text-truncate">
 							<a href="/athlete/{{$user->slug}}">{{$user->name}}</a>
 						</div>
 						<div class="text-primary text-small-75 text-right" style="flex: 0 0 15px;">
-		@if ($user->id == Auth::user()->id)
+			@if ($user->id == Auth::user()->id)
 							<i class="fas fa-user" title="That's you!" data-toggle="tooltip"></i> 
-		@elseif ($user->followedByMe())
+			@elseif ($user->followedByMe())
 							<i class="fas fa-check" title="Following" data-toggle="tooltip"></i> 
-		@endif
+			@endif
 						</div>
-	@else
+		@else
 						<div class="text-truncate">{{$user->name}}</div>		
-	@endauth
+		@endauth
 						<div class="ml-auto text-small-75 text-right" style="flex: 0 0 75px;">
 								{{$user->count}}
 						</div>
 					</div>									
-@endforeach
-@if (count($users) == 0)
+	@endforeach
+	@if (count($users) == 0)
 					<span class="text-small-75">Nothing to show here.</span>
-@endif
+	@endif
 				</div>				
 				<div class="card-footer text-muted">
 					<span class="text-small-75">{{$list->colCount()}} cols in this list</span>
 				</div><!--card-footer-->
 			</div>
+			<div class="col-box w-100 mb-3 h-100">
+				<div id="map" class="col-map">
+				</div>			
+			</div>	
 @endif
 		</div>
 	</div><!--container-->

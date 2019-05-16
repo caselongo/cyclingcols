@@ -42,16 +42,7 @@ foreach($stats as $stat){
 		}
 		
 ?>
-	markers.push({
-		lat: {{$stat->Latitude/1000000}},
-		lng: {{$stat->Longitude/1000000}},
-		colIDString: "{{$stat->ColIDString}}",
-		fileName: "{{$stat->FileName}}",
-		col: "{{$stat->Col}}",
-		rank: "{{$stat->Rank}}",
-		icon: "{{$icon}}",
-		title: "{{$title}}"
-	});
+		markers.push({lat:{{$stat->Latitude/1000000}},lng:{{$stat->Longitude/1000000}},colIDString:"{{$stat->ColIDString}}",fileName:"{{$stat->FileName}}",col:"{{$stat->Col}}",rank:"{{$stat->Rank}}",icon:"{{$icon}}",title:"{{$title}}"});
 <?php
 	}
 }
@@ -121,45 +112,6 @@ foreach($stats as $stat){
 		getTopStats();
 	});
 }
-
-/*
-var createRatingEventHandlers = function(){
-if (Auth::user())
-	$(".col-done").on("mouseenter",function(){
-		$(this).addClass("col-done-yes-hover").removeClass("col-done-no-light");
-	});
-	
-	$(".col-done").on("mouseleave",function(){
-		$(this).addClass("col-done-no-light").removeClass("col-done-yes-hover");
-	});
-	
-	$(".col-done").on("click",function(){	
-		if ($(this).hasClass("col-done-yes")) return;
-		$(this).toggleClass("col-done-yes col-done-no-light");
-		
-		var col = $(this).data('col');
-		
-		colsDone.push(col);
-			
-		$.ajax({
-			type: "GET",
-			url : "/user/col",
-			data: {
-				"colIDString": col,
-				"done": true
-			},
-			dataType : 'json',
-			success : function(data) {							
-			}
-		});
-	});
-endif		
-}
-			
-$(document).ready(function() {
-	createRatingEventHandlers();
-});*/
-
 </script>
 
 <main role="main" class="bd-content">
