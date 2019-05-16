@@ -10,7 +10,9 @@
 
 @section('content')
 
+<link rel="stylesheet" href="/css/leaflet.fullscreen.css" type="text/css">
 <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+<script src="/js/leaflet.fullscreen.min.js" type="text/javascript"></script>
 <script type="text/javascript">	
 	window.onload = function(){
 		var markers = [];
@@ -38,13 +40,23 @@ if (!is_null($sections)){
 	var mapOptions = {
 		attributionControl: false,
 		zoomControl: true,
-		dragging: true
+		dragging: true,
+		fullscreenControl: true   
 	};
 	var map = L.map('map', mapOptions);//.setView([lat, lng], 4
 	map.fitBounds(markers.map(function(m){
 		return [m.lat, m.lng];
 	}),{padding: [20,20]});
 	map.scrollWheelZoom.disable();
+	
+	/*map.on('fullscreenchange', function () {
+		if (map.isFullscreen()) {
+			markers.forEach(function(m){
+				$(m.marker._icon).attr("title", m.title);
+				initToolTip($(m.marker._icon));
+			});			
+		}
+	});*/
 	
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -64,9 +76,10 @@ if (!is_null($sections)){
 		};
 		
 		var marker = L.marker([m.lat, m.lng], markerOptions).addTo(map);
+		m.marker = marker;
 		
 		$(marker._icon).attr("title", m.title);
-		initToolTip($(marker._icon));
+		initToolTip($(marker._icon),$("#map"));
 		
 		marker.on("click", function() {
 			parent.document.location.href = "/col/" + m.colIDString

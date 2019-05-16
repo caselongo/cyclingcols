@@ -471,9 +471,12 @@ var getTopStats = function(colIDString,profileFileName) {
 	});
 }
 	
-var initToolTip = function(el){
+var initToolTip = function(el,container){
+	if (!container) container = false;
+	
 	$(el).tooltip({
 		html: true,
+		container: container,
 		template: '<div class="tooltip" role="tooltip"><div class="arrow shadow"></div><div class="tooltip-inner font-weight-light text-small-75 shadow"></div></div>'
 	});		
 }
