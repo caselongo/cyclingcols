@@ -131,7 +131,16 @@ if (!is_null($sections)){
 			if (Auth::user()){
 				$climbed = $col_->climbedByMe();
 			}
+			
+			$profile = null;
+			if ($col->ProfileID > 0){
+				$profile = \App\Profile::where('ProfileID','=',$col->ProfileID)->first();
+				
+			}
 ?>
+				@if (!is_null($profile) && (is_null($col->Category) || $col->Category == ""))
+						<span class="category category-{{$profile->Category}} mr-1">{{$profile->Category}}</span>
+				@endif
 				@if ($col->PPartial)
 						(~ <a href="/col/{{$col_->ColIDString}}" title="Only partially climbed" data-toggle="tooltip">{{$col_->Col}}</a>)
 				@else
@@ -140,14 +149,7 @@ if (!is_null($sections)){
 					@endif
 						<a href="/col/{{$col_->ColIDString}}">{{$col_->Col}}</a>
 				@endif
-				<?php
-$profile = null;
-				if ($col->ProfileID > 0){
-					$profile = \App\Profile::where('ProfileID','=',$col->ProfileID)->first();
-					
-				}
-
-?>				
+				
 				@if (!is_null($profile))
 					@if (!is_null($profile->Side))
 						<div>
