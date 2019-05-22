@@ -6,9 +6,12 @@ CyclingCols - Stats
 
 @section('content')
 
+@if (count($stats) > 0)
+<link rel="stylesheet" href="/css/leaflet.fullscreen.css" type="text/css">
 <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+<script src="/js/leaflet.fullscreen.min.js" type="text/javascript"></script>
 <script type="text/javascript">	
-	window.onload = function(){
+	initMap = function(){
 		var markers = [];
 		
 <?php
@@ -27,23 +30,33 @@ foreach($stats as $stat){
 		$stat->Rank = $rank_;
 	}
 	
+	/* add to map */
 	if ($stat->Rank == 1 || $stattype->StatTypeID > 0){
 		$icon = "";
 		$title = "";
+		$isPrimary = true;
 		
 		if ($stattype->StatTypeID == 0){
 			foreach($stattypes as $stattype_){
+				$isPrimary = $stattype_->IsPrimary;
+				
 				if ($stattype_->StatTypeID == $stat->StatTypeID){
+					$title = "";
+					if ($stattype_->Type == 1) $title = "Highest";
+					else if ($stattype_->Type == 2) $title = "Most";
+					
 					$icon = $stattype_->Icon;
-					$title = 'Highest ' . $stattype_->StatType . ": ";
+					$title = $title . " " . $stattype_->StatType . ": ";
 					break;
 				}	
 			}
 		}
 		
+		if ($isPrimary){
 ?>
-		markers.push({lat:{{$stat->Latitude/1000000}},lng:{{$stat->Longitude/1000000}},colIDString:"{{$stat->ColIDString}}",fileName:"{{$stat->FileName}}",col:"{{$stat->Col}}",rank:"{{$stat->Rank}}",icon:"{{$icon}}",title:"{{$title}}"});
+	markers.push({lat:{{$stat->Latitude/1000000}},lng:{{$stat->Longitude/1000000}},colIDString:"{{$stat->ColIDString}}",fileName:"{{$stat->FileName}}",col:"{{$stat->Col}}",rank:"{{$stat->Rank}}",icon:"{{$icon}}",title:"{{$title}}"});
 <?php
+		}
 	}
 }
 ?>
@@ -51,7 +64,8 @@ foreach($stats as $stat){
 	var mapOptions = {
 		attributionControl: false,
 		zoomControl: true,
-		dragging: true
+		dragging: true,
+		fullscreenControl: true   
 	};
 	var map = L.map('map', mapOptions);//.setView([lat, lng], 4
 	map.fitBounds(markers.map(function(m){
@@ -88,12 +102,22 @@ foreach($stats as $stat){
 		var marker = L.marker([m.lat, m.lng], markerOptions).addTo(map);
 		
 		$(marker._icon).attr("title", m.title + "<br/>" + m.col);
-		initToolTip($(marker._icon));
+		initToolTip($(marker._icon),$("#map"));
 		
 		marker.on("click", function() {
 			parent.document.location.href = "/col/" + m.colIDString + "#" + m.fileName;
 		});
 	});
+}
+</script>
+@else
+<script type="text/javascript">	
+	initMap = function(){}
+</script>
+@endif
+<script type="text/javascript">	
+window.onload = function(){
+	initMap();
 	
 	var getTopStats = function(){
 		$.ajax({
@@ -154,6 +178,18 @@ foreach($stats as $stat){
 			<div class="card-deck w-100">
 <?php
 	$card_count = 0;
+	$stattype_current = $stattype;
+?>
+@if (count($stats) == 0)
+	<div class="card mb-3">
+		<div class="card-body p-2 font-weight-light text-small-90">No data</div>
+	</div>
+<?php
+	$card_count++;
+?>
+
+@else
+<?php
 	$stattypeid = 0;
 	$rank_prev = 0;
 	//$value_prev = "";
@@ -250,16 +286,22 @@ foreach($stats as $stat){
 					</div><!--card-body-->
 				</div><!--card-->
 <?php			
-	}	
+	}
+?>
+@endif
+<?php	
 	
 	if ($stattype->StatTypeID > 0 && $stats_other){
 		$card_count++;
+		$pre = "";
+		if ($stattype->Type == 1) $pre = "Highest";
+		else if ($stattype->Type == 2) $pre = "Most";
 ?>
 				<div class="card mb-3">
 					<div class="card-header p-2 d-flex justify-content-between align-items-baseline">
 						<div>
 							<i class="fas fas-grey fa-{{$stattype_current->Icon}} no-pointer"></i>
-							<span>Highest {{$stattype_current->StatType}} Per Country</span>
+							<span>{{$pre}} {{$stattype_current->StatType}} Per Country</span>
 						</div>
 					</div>
 					<div class="card-body p-2 font-weight-light text-small-90">
@@ -318,10 +360,12 @@ foreach($stats as $stat){
 			</div><!--card-deck-->
 		</div><!-- w-75 -->
 		<div class="w-100 w-md-25 px-3 pl-md-0 py-3"><!--sidebar-->
+@if (count($stats) > 0)
 			<div class="col-box w-100 mb-3">
 				<div id="map" class="col-map">
 				</div>			
 			</div>			
+@endif
 			<div class="col-box w-100 mb-3">
 				<div class="p-2 border-bottom d-flex align-items-center">
 					<h6 class="font-weight-light m-0">Top Cols In {{$country->Country}}</h6>

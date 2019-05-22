@@ -36,7 +36,9 @@ class StatsController extends Controller
 		$stattype_all->StatType = "All"; 
 		$stattype_all->URL = "all"; 
 		$stattype_all->Icon = ""; 
-		$stattype_all->Description = ""; 				
+		$stattype_all->Description = "";
+		$stattype_all->Type = 0; 	 
+		$stattype_all->IsPrimary = 0; 	 					
 		$stattypes->prepend($stattype_all);	
 		
 		$stattype_current = null;
