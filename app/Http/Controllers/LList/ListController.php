@@ -41,7 +41,7 @@ class ListController extends Controller
 				$users = $users			
 					->groupBy('users.id')
 					->orderBy(DB::raw('count(listcol.ID)'), 'DESC')
-					->select('users.id', 'users.name', 'users.slug', DB::raw('count(listcol.id) as count'))
+					->select('users.id', 'users.name', 'users.slug', DB::raw('count(DISTINCT listcol.ColID) as count'))
 					->limit(10)
 					->get();						
 			}

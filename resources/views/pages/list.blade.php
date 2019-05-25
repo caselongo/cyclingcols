@@ -24,14 +24,15 @@ $rank_ = 0;
 $stattypeid_ = 0;
 $value_ = 0;
 
-if (!is_null($sections)){
-	foreach($sections as $sections_){
-		foreach($sections_->cols()->orderBy('Sort')->get() as $col){
-			if ($col->ColID > 0){
+if (!is_null($list)){
+	$cols = $list->cols()->get()->sortBy("ColID");
+	$colID = 0;
+	foreach($cols as $col){
+		if ($col->ColID > 0 && $colID != $col->ColID){
+			$colID = $col->ColID;
 ?>
 		markers.push({lat:{{$col->col->Latitude/1000000}},lng:{{$col->col->Longitude/1000000}},colIDString:"{{$col->col->ColIDString}}",title:"{{$col->col->Col}}"});
 <?php
-			}
 		}
 	}
 }
