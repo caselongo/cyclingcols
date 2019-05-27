@@ -36,7 +36,8 @@ class ListController extends Controller
 				$users = User::join('usercol', 'usercol.UserID', '=', 'users.id')
 								->join('cols', 'cols.ColID', '=', 'usercol.ColID')
 								->join('listcol', 'listcol.ColID', '=', 'usercol.ColID')
-								->where('listcol.ListID','=',$list->ID);
+								->where('listcol.ListID','=',$list->ID)
+								->andWhere('listcol.StravaNew','=',0);
 					
 				$users = $users			
 					->groupBy('users.id')
