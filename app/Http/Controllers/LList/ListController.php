@@ -37,7 +37,7 @@ class ListController extends Controller
 								->join('cols', 'cols.ColID', '=', 'usercol.ColID')
 								->join('listcol', 'listcol.ColID', '=', 'usercol.ColID')
 								->where('listcol.ListID','=',$list->ID)
-								->where('listcol.StravaNew','=',0);
+								->where('usercol.StravaNew','=',0);
 					
 				$users = $users			
 					->groupBy('users.id')
