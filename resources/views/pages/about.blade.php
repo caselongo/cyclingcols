@@ -39,7 +39,7 @@ CyclingCols - About
 		<div class="row border-top my-3">
 <?php
 
-	$banners = \App\Banner::where('ColID',0)->orderBy(DB::raw("RAND()"),'ASC')->get();
+	$banners = \App\Banner::where('ColID',0)->where('Active',1)->orderBy(DB::raw("RAND()"),'ASC')->get();
 
 	foreach($banners as $banner) {
 ?>	
