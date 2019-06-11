@@ -211,7 +211,7 @@ class ColController extends Controller
 			}	
 			
 			if ($t->GeoID == 0){
-				$t->country_url = "all";
+				$t->country_url = "europe";
 			} else {
 				foreach($countries as $c){
 					if ($c->CountryID == $t->GeoID){
