@@ -50,7 +50,7 @@
         pageTracker._trackPageview();
     </script>
 	
-	<script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=5c84344adf6421001143b70c&product=inline-share-buttons' async='async'></script>
+	<!--<script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=5c84344adf6421001143b70c&product=inline-share-buttons' async='async'></script>-->
 </head>
 <body class="{{$pagetype ?? ''}} d-flex flex-column h-100">
         @include('includes.header')
