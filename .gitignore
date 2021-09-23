@@ -1,9 +1,9 @@
 /node_modules
 /public/hot
+/public/OLD
 /public/storage
 /storage/*.key
 /vendor
-.env
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -16,7 +16,20 @@ public/images/panels/
 public/__images/
 public/__profiles/
 public/__tours/
+public/images/banners/
 public/images/cols/
 public/images/nice/
 public/images/psp/
 public/images/HelpProfile - Copy.png
+database/migrations/
+info.txt
+public/images/banners/BannerHiRoads.jpg
+public/images/banners/BannerHiRoads.jpg
+public/images/banners/BannerHiRoads1.jpg
+public/images/banners/BannerHiRoads2.jpg
+public/images/banners/BannerHiRoads3.jpg
+public/images/banners/BannerLeReve.jpg
+public/images/banners/BannerLeReve_.jpg
+public/images/banners/KUDOS-Logo-Medium.jpg
+public/images/banners/LogoKrolactive2021.gif
+.env*

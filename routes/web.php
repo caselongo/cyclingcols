@@ -11,141 +11,139 @@
 |
 */
 
-/* Homepage */
-Route::get('/', function()
-{
-	return View::make('pages.mainsearch')
-	->with('pagetype','home');
+// Login Routes...
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login')->name('login.post');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
+
+// Registration Routes...
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register')->name('register.post');
+
+// Verification Routes...
+Route::get('email/verify', 'Auth\VerificationController@show')->name('verification.notice');
+Route::get('email/verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
+Route::get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
+
+// Password Reset Routes...
+Route::get('password/request', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.reset.post');
+
+// Col
+Route::get('col/{colIDString}','Col\ColController@col');
+
+// Map
+Route::get('map','Map\MapController@map');
+Route::get('map/country/{countryIDString}','Map\MapController@country');
+Route::get('map/region/{regionIDString}','Map\MapController@region');
+Route::get('map/subregion/{subregionIDString}','Map\MapController@subregion');
+Route::get('map/col/{colIDString}','Map\MapController@col');
+
+// Stats
+Route::get('stats/{stattypeurl}/{countryurl}','Stats\StatsController@index');
+Route::get('stats','Stats\StatsController@index_default');
+
+// Home
+Route::get('/','General\GeneralController@home');
+
+// New
+Route::get('new','General\GeneralController@new');
+
+// Help
+Route::get('help','General\GeneralController@help');
+
+// About
+Route::get('about','General\GeneralController@about');
+
+//Lists
+Route::get('list','LList\ListController@all');
+Route::get('list/{slug}','LList\ListController@list');
+Route::get('list/{slug}/edit','LList\ListController@list_edit');
+
+// Rides
+Route::get('rides','General\GeneralController@rides');
+
+// User
+
+Route::middleware(['verified'])->group(function () {
+	Route::get('athlete/welcome', 'User\UserController@welcome');
+	Route::get('athlete','User\UserController@index_default');
+	Route::get('athlete/{slug}','User\UserController@index');
+	Route::get('athlete/{slug}/cols','User\UserController@cols_default');
+	Route::get('athlete/{slug}/cols/{countryurl}/{sorttypeurl}','User\UserController@cols');
+
+	// Users
+	Route::get('athletes','Users\UsersController@index');
+	Route::get('athletes/cols/{countryurl}/{yearurl}/{athleteurl}','Users\UsersController@cols');
+	Route::get('athletes/athletes/{countryurl}/{yearurl}/{athleteurl}','Users\UsersController@athletes');
 });
 
-/* New page*/
-Route::get('new', function()
-{
-	$newitems = \App\NewItem::orderBy('DateSort','DESC')->get();
+// Strava
+Route::get('strava/connect','Strava\StravaController@connect');
+Route::get('strava/process','Strava\StravaController@process');
+Route::get('strava/cols','Strava\StravaController@cols');
+Route::get('strava/error','Strava\StravaController@error');
+Route::get('strava/claim','Strava\StravaController@claim');
+	Route::get('service/list/all','LList\ListController@_all');
+	Route::get('service/list/{slug}','LList\ListController@_list');
+	Route::get('service/list/lists/{userID}','LList\ListController@_lists');
+
+Route::middleware(['ajax'])->group(function () {
+	/* col */
+	Route::get('service/col/nearby/{colIDString}','Col\ColController@_nearby');
+	Route::get('service/col/first/{colIDString}','Col\ColController@_first_all');
+	Route::get('service/col/first/{colIDString}/{limit}','Col\ColController@_first');
+	Route::get('service/col/top/{colIDString}','Col\ColController@_col_top');
+	Route::get('service/col/profile/top/{profileFileName}','Col\ColController@_profile_top');
+	Route::get('service/col/profile/{fileName}','Col\ColController@_profile');
+	Route::get('service/col/athlete/{colIDString}','Col\ColController@_user');
+	Route::post('service/col/athlete/save/{colIDString}','Col\ColController@_user_save');
+	Route::post('service/col/athlete/delete/{colIDString}','Col\ColController@_user_delete');
+	Route::get('service/col/athletes/{colIDString}','Col\ColController@_users');
+	Route::get('service/col/lists/{colIDString}','Col\ColController@_lists');
 	
-	return View::make('pages.new')
-		->with('newitems',$newitems)
-		->with('pagetype','newtemplate');
-});
+	/* cols */
+	Route::get('service/cols','Cols\ColsController@_cols');
+	Route::get('service/cols/search','Cols\ColsController@_search');
+	Route::get('service/cols/photos','Cols\ColsController@_photos');
 
-/* About page*/
-Route::get('about', function()
-{
-	return View::make('pages.about', array('pagetype'=>'abouttemplate'));
-});
-
-/* Help page */
-Route::get('help', function()
-{
-    return View::make('pages.help', array('pagetype'=>'helptemplate'));
-});
-
-/*Col page*/
-Route::get('col/{colIDString}', function($colIDString)
-{
-	$col = \App\Col::where('ColIDString',$colIDString)->first();
+	/* stat */
+	Route::get('service/stats/top/{country_url}','Stats\StatsController@_top');		
 	
-	if (is_null($col))
-	{
-		return Redirect::to('/');
-	}
+	/* general */
+	Route::get('service/countries','General\GeneralController@_countries');
+	Route::get('service/regions','General\GeneralController@_regions');		
+	Route::get('service/subregions','General\GeneralController@_subregions');
+	Route::get('service/rides','General\GeneralController@_rides');
+	Route::get('service/banners','General\GeneralController@_banners');
 
-	$profiles = \App\Profile::where('ColID',$col->ColID)->get();
+	/* strava */
+	Route::get('service/strava/status/{processed}','Strava\StravaController@_status');
 	
-	return View::make('pages.col')
-		->with('col',$col)
-		->with('profiles',$profiles)
-		->with('pagetype','coltemplate');
-});
-
-/*Col page - select upmost profile*/
-Route::get('col/{colIDString}/{profileID}', function($colIDString,$profileID)
-{
-	$col = \App\Col::where('ColIDString',$colIDString)->first();
+	/* user */
+	Route::get('service/user/following/{slug}','User\UserController@_following');
+	Route::post('service/user/follow/{slug}','User\UserController@_follow');
+	Route::post('service/user/unfollow/{slug}','User\UserController@_unfollow');
 	
-	if (is_null($col))
-	{
-		return Redirect::to('/');
-	}
+	/* users */
+	Route::get('service/athletes/search','Users\UsersController@_search');
+
+	/* lists */
+	Route::get('service/list/all','LList\ListController@_all');
+	Route::get('service/list/{slug}','LList\ListController@_list');
+	Route::get('service/list/lists/{userID}','LList\ListController@_lists');
+
+	Route::post('service/list/create','LList\ListController@_create');
+	Route::put('service/list/update','LList\ListController@_update');
+	Route::delete('service/list/delete','LList\ListController@_delete');
 	
-	$orderBy ='CASE WHEN ProfileID = ' . $profileID . ' THEN 0 ELSE 1 END';
-	$profiles = \App\Profile::where('ColID',$col->ColID)->orderBy(DB::raw($orderBy),'ASC')->get();
+	Route::post('service/listsection/create','LList\ListController@_create_section');
+	Route::put('service/listsection/update','LList\ListController@_update_section');
+	Route::delete('service/listsection/delete','LList\ListController@_delete_section');
 	
-	return View::make('pages.col')
-		->with('col',$col)
-		->with('profiles',$profiles)
-		->with('pagetype','coltemplate');
-});
-
-/* googlemaps pages*/
-Route::get('map', function()
-{   
-	return View::make('pages.map')
-		->with('pagetype','mappage');
-});
-
-Route::get('map/country/{country}', function($country)
-{   
-	$country = \App\Country::where('CountryIDString',$country)->first();
-	
-	if (is_null($country))
-	{
-		return Redirect::to('/map');
-	}
-	
-    return View::make('pages.map')
-		->with('country',$country)
-		->with('pagetype','mappage');
-});
-
-/*col page*/
-
-Route::get('map/col/{col}', function($col)
-{   
-	$col = \App\Col::where('ColIDString',$col)->first();
-	
-	if (is_null($col))
-	{
-		return Redirect::to('/map');
-	}
-	
-    return View::make('pages.map')
-		->with('col',$col)
-		->with('pagetype','mappage');
-});
-
-
-/*rides page*/
-
-Route::get('rides', function()
-{   
-	return View::make('pages.rides')
-		->with('pagetype','ridestemplate');
-});
-
-/*stats page*/
-
-Route::get('stats', function()
-{   
-	return Redirect::to('stats/0/0');
-});
-
-Route::get('stats/{statid}/{geoid}', function($statid,$geoid)
-{   
-	if ($statid > 0) {
-		$stats = \App\Stat::whereRaw('StatID = ' . $statid . ' AND GeoID = ' . $geoid)->get();
-	} else {
-		$stats = \App\Stat::whereRaw('GeoID = ' . $geoid . ' AND Rank <= 5')->get();
-	}
-	
-	if (is_null($stats))
-	{
-		return Redirect::to('stats/0/0');
-	}
-	
-    return View::make('pages.stats')
-		->with('stats',$stats)
-		->with('statid',$statid)
-		->with('geoid',$geoid)
-		->with('pagetype','statstemplate');
+	Route::post('service/listcol/create','LList\ListController@_create_col');
+	Route::post('service/listcol/delete','LList\ListController@_delete_col');
+	Route::post('service/listcol/sort','LList\ListController@_sort_col');
 });

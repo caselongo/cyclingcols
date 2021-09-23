@@ -20,8 +20,10 @@ class Profile extends Model
 		'Category',
 		'Unpaved'
 	);
-	public function Col(){
-		return $this->belongsTo('Col');
-	}
+	
+    public function col()
+    {
+        return $this->belongsTo('App\Col','ColID','ColID');
+    }
 }
 ?>

@@ -14,7 +14,7 @@ CyclingCols - Search On Map
 	$longitude = 9.7;
 	$zoom_level = 4;
 	
-	$colID = 0;
+	$colIDString = 0;
 	
 	if (isset($country))
 	{
@@ -41,22 +41,22 @@ CyclingCols - Search On Map
 		$latitude = $col->Latitude/1000000;
 		$longitude = $col->Longitude/1000000;
 		$zoom_level = 10;
-		$colID = $col->ColID;
+		$colIDString = $col->ColIDString;
 	}
 ?>	
 
 <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
-    <!-- Load Esri Leaflet from CDN -->
-    <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"
-    integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g=="
-    crossorigin=""></script>
-  <!-- Load Esri Leaflet Geocoder from CDN -->
-  <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css"
-    integrity="sha512-v5YmWLm8KqAAmg5808pETiccEohtt8rPVMGQ1jA6jqkWVydV5Cuz3nJ9fQ7ittSxvuqsvI9RSGfVoKPaAJZ/AQ=="
-    crossorigin="">
-  <script src="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.js"
-    integrity="sha512-zdT4Pc2tIrc6uoYly2Wp8jh6EPEWaveqqD3sT0lf5yei19BC1WulGuh5CesB0ldBKZieKGD7Qyf/G0jdSe016A=="
-    crossorigin=""></script>
+<!-- Load Esri Leaflet from CDN -->
+<script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"
+	integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g=="
+	crossorigin=""></script>
+<!-- Load Esri Leaflet Geocoder from CDN -->
+<link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css"
+	integrity="sha512-v5YmWLm8KqAAmg5808pETiccEohtt8rPVMGQ1jA6jqkWVydV5Cuz3nJ9fQ7ittSxvuqsvI9RSGfVoKPaAJZ/AQ=="
+	crossorigin="">
+<script src="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.js"
+	integrity="sha512-zdT4Pc2tIrc6uoYly2Wp8jh6EPEWaveqqD3sT0lf5yei19BC1WulGuh5CesB0ldBKZieKGD7Qyf/G0jdSe016A=="
+	crossorigin=""></script>
 
 <script type="text/javascript">
 	var map;
@@ -78,8 +78,6 @@ CyclingCols - Search On Map
 		lng = history.state.longitude;
 	}
 	
-	var colID = {{$colID}};
-	
 	var tryShowMarkers = function(count){
 		if (!count) count = 1;
 		if (count > 200) return; //takes too long...
@@ -92,44 +90,21 @@ CyclingCols - Search On Map
 			},100);
 		}
 			
-		console.log("tryShowMarkers ready");
+		//console.log("tryShowMarkers ready");
 	}
 	
-	window.onload = function() {
-		var mapOptions = {
-			attributionControl: false
-		};
-		map = L.map('map-canvas', mapOptions).on('load',function(){ mapReady = true; }).setView([lat, lng], zoom);
-		
-		map.on('zoomend', function() {
-			showMarkers();
-		});
-		
-		map.on('move', function() {
-			showMarkers();
-		});	
-		
-		map.on('dragend', function() {
-			showMarkers();
-		});		
-		
-		map.on('focus', function() {
-			showMarkers();
-			console.log("focus");
-		});
-		
-		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-		}).addTo(map);
-		
-		/*L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-			minZoom: 4,
-			//maxZoom: 4,
-			id: 'mapbox.streets',
-			accessToken: 'pk.eyJ1IjoiY3ljbGluZ2NvbHMiLCJhIjoiY2pudTdycTc4MDc2ZTNyb2kyMTUzampjcCJ9.PUlrY1MZeyqtE8_WKj7Smw'
-		}).addTo(map);*/
-		
+	var calculatemapheight = function() {
+		var height = $(window).height() - $('.footer').height() - $('#canvas').offset().top;
+	
+		$('#canvas').height(height);
+		$('#map-canvas').height(height);
+	}
+	
+	var removeTooltip = function(){
+		$(".tooltip").remove();
+	}
+	
+	var addSearchControl = function(){
 		var searchControl = L.esri.Geocoding.geosearch().addTo(map);
 
 		var results = L.layerGroup().addTo(map);
@@ -139,8 +114,98 @@ CyclingCols - Search On Map
 			for (var i = data.results.length - 1; i >= 0; i--) {
 				results.addLayer(L.marker(data.results[i].latlng));
 			}
-		});
+		});		
 	}
+	
+	$(window).on('resize', function() {
+		calculatemapheight();
+	});
+	
+	$(document).on("ready", function(){
+		calculatemapheight();
+	});
+	
+	$(window).on('load', function() {
+		var mapOptions = {
+			attributionControl: true
+		};
+		
+		var onMapReady = function(){
+			mapReady = true;
+			
+			setTimeout(function(){
+				initToolTip($(".leaflet-bar"));
+				initToolTip($(".leaflet-bar a"));
+			}, 1000);
+		}
+		
+		map = L.map('map-canvas', mapOptions).on('load', onMapReady).setView([lat, lng], zoom);
+		
+		map.on('zoomend', function() {
+			removeTooltip();
+			showMarkers();
+		});
+		
+		map.on('move', function() {
+			removeTooltip();
+			showMarkers();
+		});	
+		
+		map.on('dragend', function() {
+			removeTooltip();
+			showMarkers();
+		});		
+		
+		map.on('focus', function() {
+			showMarkers();
+			console.log("focus");
+		});
+	
+@auth	
+
+		setTimeout(function(){
+			var command = L.control({position: 'topleft'});
+
+			command.onAdd = function (map) {
+				var div = L.DomUtil.create('div', 'command');
+
+				div.innerHTML = '<div class="leaflet-bar climbed-control d-flex align-items-center justify-content-around" title="Only show cols climbed by you"><a><i class="fas fa-check climbed-control-checked"></i></a></div>'; 
+				
+				initToolTip($(div).find(".leaflet-bar"));
+				
+				L.DomEvent.on(div,"click", function(){
+					showClimbed = !showClimbed;
+					showClimbed_();
+				})
+				
+				return div;		
+			};
+
+			command.addTo(map);	
+			addSearchControl();
+		}, 500);
+@else
+		addSearchControl();
+@endauth
+
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+		}).addTo(map);
+	});
+	
+@auth	
+	var showClimbed = true;
+		
+	var showClimbed_ = function(){
+		if (showClimbed){
+			$(".climbed-control").find("i").addClass("climbed-control-checked");
+			$(".col-marker:not(.col-marker-climbed)").addClass("col-marker-not-climbed");
+		} else {
+			$(".climbed-control").find("i").removeClass("climbed-control-checked");
+			$(".col-marker").removeClass("col-marker-not-climbed");
+		}
+	}
+@endauth
 	
 	var showMarkers = function(){
 		var showCount = 0;
@@ -182,9 +247,9 @@ CyclingCols - Search On Map
 			}
 		}
 		
-		//console.log("#markers: " + markers.length);
-		//console.log("latMin: " + latMin + ", latMax: " + latMax + ", lngMin: " + lngMin + ", lngMax: " + lngMax + ", zoom: " + zoom);
-		//console.log(showCount + " markers shown, " + hideCount + " markers hidden");
+@auth			
+		showClimbed_();
+@endauth
 	}
 	
 	var getCols = function() {
@@ -192,13 +257,10 @@ CyclingCols - Search On Map
 		var names = new Array();
 		var ids = new Array();
 		var heights = new Array();
-		var colMarker = null;
 		
-		//colsMarkers = new L.FeatureGroup();
-
 		$.ajax({
-			url : "{{ URL::asset('ajax/getcols.php') }}",
-			data : "",
+			type: "GET",
+			url : "/service/cols",
 			dataType : 'json',
 			success : function(data) {
 			
@@ -212,15 +274,16 @@ CyclingCols - Search On Map
 					else { img = "/images/ColLightYellow.png"; }
 									
 					var title = data[j].Col + ' (' + data[j].Height + 'm)';	
+@auth
+					if (data[j].ClimbedAt){
+						var date = new Date(data[j].ClimbedAt);
+						title += "<br/>[climbed on " + formatDate(date) + "]";
+					}
+@endauth
 					
 					var icon = L.icon({
 						iconUrl: img,
-						//iconSize: [38, 95],
 						iconAnchor: [16,35]
-						//popupAnchor: [-3, -76],
-						//shadowUrl: 'my-icon-shadow.png',
-						//shadowSize: [68, 95],
-						//shadowAnchor: [22, 94]
 					});
 						
 					var markerOptions = {
@@ -230,18 +293,46 @@ CyclingCols - Search On Map
 					var lat_ = data[j].Latitude/1000000;
 					var lng_ = data[j].Longitude/1000000;
 					var marker = L.marker([lat_, lng_], markerOptions);
+					marker.ColIDString = data[j].ColIDString;
+@auth					
+					if (data[j].ClimbedAt){
+						marker.on("add", function(e){
+							var e = $(e.target._icon);		
+							e.addClass("col-marker col-marker-climbed");
+							initToolTip(e);
+							showToolTip(e,this.ColIDString);
+						})
+					} else {				
+						marker.on("add", function(e){
+							var e = $(e.target._icon);		
+							e.addClass("col-marker");
+							initToolTip(e);
+							showToolTip(e,this.ColIDString);
+						});
+					}
 					
+@else 
+					marker.on("add", function(e){
+						var e = $(e.target._icon);
+						initToolTip(e);
+						showToolTip(e,this.ColIDString);
+					});	
+@endauth
+					var minZoom = 9;
+					if (data[j].Country1ID == 6383){
+						minZoom = 7;
+					}
 					markers.push({
 						marker: marker,
 						lat: lat_,
 						lng: lng_,
-						minZoom: 9,
+						minZoom: minZoom,
 						maxZoom: 1000,
 						shown: false
 					});
 					
 					names[j] = data[j].Col;
-					ids[j] = data[j].ColID;
+					ids[j] = data[j].ColIDString;
 					heights[j] = data[j].Height						
 					cols[j] = marker;
 					
@@ -250,14 +341,6 @@ CyclingCols - Search On Map
 						var url = "/col/" + data[j].ColIDString;
 					
 						addClickCols(cols[j], title, url);	
-						
-						if (parseInt(data[j].ColID) == colID){
-							colMarker = {
-								marker: marker,
-								title: title,
-								url: url
-							};
-						}
 					})(j);					
 				}
 				
@@ -266,6 +349,15 @@ CyclingCols - Search On Map
 			}
 		})
 	};	
+	
+	var showToolTip = function(e,colIDString){		
+		if(colIDString == "{{$colIDString}}"){
+			setTimeout(function(){
+				e.tooltip('show');
+			}, 1000);
+		}
+	}
+					
 			
 	var getCountries = function() {	
 		var geos = new Array();
@@ -278,8 +370,8 @@ CyclingCols - Search On Map
 		
 		//load countries
 		$.ajax({
-			url : "{{ URL::asset('ajax/getcountries.php') }}",
-			data : "",
+			type: "GET",
+			url : "/service/countries",
 			dataType : 'json',
 			success : function(data) {
 				for(var j = 0; j < data.length; j++)
@@ -295,7 +387,11 @@ CyclingCols - Search On Map
 						case 4: 
 						case 5: 
 						case 7: 
-						case 4417: //FRA,ITA,SPA,GER
+						case 4417:
+						case 6383:
+						case 14734:
+						case 15005:
+						case 15734: //FRA,ITA,SPA,GER,NOR,WAL,SCO,ENG
 							maxzooms[i] = parseInt(5); break;
 						case 3: 
 						case 8: //AUT,SWI
@@ -306,12 +402,7 @@ CyclingCols - Search On Map
 					
 					var icon = L.icon({
 						iconUrl: "/images/ColRed.png",
-						//iconSize: [38, 95],
 						iconAnchor: [16,35]
-						//popupAnchor: [-3, -76],
-						//shadowUrl: 'my-icon-shadow.png',
-						//shadowSize: [68, 95],
-						//shadowAnchor: [22, 94]
 					});
 						
 					var markerOptions = {
@@ -328,6 +419,11 @@ CyclingCols - Search On Map
 						lng: lng_,
 						minZoom: minzooms[i],
 						maxZoom: maxzooms[i]
+					});
+					
+					marker.on("add", function(e){
+						var e = $(e.target._icon);	
+						initToolTip(e);
 					});
 								
 					geos[i] = marker;
@@ -369,8 +465,8 @@ CyclingCols - Search On Map
 		
 		//load regions
 		$.ajax({
-			url : "{{ URL::asset('ajax/getregions.php') }}",
-			data : "",
+			type: "GET",
+			url : "/service/regions",
 			dataType : 'json',
 			success : function(data) {
 				for(var j = 0; j < data.length; j++)
@@ -385,7 +481,11 @@ CyclingCols - Search On Map
 						case 4: 
 						case 5: 
 						case 7: 
-						case 4417: //FRA,ITA,SPA,GER
+						case 4417:
+						case 6383:
+						case 14734:
+						case 15005:
+						case 15734: //FRA,ITA,SPA,GER,NOR
 							minzooms[i] = parseInt(6); break;
 						case 3: 
 						case 8: //AUT,SWI
@@ -398,6 +498,10 @@ CyclingCols - Search On Map
 					{
 						maxzooms[i] = minzooms[i];
 					}
+					else if (parseInt(data[j].CountryID) == 6383) //NOR
+					{
+						maxzooms[i] = parseInt(6);
+					}
 					else
 					{
 						maxzooms[i] = parseInt(8);
@@ -405,12 +509,7 @@ CyclingCols - Search On Map
 					
 					var icon = L.icon({
 						iconUrl: "/images/ColDarkOrange.png",
-						//iconSize: [38, 95],
 						iconAnchor: [16,35]
-						//popupAnchor: [-3, -76],
-						//shadowUrl: 'my-icon-shadow.png',
-						//shadowSize: [68, 95],
-						//shadowAnchor: [22, 94]
 					});
 						
 					var markerOptions = {
@@ -427,6 +526,11 @@ CyclingCols - Search On Map
 						lng: lng_,
 						minZoom: minzooms[i],
 						maxZoom: maxzooms[i]
+					});
+					
+					marker.on("add", function(e){
+						var e = $(e.target._icon);	
+						initToolTip(e);
 					});
 								
 					geos[i] = marker;
@@ -466,8 +570,8 @@ CyclingCols - Search On Map
 		
 		//load subregions
 		$.ajax({
-			url : "{{ URL::asset('ajax/getsubregions.php') }}",
-			data : "",
+			type: "GET",
+			url : "/service/subregions",
 			dataType : 'json',
 			success : function(data) {
 				for(var j = 0; j < data.length; j++)
@@ -482,7 +586,8 @@ CyclingCols - Search On Map
 						case 4: 
 						case 5: 
 						case 7: 
-						case 4417: //FRA,ITA,SPA,GER
+						case 4417:
+						case 15734: //FRA,ITA,SPA,GER,ENG
 							minzooms[i] = parseInt(7); break;
 						default:
 							minzooms[i] = parseInt(8); break;
@@ -491,12 +596,7 @@ CyclingCols - Search On Map
 					
 					var icon = L.icon({
 						iconUrl: "/images/ColLightYellow.png",
-						//iconSize: [38, 95],
 						iconAnchor: [16,35]
-						//popupAnchor: [-3, -76],
-						//shadowUrl: 'my-icon-shadow.png',
-						//shadowSize: [68, 95],
-						//shadowAnchor: [22, 94]
 					});
 						
 					var markerOptions = {
@@ -513,6 +613,11 @@ CyclingCols - Search On Map
 						lng: lng_,
 						minZoom: minzooms[i],
 						maxZoom: maxzooms[i]
+					});
+					
+					marker.on("add", function(e){
+						var e = $(e.target._icon);	
+						initToolTip(e);
 					});
 								
 					geos[i] = marker;

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Validator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Validator::extend('no_http', function($attribute, $value, $parameters, $validator) {
+            return !Str::contains($value,'http:');
+        });
     }
 
     /**
@@ -23,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+		/* force HTTPS */
+        if (env('APP_ENV') === 'production') {
+            $this->app['url']->forceScheme('https');
+        }
     }
 }
